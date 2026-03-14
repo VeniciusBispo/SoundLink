@@ -1,0 +1,117 @@
+// Prisma Schema for SoundLink
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(cuid())
+  username      String     @unique
+  email         String     @unique
+  password      String?
+  avatar        String?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  playlists     Playlist[]
+
+  // NextAuth required fields
+  emailVerified DateTime?
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model Playlist {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  ownerId     String
+  isPublic    Boolean  @default(true)
+  coverImage  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  owner User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  songs PlaylistSong[]
+
+  @@index([ownerId])
+  @@index([isPublic])
+  @@map("playlists")
+}
+
+model Song {
+  id             String   @id @default(cuid())
+  youtubeVideoId String   @unique
+  title          String
+  duration       Int      // in seconds
+  thumbnail      String
+  channel        String
+  createdAt      DateTime @default(now())
+
+  playlists PlaylistSong[]
+
+  @@map("songs")
+}
+
+model PlaylistSong {
+  playlistId String
+  songId     String
+  orderIndex Int      @default(0)
+  addedAt    DateTime @default(now())
+
+  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  song     Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+
+  @@id([playlistId, songId])
+  @@index([playlistId])
+  @@map("playlist_songs")
+}
+
+// NextAuth Models
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
