@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { getServerSession } from 'next-auth'
-import Script from 'next/script'
 import { authOptions } from '@/lib/auth'
 import Providers from './providers'
 import './globals.css'
@@ -29,14 +28,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" className="dark">
       <head>
-        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
         <Providers session={session}>{children}</Providers>
