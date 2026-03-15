@@ -41,7 +41,12 @@ export async function sendVerificationEmail(email: string, token: string): Promi
       },
       body: JSON.stringify({ from, to: [email], subject, html }),
     })
-    return res.ok
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      console.error('[email] Resend error:', res.status, JSON.stringify(body))
+      return false
+    }
+    return true
   }
 
   // Option 2: SMTP via nodemailer

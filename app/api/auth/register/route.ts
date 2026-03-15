@@ -64,9 +64,14 @@ export async function POST(req: NextRequest) {
     if (emailProviderConfigured && verificationToken) {
       try {
         emailSent = await sendVerificationEmail(email, verificationToken)
+        if (!emailSent) {
+          console.error('[register] sendVerificationEmail returned false for:', email)
+        }
       } catch (emailErr) {
         console.error('Failed to send verification email:', emailErr)
       }
+    } else if (!emailProviderConfigured) {
+      console.warn('[register] No email provider configured (RESEND_API_KEY / SMTP_HOST missing). Skipping verification email.')
     }
 
     return NextResponse.json({ data: user, emailSent }, { status: 201 })
