@@ -56,17 +56,17 @@ export async function POST(req: NextRequest) {
       select: { id: true, username: true, email: true, createdAt: true },
     })
 
-    // Send verification email if SMTP is configured
-    if (process.env.SMTP_HOST) {
+    // Send verification email if any mail provider is configured
+    let emailSent = false
+    if (process.env.RESEND_API_KEY || process.env.SMTP_HOST) {
       try {
-        await sendVerificationEmail(email, verificationToken)
+        emailSent = await sendVerificationEmail(email, verificationToken)
       } catch (emailErr) {
         console.error('Failed to send verification email:', emailErr)
-        // Don't fail registration if email sending fails
       }
     }
 
-    return NextResponse.json({ data: user }, { status: 201 })
+    return NextResponse.json({ data: user, emailSent }, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

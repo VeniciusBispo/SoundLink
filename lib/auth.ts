@@ -29,8 +29,8 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
         if (!isPasswordValid) return null
 
-        // Only enforce email verification when SMTP is configured
-        if (process.env.SMTP_HOST && !user.emailVerified) {
+        // Block login only if a verification token is still pending (email provider is set up)
+        if (user.verificationToken && !user.emailVerified) {
           throw new Error('EMAIL_NOT_VERIFIED')
         }
 

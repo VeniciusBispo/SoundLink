@@ -21,7 +21,11 @@ function LoginForm() {
 
   useEffect(() => {
     if (searchParams.get('registered') === '1') {
-      setSuccess('Conta criada! Verifique seu e-mail para ativar a conta.')
+      if (searchParams.get('emailSent') === '1') {
+        setSuccess('Conta criada! Verifique seu e-mail para ativar a conta antes de entrar.')
+      } else {
+        setSuccess('Conta criada com sucesso! Você já pode entrar.')
+      }
     }
     if (searchParams.get('verified') === '1') {
       setSuccess('E-mail confirmado com sucesso! Faça login abaixo.')

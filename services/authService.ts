@@ -11,7 +11,7 @@ export async function register(input: RegisterInput) {
   })
   const json = await res.json()
   if (!res.ok) throw new Error(json.error ?? 'Registration failed')
-  return json.data
+  return json as { data: unknown; emailSent: boolean }
 }
 
 /**

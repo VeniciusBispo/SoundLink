@@ -6,6 +6,7 @@ import { HiPlay, HiMusicNote, HiChevronLeft, HiChevronRight } from 'react-icons/
 import type { Song } from '@/types'
 import { formatDuration } from '@/lib/utils'
 import { usePlayer } from '@/hooks/usePlayer'
+import MainLayout from '@/components/layout/MainLayout'
 
 interface Meta {
   total: number
@@ -43,6 +44,7 @@ export default function SongsPage() {
   }
 
   return (
+    <MainLayout>
     <div className="flex flex-col gap-6 px-4 py-6 md:px-8">
       {/* Header */}
       <div className="flex items-end gap-6">
@@ -179,5 +181,6 @@ export default function SongsPage() {
         </div>
       )}
     </div>
+    </MainLayout>
   )
 }

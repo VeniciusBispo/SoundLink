@@ -56,8 +56,12 @@ export default function RegisterPage() {
 
     setIsLoading(true)
     try {
-      await register({ username, email, password })
-      router.push('/login?registered=1')
+      const result = await register({ username, email, password })
+      if (result.emailSent) {
+        router.push('/login?registered=1&emailSent=1')
+      } else {
+        router.push('/login?registered=1')
+      }
     } catch (err) {
       setServerError((err as Error).message)
     } finally {
