@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat, HiCollection } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
 import FeedbackModal from '@/components/ui/FeedbackModal'
@@ -48,6 +48,17 @@ export default function MobileNav() {
       >
         <HiCollection className="h-6 w-6" />
         <span className="text-[10px] font-medium">Músicas</span>
+      </Link>
+
+      <Link
+        href="/access"
+        className={cn(
+          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          pathname === '/access' ? 'text-white' : 'text-spotify-text'
+        )}
+      >
+        <HiLockOpen className="h-6 w-6" />
+        <span className="text-[10px] font-medium">Privada</span>
       </Link>
 
       {session && (

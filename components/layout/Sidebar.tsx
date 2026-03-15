@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
@@ -15,6 +15,7 @@ const navItems = [
   { href: '/', label: 'Início', icon: HiHome },
   { href: '/explore', label: 'Explorar', icon: HiSearch },
   { href: '/songs', label: 'Memória Musical', icon: HiCollection },
+  { href: '/access', label: 'Playlist privada', icon: HiLockOpen },
 ]
 
 export default function Sidebar() {
