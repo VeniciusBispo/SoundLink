@@ -3,9 +3,13 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat } from 'react-icons/hi'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
+
+const WA_FEEDBACK_URL =
+  'https://wa.me/5579998278823?text=' +
+  encodeURIComponent('Olá! Tenho um comentário/sugestão sobre o SoundLink:\n\n')
 
 export default function MobileNav() {
   const pathname = usePathname()
@@ -48,6 +52,16 @@ export default function MobileNav() {
         </button>
       )}
 
+      <a
+        href={WA_FEEDBACK_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-col items-center gap-0.5 px-3 py-1 text-spotify-text hover:text-white transition-colors"
+      >
+        <HiChat className="h-6 w-6" />
+        <span className="text-[10px] font-medium">Feedback</span>
+      </a>
+
       <Link
         href={session ? '/profile' : '/login'}
         className={cn(
@@ -61,3 +75,4 @@ export default function MobileNav() {
     </nav>
   )
 }
+

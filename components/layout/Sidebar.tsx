@@ -3,11 +3,15 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiPlus } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat } from 'react-icons/hi'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
 import Logo from '@/components/ui/Logo'
+
+const WA_FEEDBACK_URL =
+  'https://wa.me/5579998278823?text=' +
+  encodeURIComponent('Olá! Tenho um comentário/sugestão sobre o SoundLink:\n\n')
 
 const navItems = [
   { href: '/', label: 'Home', icon: HiHome },
@@ -115,6 +119,17 @@ export default function Sidebar() {
           )}
         </div>
       </div>
+
+      {/* Feedback button */}
+      <a
+        href={WA_FEEDBACK_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-spotify-text transition-colors hover:bg-white/5 hover:text-white"
+      >
+        <HiChat className="h-5 w-5 flex-shrink-0 text-spotify-green" />
+        <span className="font-medium">Enviar feedback</span>
+      </a>
     </aside>
   )
 }
