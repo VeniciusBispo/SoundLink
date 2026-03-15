@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { HiEye, HiEyeOff } from 'react-icons/hi'
+import { HiEye, HiEyeOff, HiHome } from 'react-icons/hi'
 import { Suspense } from 'react'
 import Logo from '@/components/ui/Logo'
 import Button from '@/components/ui/Button'
@@ -75,16 +75,6 @@ function LoginForm() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
-      <a
-        href="https://soundlink-app.netlify.app/"
-        className="mb-6 flex items-center gap-1.5 text-sm text-spotify-text hover:text-white transition-colors self-start"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-        Voltar ao início
-      </a>
-
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>
@@ -158,6 +148,16 @@ function LoginForm() {
           <Link href="/register" className="font-semibold text-white hover:text-spotify-green transition-colors">
             Cadastre-se
           </Link>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <a
+            href="https://soundlink-app.netlify.app/"
+            className="flex items-center justify-center w-10 h-10 rounded-xl bg-spotify-hover text-spotify-text hover:text-spotify-green hover:bg-spotify-hover/80 transition-colors"
+            aria-label="Voltar ao início"
+          >
+            <HiHome className="h-5 w-5" />
+          </a>
         </div>
       </div>
     </div>
