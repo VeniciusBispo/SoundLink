@@ -20,7 +20,7 @@ export default function CreatePlaylistModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) {
-      setError('Playlist name is required')
+      setError('O nome da playlist é obrigatório')
       return
     }
 
@@ -41,7 +41,7 @@ export default function CreatePlaylistModal() {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={close} title="Create Playlist">
+    <Modal isOpen={isOpen} onClose={close} title="Criar Playlist">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {error && (
           <p className="rounded-md bg-red-500/20 px-3 py-2 text-sm text-red-400">{error}</p>
@@ -49,14 +49,14 @@ export default function CreatePlaylistModal() {
 
         <div>
           <label htmlFor="playlist-name" className="mb-1.5 block text-sm font-medium text-white">
-            Name *
+            Nome *
           </label>
           <input
             id="playlist-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="My awesome playlist"
+            placeholder="Minha playlist incrível"
             maxLength={100}
             className="w-full rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
             required
@@ -65,13 +65,13 @@ export default function CreatePlaylistModal() {
 
         <div>
           <label htmlFor="playlist-desc" className="mb-1.5 block text-sm font-medium text-white">
-            Description
+            Descrição
           </label>
           <textarea
             id="playlist-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Give your playlist a description"
+            placeholder="Dê uma descrição para sua playlist"
             maxLength={300}
             rows={3}
             className="w-full resize-none rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
@@ -89,7 +89,7 @@ export default function CreatePlaylistModal() {
             <div className="h-6 w-11 rounded-full bg-spotify-hover peer-checked:bg-spotify-green transition-colors" />
             <div className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
           </div>
-          <span className="text-sm text-white">Make playlist public</span>
+          <span className="text-sm text-white">Tornar playlist pública</span>
         </label>
 
         <div className="flex justify-end gap-3 pt-2">
@@ -98,14 +98,14 @@ export default function CreatePlaylistModal() {
             onClick={close}
             className="rounded-full px-5 py-2 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
           >
-            Cancel
+            Cancelar
           </button>
           <button
             type="submit"
             disabled={isLoading}
             className="rounded-full bg-spotify-green px-6 py-2 text-sm font-bold text-black hover:scale-105 transition-transform disabled:opacity-60"
           >
-            {isLoading ? 'Creating…' : 'Create'}
+            {isLoading ? 'Criando…' : 'Criar'}
           </button>
         </div>
       </form>

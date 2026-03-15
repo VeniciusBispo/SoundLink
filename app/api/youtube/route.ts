@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   const videoId = rawId ?? (rawUrl ? extractYouTubeId(rawUrl) : null)
 
   if (!videoId) {
-    return NextResponse.json({ error: 'Invalid or missing YouTube URL / videoId' }, { status: 400 })
+    return NextResponse.json({ error: 'URL ou videoId inválido ou ausente' }, { status: 400 })
   }
 
   const apiKey = process.env.YOUTUBE_API_KEY
@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
   ])
 
   if (!oEmbedRes.ok) {
-    return NextResponse.json({ error: 'Video not found or unavailable' }, { status: 404 })
+      return NextResponse.json({ error: 'Vídeo não encontrado ou indisponível' }, { status: 404 })
   }
 
   const oe = await oEmbedRes.json()

@@ -8,11 +8,11 @@ import { sendVerificationEmail } from '@/lib/email'
 const registerSchema = z.object({
   username: z
     .string()
-    .min(3, 'Username must be at least 3 characters')
+    .min(3, 'O nome de usuário deve ter no mínimo 3 caracteres')
     .max(30)
-    .regex(/^[a-zA-Z0-9_]+$/, 'Username can only contain letters, numbers, and underscores'),
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+    .regex(/^[a-zA-Z0-9_]+$/, 'O nome de usuário só pode conter letras, números e sublinhados'),
+  email: z.string().email('Endereço de e-mail inválido'),
+  password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
 })
 
 export async function POST(req: NextRequest) {
@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
     })
 
     if (existing) {
-      const field = existing.email === email ? 'Email' : 'Username'
-      return NextResponse.json({ error: `${field} already in use` }, { status: 409 })
+      const field = existing.email === email ? 'E-mail' : 'Nome de usuário'
+      return NextResponse.json({ error: `${field} já está em uso` }, { status: 409 })
     }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -71,6 +71,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ data: user, emailSent }, { status: 201 })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

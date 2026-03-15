@@ -22,20 +22,20 @@ export async function GET(req: NextRequest, { params }: Params) {
     })
 
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
 
     // Private playlists: accessible to owner OR holder of a valid share code
     if (!playlist.isPublic && playlist.ownerId !== session?.user?.id) {
       const code = req.nextUrl.searchParams.get('code')
       if (!playlist.shareEnabled || !playlist.shareCode || playlist.shareCode !== code) {
-        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+        return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
       }
     }
 
     return NextResponse.json({ data: playlist })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -44,15 +44,15 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     const updateSchema = z.object({
@@ -78,7 +78,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ data: updated })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -87,20 +87,20 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     await prisma.playlist.delete({ where: { id: params.id } })
     return NextResponse.json({ data: { success: true } })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

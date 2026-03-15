@@ -49,7 +49,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
           <button
             onClick={onClose}
             className="ml-auto rounded-full p-1 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
-            aria-label="Close modal"
+            aria-label="Fechar"
           >
             <HiX className="h-5 w-5" />
           </button>

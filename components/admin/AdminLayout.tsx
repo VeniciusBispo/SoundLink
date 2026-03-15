@@ -16,7 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 
 const navItems = [
-  { href: '/admin', label: 'Dashboard', icon: HiViewGrid, exact: true },
+  { href: '/admin', label: 'Painel', icon: HiViewGrid, exact: true },
   { href: '/admin/users', label: 'Usuários', icon: HiUsers },
   { href: '/admin/feedback', label: 'Feedbacks', icon: HiChatAlt2 },
   { href: '/admin/access', label: 'Acessos', icon: HiChartBar },
@@ -53,7 +53,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           </div>
           <div>
             <p className="text-sm font-extrabold text-white">SoundLink</p>
-            <p className="text-[10px] font-medium text-spotify-green uppercase tracking-widest">Admin</p>
+            <p className="text-[10px] font-medium text-spotify-green uppercase tracking-widest">Administração</p>
           </div>
         </div>
 

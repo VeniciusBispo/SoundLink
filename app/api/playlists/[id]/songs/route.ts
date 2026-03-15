@@ -19,15 +19,15 @@ export async function POST(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     const body = await req.json()
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       where: { playlistId_songId: { playlistId: params.id, songId: song.id } },
     })
     if (existing) {
-      return NextResponse.json({ error: 'Song already in playlist' }, { status: 409 })
+      return NextResponse.json({ error: 'Música já está na playlist' }, { status: 409 })
     }
 
     // Determine next order index
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ data: song }, { status: 201 })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -75,20 +75,20 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const songId = req.nextUrl.searchParams.get('songId')
     if (!songId) {
-      return NextResponse.json({ error: 'Missing songId' }, { status: 400 })
+      return NextResponse.json({ error: 'songId ausente' }, { status: 400 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     await prisma.playlistSong.delete({
@@ -97,6 +97,6 @@ export async function DELETE(req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ data: { success: true } })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

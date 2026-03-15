@@ -11,15 +11,15 @@ export async function POST(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     // Reuse existing code if already generated, otherwise create a new one
@@ -32,7 +32,7 @@ export async function POST(_req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ data: { shareCode: updated.shareCode } })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -41,15 +41,15 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Não encontrado' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     await prisma.playlist.update({
@@ -59,6 +59,6 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ data: {} })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

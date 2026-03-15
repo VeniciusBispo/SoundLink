@@ -60,7 +60,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId }: AddSongMod
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Add Song">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Adicionar Música">
       <div className="flex flex-col gap-4">
         {/* URL input */}
         <div className="flex gap-2">
@@ -69,11 +69,11 @@ export default function AddSongModal({ isOpen, onClose, playlistId }: AddSongMod
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
-            placeholder="Paste YouTube URL…"
+            placeholder="Cole o link do YouTube…"
             className="flex-1 rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
           />
           <Button onClick={handleLookup} isLoading={isLoading} size="sm">
-            Search
+            Buscar
           </Button>
         </div>
 
@@ -107,10 +107,10 @@ export default function AddSongModal({ isOpen, onClose, playlistId }: AddSongMod
         {/* Actions */}
         <div className="flex justify-end gap-3 pt-1">
           <Button variant="ghost" onClick={handleClose}>
-            Cancel
+            Cancelar
           </Button>
           <Button onClick={handleAdd} disabled={!videoInfo} isLoading={isSaving}>
-            Add to playlist
+            Adicionar à playlist
           </Button>
         </div>
       </div>

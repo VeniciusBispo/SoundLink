@@ -23,15 +23,15 @@ export async function POST(req: NextRequest, { params }: Params) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const playlist = await prisma.playlist.findUnique({ where: { id: params.id } })
     if (!playlist) {
-      return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
     if (playlist.ownerId !== session.user.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
     const body = await req.json()
@@ -89,6 +89,6 @@ export async function POST(req: NextRequest, { params }: Params) {
 
     return NextResponse.json({ imported: newSongs.length, skipped })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

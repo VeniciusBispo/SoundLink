@@ -8,7 +8,7 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const user = await prisma.user.findUnique({
@@ -24,12 +24,12 @@ export async function GET() {
     })
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      return NextResponse.json({ error: 'Usuário não encontrado' }, { status: 404 })
     }
 
     return NextResponse.json({ data: user })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
 
@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
     }
 
     const body = await req.json()
@@ -49,7 +49,7 @@ export async function PATCH(req: NextRequest) {
         where: { username, NOT: { id: session.user.id } },
       })
       if (exists) {
-        return NextResponse.json({ error: 'Username already taken' }, { status: 409 })
+        return NextResponse.json({ error: 'Nome de usuário já em uso' }, { status: 409 })
       }
     }
 
@@ -64,6 +64,6 @@ export async function PATCH(req: NextRequest) {
 
     return NextResponse.json({ data: updated })
   } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

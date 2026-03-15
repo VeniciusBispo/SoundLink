@@ -41,9 +41,9 @@ export default function ExplorePage() {
     <MainLayout>
       <div className="py-6">
         <h1 className="mb-2 text-3xl font-bold text-white">
-          {query ? `Results for "${query}"` : 'Explore'}
+          {query ? `Resultados para "${query}"` : 'Explorar'}
         </h1>
-        <p className="mb-6 text-sm text-spotify-text">{total} public playlists</p>
+        <p className="mb-6 text-sm text-spotify-text">{total} playlists públicas</p>
 
         {/* Ad — top of explore */}
         <AdBanner slot="SLOT_EXPLORE_TOP" format="horizontal" className="mb-6 rounded-xl" />
@@ -75,17 +75,17 @@ export default function ExplorePage() {
               disabled={page === 1}
               className="rounded-full bg-spotify-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-spotify-hover transition-colors"
             >
-              Previous
+              Anterior
             </button>
             <span className="text-sm text-spotify-text">
-              Page {page} of {Math.ceil(total / pageSize)}
+              Página {page} de {Math.ceil(total / pageSize)}
             </span>
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={page >= Math.ceil(total / pageSize)}
               className="rounded-full bg-spotify-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-spotify-hover transition-colors"
             >
-              Next
+              Próxima
             </button>
           </div>
         )}

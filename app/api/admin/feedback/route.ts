@@ -32,7 +32,7 @@ export async function DELETE(req: NextRequest) {
   if (error) return error
 
   const id = req.nextUrl.searchParams.get('id')
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+  if (!id) return NextResponse.json({ error: 'id ausente' }, { status: 400 })
 
   await prisma.feedback.delete({ where: { id } }).catch(() => {})
   return NextResponse.json({ data: { success: true } })

@@ -25,7 +25,7 @@ export default function SearchBar() {
         type="search"
         value={localQuery}
         onChange={(e) => setLocalQuery(e.target.value)}
-        placeholder="What do you want to listen to?"
+        placeholder="O que você quer ouvir?"
         className="w-full rounded-full bg-white py-2 pl-9 pr-4 text-sm text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-spotify-green"
       />
     </form>

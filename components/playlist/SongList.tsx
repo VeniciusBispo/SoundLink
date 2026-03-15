@@ -47,7 +47,7 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
   if (!songs.length) {
     return (
       <div className="py-10 text-center">
-        <p className="text-spotify-text">No songs in this playlist yet.</p>
+        <p className="text-spotify-text">Nenhuma música nesta playlist ainda.</p>
       </div>
     )
   }
@@ -57,9 +57,9 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
       {/* Header row */}
       <div className="mb-2 grid grid-cols-[16px_1fr_1fr_80px] items-center gap-4 border-b border-white/10 px-4 pb-2 text-sm text-spotify-text">
         <span>#</span>
-        <span>Title</span>
-        <span className="hidden md:block">Channel</span>
-        <span className="text-right">Duration</span>
+        <span>Título</span>
+        <span className="hidden md:block">Canal</span>
+        <span className="text-right">Duração</span>
       </div>
 
       {songs.map((ps, index) => {
@@ -83,7 +83,7 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
                 <button
                   onClick={() => playSong(song, allSongs)}
                   className="text-white"
-                  aria-label={`Play ${song.title}`}
+                  aria-label={`Tocar ${song.title}`}
                 >
                   <HiPlay className="h-4 w-4" />
                 </button>
@@ -128,7 +128,7 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
                 <button
                   onClick={() => onRemove(song.id)}
                   className="hidden text-spotify-text hover:text-red-400 transition-colors group-hover:block"
-                  aria-label="Remove song"
+                  aria-label="Remover música"
                 >
                   <HiTrash className="h-4 w-4" />
                 </button>

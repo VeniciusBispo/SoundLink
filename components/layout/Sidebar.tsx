@@ -12,7 +12,7 @@ import Logo from '@/components/ui/Logo'
 import FeedbackModal from '@/components/ui/FeedbackModal'
 
 const navItems = [
-  { href: '/', label: 'Home', icon: HiHome },
+  { href: '/', label: 'Início', icon: HiHome },
   { href: '/explore', label: 'Explorar', icon: HiSearch },
   { href: '/songs', label: 'Memória Musical', icon: HiCollection },
 ]

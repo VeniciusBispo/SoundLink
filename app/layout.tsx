@@ -8,9 +8,9 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
-  title: 'SoundLink – Your Music, Your Way',
+  title: 'SoundLink – Sua Música, Do Seu Jeito',
   description:
-    'Create playlists, add songs from YouTube, and listen anywhere. Public, private, and offline-ready.',
+    'Crie playlists, adicione músicas do YouTube e ouça em qualquer lugar. Pública, privada e disponível offline.',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192x192.png',
@@ -26,7 +26,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getServerSession(authOptions)
 
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" className="dark">
       <head>
         {/* Google AdSense */}
         <script

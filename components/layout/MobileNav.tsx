@@ -25,7 +25,7 @@ export default function MobileNav() {
         )}
       >
         <HiHome className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Home</span>
+        <span className="text-[10px] font-medium">Início</span>
       </Link>
 
       <Link
@@ -67,7 +67,7 @@ export default function MobileNav() {
         className="flex flex-col items-center gap-0.5 px-3 py-1 text-spotify-text hover:text-white transition-colors"
       >
         <HiChat className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Feedback</span>
+        <span className="text-[10px] font-medium">Sugestões</span>
       </button>
 
       {session?.user?.role === 'ADMIN' && (
