@@ -1,21 +1,20 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection } from 'react-icons/hi'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
 import Logo from '@/components/ui/Logo'
-
-const WA_FEEDBACK_URL =
-  'https://wa.me/5579998278823?text=' +
-  encodeURIComponent('Olá! Tenho um comentário/sugestão sobre o SoundLink:\n\n')
+import FeedbackModal from '@/components/ui/FeedbackModal'
 
 const navItems = [
   { href: '/', label: 'Home', icon: HiHome },
   { href: '/explore', label: 'Explorar', icon: HiSearch },
+  { href: '/songs', label: 'Memória Musical', icon: HiCollection },
 ]
 
 export default function Sidebar() {
@@ -23,6 +22,7 @@ export default function Sidebar() {
   const { data: session } = useSession()
   const { playlists } = useMyPlaylists()
   const openCreatePlaylistModal = useUIStore((s) => s.openCreatePlaylistModal)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   return (
     <aside className="flex h-full w-60 flex-col gap-2 bg-black p-2">
@@ -121,15 +121,15 @@ export default function Sidebar() {
       </div>
 
       {/* Feedback button */}
-      <a
-        href={WA_FEEDBACK_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        onClick={() => setFeedbackOpen(true)}
         className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-spotify-text transition-colors hover:bg-white/5 hover:text-white"
       >
         <HiChat className="h-5 w-5 flex-shrink-0 text-spotify-green" />
         <span className="font-medium">Enviar feedback</span>
-      </a>
+      </button>
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </aside>
   )
 }

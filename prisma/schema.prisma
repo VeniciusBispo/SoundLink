@@ -20,6 +20,10 @@ model User {
 
   playlists     Playlist[]
 
+  // Email verification
+  verificationToken   String?
+  verificationExpires DateTime?
+
   // NextAuth required fields
   emailVerified DateTime?
   accounts      Account[]
@@ -108,4 +112,11 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Feedback {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  message   String
+  email     String?
+  createdAt DateTime @default(now())
 }

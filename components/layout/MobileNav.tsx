@@ -1,20 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat, HiCollection } from 'react-icons/hi'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
-
-const WA_FEEDBACK_URL =
-  'https://wa.me/5579998278823?text=' +
-  encodeURIComponent('Olá! Tenho um comentário/sugestão sobre o SoundLink:\n\n')
+import FeedbackModal from '@/components/ui/FeedbackModal'
 
 export default function MobileNav() {
   const pathname = usePathname()
   const { data: session } = useSession()
   const openCreatePlaylistModal = useUIStore((s) => s.openCreatePlaylistModal)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   return (
     <nav className="md:hidden flex-shrink-0 flex items-center justify-around border-t border-white/10 bg-[#0a0a0a] px-2 py-2 safe-area-bottom">
@@ -40,6 +39,17 @@ export default function MobileNav() {
         <span className="text-[10px] font-medium">Explorar</span>
       </Link>
 
+      <Link
+        href="/songs"
+        className={cn(
+          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          pathname === '/songs' ? 'text-white' : 'text-spotify-text'
+        )}
+      >
+        <HiCollection className="h-6 w-6" />
+        <span className="text-[10px] font-medium">Músicas</span>
+      </Link>
+
       {session && (
         <button
           onClick={openCreatePlaylistModal}
@@ -52,15 +62,13 @@ export default function MobileNav() {
         </button>
       )}
 
-      <a
-        href={WA_FEEDBACK_URL}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        onClick={() => setFeedbackOpen(true)}
         className="flex flex-col items-center gap-0.5 px-3 py-1 text-spotify-text hover:text-white transition-colors"
       >
         <HiChat className="h-6 w-6" />
         <span className="text-[10px] font-medium">Feedback</span>
-      </a>
+      </button>
 
       <Link
         href={session ? '/profile' : '/login'}
@@ -72,6 +80,8 @@ export default function MobileNav() {
         {session ? <HiUser className="h-6 w-6" /> : <HiMusicNote className="h-6 w-6" />}
         <span className="text-[10px] font-medium">{session ? 'Perfil' : 'Entrar'}</span>
       </Link>
+
+      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </nav>
   )
 }

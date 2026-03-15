@@ -41,7 +41,7 @@ export async function POST(req: NextRequest, { params }: Params) {
     // Upsert the song (another playlist may have already added it)
     const song = await prisma.song.upsert({
       where: { youtubeVideoId },
-      update: {},
+      update: duration > 0 ? { duration, title, thumbnail, channel } : {},
       create: { youtubeVideoId, title, duration, thumbnail, channel },
     })
 

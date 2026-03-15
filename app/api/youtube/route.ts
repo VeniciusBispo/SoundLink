@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { extractYouTubeId } from '@/lib/utils'
+import { prisma } from '@/lib/prisma'
 
 // ISO 8601 duration to seconds (e.g. PT4M13S → 253)
 function parseDuration(iso: string): number {
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
 
   const apiKey = process.env.YOUTUBE_API_KEY
 
-  // Try YouTube Data API v3 if a real key is configured
+  // If YouTube Data API returned a valid duration, persist to DB
   if (apiKey && apiKey !== 'your-youtube-api-key') {
     const endpoint = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${encodeURIComponent(videoId)}&key=${encodeURIComponent(apiKey)}`
     const ytRes = await fetch(endpoint, { next: { revalidate: 3600 } })
@@ -37,12 +38,19 @@ export async function GET(req: NextRequest) {
           thumbnails.medium?.url ??
           thumbnails.default?.url ??
           ''
+        const dur = parseDuration(item.contentDetails.duration as string)
+        if (dur > 0) {
+          await prisma.song.updateMany({
+            where: { youtubeVideoId: videoId, duration: 0 },
+            data: { duration: dur },
+          }).catch(() => {})
+        }
         return NextResponse.json({
           videoId,
           title: item.snippet.title as string,
           channel: item.snippet.channelTitle as string,
           thumbnail,
-          duration: parseDuration(item.contentDetails.duration as string),
+          duration: dur,
         })
       }
     }
@@ -76,6 +84,14 @@ export async function GET(req: NextRequest) {
     // "lengthSeconds":"225" appears in the ytInitialPlayerResponse JSON blob
     const match = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/)
     if (match) duration = parseInt(match[1], 10)
+  }
+
+  // Persist resolved duration to DB so next view loads correctly
+  if (duration > 0) {
+    await prisma.song.updateMany({
+      where: { youtubeVideoId: videoId, duration: 0 },
+      data: { duration },
+    }).catch(() => {})
   }
 
   return NextResponse.json({

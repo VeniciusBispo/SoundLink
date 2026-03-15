@@ -21,7 +21,13 @@ function LoginForm() {
 
   useEffect(() => {
     if (searchParams.get('registered') === '1') {
-      setSuccess('Conta criada com sucesso! Faça login para continuar.')
+      setSuccess('Conta criada! Verifique seu e-mail para ativar a conta.')
+    }
+    if (searchParams.get('verified') === '1') {
+      setSuccess('E-mail confirmado com sucesso! Faça login abaixo.')
+    }
+    if (searchParams.get('error') === 'token_invalid') {
+      setError('Link de verificação inválido ou expirado. Faça login para reenviar.')
     }
   }, [searchParams])
 
@@ -47,7 +53,11 @@ function LoginForm() {
       })
 
       if (result?.error) {
-        setError('E-mail, nome de usuário ou senha incorretos.')
+        if (result.error === 'EMAIL_NOT_VERIFIED') {
+          setError('Confirme seu e-mail antes de entrar. Verifique sua caixa de entrada.')
+        } else {
+          setError('E-mail, nome de usuário ou senha incorretos.')
+        }
       } else {
         router.push('/')
         router.refresh()
