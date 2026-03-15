@@ -199,6 +199,7 @@ function PlaylistPageInner() {
   const songs = currentPlaylist.songs?.map((ps) => ps.song) ?? []
   const totalDuration = songs.reduce((acc, s) => acc + s.duration, 0)
   const isOwner = session?.user?.id === currentPlaylist.ownerId
+  const existingVideoIds = new Set(songs.map((s) => s.youtubeVideoId))
 
   return (
     <MainLayout>
@@ -351,6 +352,7 @@ function PlaylistPageInner() {
           isOpen={isImportOpen}
           onClose={() => setIsImportOpen(false)}
           playlistId={id}
+          existingVideoIds={existingVideoIds}
         />
       )}
       {isOwner && (

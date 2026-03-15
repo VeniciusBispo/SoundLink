@@ -19,12 +19,14 @@ interface ImportPlaylistModalProps {
   isOpen: boolean
   onClose: () => void
   playlistId: string
+  existingVideoIds?: Set<string>
 }
 
 export default function ImportPlaylistModal({
   isOpen,
   onClose,
   playlistId,
+  existingVideoIds = new Set(),
 }: ImportPlaylistModalProps) {
   const [url, setUrl] = useState('')
   const [isFetching, setIsFetching] = useState(false)
@@ -70,8 +72,14 @@ export default function ImportPlaylistModal({
       if (!res.ok) throw new Error(data.error ?? 'Erro ao buscar playlist')
       setPlaylistTitle(data.playlistTitle ?? '')
       setItems(data.items ?? [])
-      // Select all by default
-      setSelected(new Set((data.items as VideoItem[]).map((i) => i.videoId)))
+      // Select all non-duplicate items by default
+      setSelected(
+        new Set(
+          (data.items as VideoItem[])
+            .filter((i) => !existingVideoIds.has(i.videoId))
+            .map((i) => i.videoId)
+        )
+      )
     } catch (err) {
       setFetchError((err as Error).message)
     } finally {
@@ -88,8 +96,11 @@ export default function ImportPlaylistModal({
     })
   }
 
-  const selectAll = () => setSelected(new Set(items.map((i) => i.videoId)))
+  const selectAll = () => setSelected(new Set(items.filter((i) => !existingVideoIds.has(i.videoId)).map((i) => i.videoId)))
   const deselectAll = () => setSelected(new Set())
+
+  const newItemsCount = items.filter((i) => !existingVideoIds.has(i.videoId)).length
+  const duplicatesCount = items.length - newItemsCount
 
   const handleImport = async () => {
     if (selected.size === 0) return
@@ -188,7 +199,12 @@ export default function ImportPlaylistModal({
                 {playlistTitle && (
                   <p className="text-sm font-semibold text-white truncate max-w-xs">{playlistTitle}</p>
                 )}
-                <p className="text-xs text-spotify-text">{items.length} vídeos encontrados</p>
+                <p className="text-xs text-spotify-text">
+                  {items.length} vídeos encontrados
+                  {duplicatesCount > 0 && (
+                    <span className="ml-1 text-yellow-400">· {duplicatesCount} já na playlist</span>
+                  )}
+                </p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -211,10 +227,13 @@ export default function ImportPlaylistModal({
             <div className="mx-6 mb-3 overflow-y-auto rounded-lg border border-white/10" style={{ maxHeight: '40vh' }}>
               {items.map((item) => {
                 const checked = selected.has(item.videoId)
+                const isDuplicate = existingVideoIds.has(item.videoId)
                 return (
                   <label
                     key={item.videoId}
-                    className={`flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5 ${checked ? 'bg-white/[0.03]' : ''}`}
+                    className={`flex cursor-pointer items-center gap-3 px-3 py-2 transition-colors hover:bg-white/5 ${
+                      isDuplicate ? 'opacity-50' : checked ? 'bg-white/[0.03]' : ''
+                    }`}
                   >
                     <input
                       type="checkbox"
@@ -243,12 +262,16 @@ export default function ImportPlaylistModal({
                       <p className="truncate text-sm font-medium text-white">{item.title}</p>
                       <p className="truncate text-xs text-spotify-text">{item.channel}</p>
                     </div>
-                    {/* Duration */}
-                    {item.duration > 0 && (
+                    {/* Duplicate badge OR duration */}
+                    {isDuplicate ? (
+                      <span className="shrink-0 rounded-full bg-yellow-500/20 px-2 py-0.5 text-[10px] font-medium text-yellow-400">
+                        Na playlist
+                      </span>
+                    ) : item.duration > 0 ? (
                       <span className="shrink-0 text-xs text-spotify-text">
                         {formatDuration(item.duration)}
                       </span>
-                    )}
+                    ) : null}
                   </label>
                 )
               })}
@@ -265,6 +288,9 @@ export default function ImportPlaylistModal({
                 className="w-full"
               >
                 Importar {selected.size > 0 ? `${selected.size} música${selected.size !== 1 ? 's' : ''}` : 'selecionadas'}
+                {duplicatesCount > 0 && selected.size === 0 && newItemsCount > 0 && (
+                  <span className="ml-1 text-xs opacity-70">({newItemsCount} novas disponíveis)</span>
+                )}
               </Button>
             </div>
           </>
