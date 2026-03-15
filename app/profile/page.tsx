@@ -153,7 +153,7 @@ export default function ProfilePage() {
           </div>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: window.location.origin })}
+          onClick={() => signOut({ callbackUrl: '/' })}
           className="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white"
         >
           <HiLogout className="h-4 w-4" />

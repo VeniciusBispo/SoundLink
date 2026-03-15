@@ -89,7 +89,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             Voltar ao site
           </Link>
           <button
-            onClick={() => signOut({ callbackUrl: `${window.location.origin}/login` })}
+            onClick={() => signOut({ callbackUrl: '/login' })}
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-spotify-text hover:bg-white/5 hover:text-white transition-colors text-left"
           >
             <HiLogout className="h-5 w-5" />
