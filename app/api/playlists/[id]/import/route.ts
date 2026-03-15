@@ -40,45 +40,54 @@ export async function POST(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: parsed.error.errors[0].message }, { status: 400 })
     }
 
-    // Determine starting orderIndex
+    // 1. Upsert all songs in parallel batches of 20
+    const CHUNK = 20
+    const upsertedSongs: { id: string }[] = []
+    for (let i = 0; i < parsed.data.songs.length; i += CHUNK) {
+      const batch = parsed.data.songs.slice(i, i + CHUNK)
+      const results = await Promise.all(
+        batch.map((s) =>
+          prisma.song.upsert({
+            where: { youtubeVideoId: s.videoId },
+            update: s.duration > 0 ? { duration: s.duration, title: s.title, thumbnail: s.thumbnail, channel: s.channel } : {},
+            create: { youtubeVideoId: s.videoId, title: s.title, duration: s.duration, thumbnail: s.thumbnail, channel: s.channel },
+            select: { id: true },
+          })
+        )
+      )
+      upsertedSongs.push(...results)
+    }
+
+    // 2. Bulk-fetch all existing playlist-song relationships in one query
+    const existingEntries = await prisma.playlistSong.findMany({
+      where: { playlistId: params.id },
+      select: { songId: true },
+    })
+    const existingIds = new Set(existingEntries.map((e) => e.songId))
+
+    // 3. Determine starting orderIndex
     const lastEntry = await prisma.playlistSong.findFirst({
       where: { playlistId: params.id },
       orderBy: { orderIndex: 'desc' },
     })
     let orderIndex = (lastEntry?.orderIndex ?? -1) + 1
 
-    let imported = 0
-    let skipped = 0
+    // 4. Create new playlist-song entries in parallel batches of 20
+    const newSongs = upsertedSongs.filter((s) => !existingIds.has(s.id))
+    const skipped = upsertedSongs.length - newSongs.length
 
-    for (const s of parsed.data.songs) {
-      const song = await prisma.song.upsert({
-        where: { youtubeVideoId: s.videoId },
-        update: s.duration > 0 ? { duration: s.duration, title: s.title, thumbnail: s.thumbnail, channel: s.channel } : {},
-        create: {
-          youtubeVideoId: s.videoId,
-          title: s.title,
-          duration: s.duration,
-          thumbnail: s.thumbnail,
-          channel: s.channel,
-        },
-      })
-
-      const existing = await prisma.playlistSong.findUnique({
-        where: { playlistId_songId: { playlistId: params.id, songId: song.id } },
-      })
-
-      if (existing) {
-        skipped++
-      } else {
-        await prisma.playlistSong.create({
-          data: { playlistId: params.id, songId: song.id, orderIndex },
-        })
-        imported++
-        orderIndex++
-      }
+    for (let i = 0; i < newSongs.length; i += CHUNK) {
+      const batch = newSongs.slice(i, i + CHUNK)
+      await Promise.all(
+        batch.map((song, j) =>
+          prisma.playlistSong.create({
+            data: { playlistId: params.id, songId: song.id, orderIndex: orderIndex + i + j },
+          })
+        )
+      )
     }
 
-    return NextResponse.json({ imported, skipped })
+    return NextResponse.json({ imported: newSongs.length, skipped })
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
