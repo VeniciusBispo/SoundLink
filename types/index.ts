@@ -15,6 +15,8 @@ export interface Playlist {
   ownerId: string
   isPublic: boolean
   coverImage?: string | null
+  shareCode?: string | null
+  shareEnabled?: boolean
   createdAt: Date
   updatedAt: Date
   owner?: Pick<User, 'id' | 'username' | 'avatar'>

@@ -27,14 +27,16 @@ model User {
 }
 
 model Playlist {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  description String?
-  ownerId     String   @db.ObjectId
-  isPublic    Boolean  @default(true)
-  coverImage  String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  description  String?
+  ownerId      String   @db.ObjectId
+  isPublic     Boolean  @default(true)
+  coverImage   String?
+  shareCode    String?
+  shareEnabled Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   owner User          @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   songs PlaylistSong[]

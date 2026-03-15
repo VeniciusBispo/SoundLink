@@ -36,6 +36,16 @@ export function useOfflinePlaylist(playlistId: string) {
     setIsSaving(true)
     try {
       await savePlaylistOffline(playlist, songs)
+      // Also pre-cache the API response in the SW cache so the playlist
+      // loads correctly offline even without a prior page visit.
+      if (typeof window !== 'undefined' && 'caches' in window) {
+        try {
+          const cache = await caches.open('offlineCache')
+          await cache.add(`/api/playlists/${playlist.id}`)
+        } catch {
+          // SW may not be available in dev — ignore silently
+        }
+      }
       setIsOffline(true)
       setStorage(await getStorageEstimate())
     } finally {

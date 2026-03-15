@@ -57,6 +57,30 @@ export async function isPlaylistOffline(playlistId: string): Promise<boolean> {
   return !!record
 }
 
+export async function getOfflinePlaylist(playlistId: string): Promise<import('@/types').Playlist | null> {
+  try {
+    const db = await getDB()
+    const record: OfflinePlaylistRecord | undefined = await db.get('offlinePlaylists', playlistId)
+    if (!record) return null
+    const songs = await Promise.all(
+      record.songIds.map((id) => db.get('songs', id) as Promise<Song | undefined>)
+    )
+    const validSongs = songs.filter((s): s is Song => !!s)
+    return {
+      ...record.playlist,
+      songs: validSongs.map((song, index) => ({
+        playlistId,
+        songId: song.id,
+        orderIndex: index,
+        addedAt: new Date(record.savedAt),
+        song,
+      })),
+    }
+  } catch {
+    return null
+  }
+}
+
 export async function getAllOfflinePlaylists(): Promise<OfflinePlaylistRecord[]> {
   const db = await getDB()
   return db.getAll('offlinePlaylists')

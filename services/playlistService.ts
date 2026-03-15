@@ -29,8 +29,17 @@ export async function getMyPlaylists(): Promise<Playlist[]> {
   return json.data as Playlist[]
 }
 
-export async function getPlaylist(id: string): Promise<Playlist> {
-  return request<Playlist>(`${BASE}/${id}`)
+export async function getPlaylist(id: string, code?: string): Promise<Playlist> {
+  const url = code ? `${BASE}/${id}?code=${encodeURIComponent(code)}` : `${BASE}/${id}`
+  return request<Playlist>(url)
+}
+
+export async function enableShare(id: string): Promise<{ shareCode: string }> {
+  return request<{ shareCode: string }>(`${BASE}/${id}/share`, { method: 'POST' })
+}
+
+export async function disableShare(id: string): Promise<void> {
+  await request(`${BASE}/${id}/share`, { method: 'DELETE' })
 }
 
 export async function createPlaylist(input: CreatePlaylistInput): Promise<Playlist> {

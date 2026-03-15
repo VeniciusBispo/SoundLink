@@ -25,9 +25,12 @@ export async function GET(req: NextRequest, { params }: Params) {
       return NextResponse.json({ error: 'Playlist not found' }, { status: 404 })
     }
 
-    // Private playlists are only visible to their owners
+    // Private playlists: accessible to owner OR holder of a valid share code
     if (!playlist.isPublic && playlist.ownerId !== session?.user?.id) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      const code = req.nextUrl.searchParams.get('code')
+      if (!playlist.shareEnabled || !playlist.shareCode || playlist.shareCode !== code) {
+        return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+      }
     }
 
     return NextResponse.json({ data: playlist })
