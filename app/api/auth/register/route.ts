@@ -41,24 +41,27 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    // Generate email verification token (24-hour expiry)
-    const verificationToken = randomBytes(32).toString('hex')
-    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    const emailProviderConfigured = !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+
+    // Only require verification if an email provider is configured
+    const verificationToken = emailProviderConfigured ? randomBytes(32).toString('hex') : null
+    const verificationExpires = emailProviderConfigured ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null
 
     const user = await prisma.user.create({
       data: {
         username,
         email,
         password: hashedPassword,
-        verificationToken,
-        verificationExpires,
+        // Auto-verify if no email provider is configured
+        emailVerified: emailProviderConfigured ? null : new Date(),
+        ...(verificationToken && { verificationToken, verificationExpires }),
       },
       select: { id: true, username: true, email: true, createdAt: true },
     })
 
     // Send verification email if any mail provider is configured
     let emailSent = false
-    if (process.env.RESEND_API_KEY || process.env.SMTP_HOST) {
+    if (emailProviderConfigured && verificationToken) {
       try {
         emailSent = await sendVerificationEmail(email, verificationToken)
       } catch (emailErr) {

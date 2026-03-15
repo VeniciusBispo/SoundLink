@@ -29,9 +29,18 @@ export const authOptions: NextAuthOptions = {
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
         if (!isPasswordValid) return null
 
-        // Block login only if a verification token is still pending (email provider is set up)
-        if (user.verificationToken && !user.emailVerified) {
+        // Block login only if a verification token is pending AND an email provider is configured
+        const emailProviderConfigured = !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+        if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
           throw new Error('EMAIL_NOT_VERIFIED')
+        }
+
+        // If no email provider, auto-verify legacy unverified accounts on first login
+        if (!emailProviderConfigured && !user.emailVerified) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { emailVerified: new Date(), verificationToken: null, verificationExpires: null },
+          })
         }
 
         return {
