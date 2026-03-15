@@ -75,6 +75,16 @@ function LoginForm() {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+      <a
+        href="https://soundlink-app.netlify.app/"
+        className="mb-6 flex items-center gap-1.5 text-sm text-spotify-text hover:text-white transition-colors self-start"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+        Voltar ao início
+      </a>
+
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>
