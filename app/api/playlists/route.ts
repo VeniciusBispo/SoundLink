@@ -20,9 +20,15 @@ export async function GET(req: NextRequest) {
     const pageSize = Math.min(50, Math.max(1, Number(searchParams.get('pageSize') ?? 20)))
     const skip = (page - 1) * pageSize
 
+    const sortBy = searchParams.get('sortBy') // 'recent' | 'songs'
+
     const where = mine && session
       ? { ownerId: session.user.id }
       : { isPublic: true }
+
+    const orderBy = sortBy === 'songs'
+      ? { songs: { _count: 'desc' as const } }
+      : { createdAt: 'desc' as const }
 
     const [playlists, total] = await Promise.all([
       prisma.playlist.findMany({
@@ -31,7 +37,7 @@ export async function GET(req: NextRequest) {
           owner: { select: { id: true, username: true, avatar: true } },
           _count: { select: { songs: true } },
         },
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         skip,
         take: pageSize,
       }),

@@ -30,6 +30,7 @@ import { getOfflinePlaylist } from '@/services/offlineService'
 import { usePlaylistStore } from '@/store/playlistStore'
 import { useOfflinePlaylist } from '@/hooks/useOffline'
 import { usePlayer } from '@/hooks/usePlayer'
+import { useRecentPlaylists } from '@/hooks/useRecentPlaylists'
 import { formatTotalDuration } from '@/lib/utils'
 import type { Playlist } from '@/types'
 
@@ -61,6 +62,7 @@ function PlaylistPageInner() {
   const { isOffline: isOfflineSaved, isSaving, save: saveOffline, remove: removeOffline } =
     useOfflinePlaylist(id)
   const { playPlaylist } = usePlayer()
+  const { push: pushRecent } = useRecentPlaylists()
 
   const urlCode = searchParams.get('code') ?? ''
 
@@ -73,7 +75,16 @@ function PlaylistPageInner() {
       setIsForbidden(false)
       try {
         const data = await getPlaylist(id, urlCode || undefined)
-        if (!cancelled) setCurrentPlaylist(data)
+        if (!cancelled) {
+          setCurrentPlaylist(data)
+          pushRecent({
+            id: data.id,
+            name: data.name,
+            coverImage: data.coverImage ?? null,
+            ownerUsername: data.owner?.username ?? '',
+            songCount: data._count?.songs ?? data.songs?.length ?? 0,
+          })
+        }
       } catch (err: unknown) {
         if (cancelled) return
         const msg = (err as Error).message
