@@ -19,6 +19,7 @@ import SongList from '@/components/playlist/SongList'
 import AddSongModal from '@/components/playlist/AddSongModal'
 import ImportPlaylistModal from '@/components/playlist/ImportPlaylistModal'
 import ShareModal from '@/components/playlist/ShareModal'
+import DeleteConfirmModal from '@/components/playlist/DeleteConfirmModal'
 import Button from '@/components/ui/Button'
 import {
   getPlaylist,
@@ -49,9 +50,12 @@ function PlaylistPageInner() {
   const [isAddSongOpen, setIsAddSongOpen] = useState(false)
   const [isImportOpen, setIsImportOpen] = useState(false)
   const [isShareOpen, setIsShareOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const currentPlaylist = usePlaylistStore((s) => s.currentPlaylist)
   const setCurrentPlaylist = usePlaylistStore((s) => s.setCurrentPlaylist)
+  const updatePlaylist = usePlaylistStore((s) => s.updatePlaylist)
   const removeSongFromStore = usePlaylistStore((s) => s.removeSongFromCurrentPlaylist)
 
   const { isOffline: isOfflineSaved, isSaving, save: saveOffline, remove: removeOffline } =
@@ -113,12 +117,16 @@ function PlaylistPageInner() {
     }
   }
 
-  const handleDelete = async () => {
-    if (!confirm('Excluir esta playlist? Esta ação não pode ser desfeita.')) return
+  const handleDelete = () => setIsDeleteOpen(true)
+
+  const handleDeleteConfirm = async () => {
+    setIsDeleting(true)
     try {
       await deletePlaylist(id)
       router.push('/')
     } catch (err) {
+      setIsDeleting(false)
+      setIsDeleteOpen(false)
       alert((err as Error).message)
     }
   }
@@ -362,8 +370,18 @@ function PlaylistPageInner() {
           onClose={() => setIsShareOpen(false)}
           initialShareEnabled={currentPlaylist.shareEnabled ?? false}
           initialShareCode={currentPlaylist.shareCode ?? null}
+          onShareChanged={(shareEnabled, shareCode) =>
+            updatePlaylist(id, { shareEnabled, shareCode: shareCode ?? undefined })
+          }
         />
       )}
+      <DeleteConfirmModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={isDeleting}
+        playlistName={currentPlaylist.name}
+      />
     </MainLayout>
   )
 }

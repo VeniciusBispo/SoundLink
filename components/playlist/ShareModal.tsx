@@ -10,6 +10,7 @@ interface ShareModalProps {
   onClose: () => void
   initialShareEnabled: boolean
   initialShareCode: string | null
+  onShareChanged?: (shareEnabled: boolean, shareCode: string | null) => void
 }
 
 export default function ShareModal({
@@ -18,13 +19,14 @@ export default function ShareModal({
   onClose,
   initialShareEnabled,
   initialShareCode,
+  onShareChanged,
 }: ShareModalProps) {
   const [shareEnabled, setShareEnabled] = useState(initialShareEnabled)
   const [shareCode, setShareCode] = useState<string | null>(initialShareCode)
   const [isLoading, setIsLoading] = useState(false)
   const [copiedField, setCopiedField] = useState<'link' | 'code' | null>(null)
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const origin = typeof window !== 'undefined' ? window.location.origin.replace(/\.$/, '') : ''
   const shareUrl = shareCode ? `${origin}/playlist/${playlistId}?code=${shareCode}` : null
 
   const copyToClipboard = async (text: string, field: 'link' | 'code') => {
@@ -51,10 +53,13 @@ export default function ShareModal({
       if (shareEnabled) {
         await disableShare(playlistId)
         setShareEnabled(false)
+        setShareCode(null)
+        onShareChanged?.(false, null)
       } else {
         const { shareCode: code } = await enableShare(playlistId)
         setShareEnabled(true)
         setShareCode(code)
+        onShareChanged?.(true, code)
       }
     } catch (e) {
       alert((e as Error).message)
