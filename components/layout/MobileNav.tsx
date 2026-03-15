@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiUser, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
+import { HiHome, HiSearch, HiUser, HiPlus, HiChat, HiCollection } from 'react-icons/hi'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
 import FeedbackModal from '@/components/ui/FeedbackModal'
@@ -37,28 +37,6 @@ export default function MobileNav() {
       >
         <HiSearch className="h-6 w-6" />
         <span className="text-[10px] font-medium">Explorar</span>
-      </Link>
-
-      <Link
-        href="/songs"
-        className={cn(
-          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
-          pathname === '/songs' ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiCollection className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Músicas</span>
-      </Link>
-
-      <Link
-        href="/access"
-        className={cn(
-          'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
-          pathname === '/access' ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiLockOpen className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Privada</span>
       </Link>
 
       {session && (
@@ -101,7 +79,7 @@ export default function MobileNav() {
           (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-spotify-text'
         )}
       >
-        {session ? <HiUser className="h-6 w-6" /> : <HiMusicNote className="h-6 w-6" />}
+        <HiUser className="h-6 w-6" />
         <span className="text-[10px] font-medium">{session ? 'Perfil' : 'Entrar'}</span>
       </Link>
 

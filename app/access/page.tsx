@@ -20,18 +20,22 @@ export default function AccessPage() {
 
     setIsLoading(true)
     try {
-      // 1) If the user pasted a full URL, extract code and (optionally) id from it
       let playlistId: string | null = null
       let code: string | null = null
 
-      try {
-        const url = new URL(raw.startsWith('http') ? raw : `https://placeholder.com/${raw}`)
-        // Match /playlist/[id] paths
-        const match = url.pathname.match(/\/playlist\/([a-f0-9]{24})/i)
-        if (match) playlistId = match[1]
-        code = url.searchParams.get('code')?.toUpperCase() ?? null
-      } catch {
-        // Not a URL — treat raw input as a bare code
+      if (raw.startsWith('http')) {
+        // Full URL pasted — extract playlist id and code from it
+        try {
+          const url = new URL(raw)
+          const match = url.pathname.match(/\/playlist\/([a-f0-9]{24})/i)
+          if (match) playlistId = match[1]
+          code = url.searchParams.get('code')?.toUpperCase() ?? null
+        } catch {
+          setError('Link inválido. Verifique e tente novamente.')
+          return
+        }
+      } else {
+        // Bare code typed directly
         code = raw.toUpperCase()
       }
 
@@ -40,13 +44,13 @@ export default function AccessPage() {
         return
       }
 
-      // 2) If we already know the playlist ID (from URL), go directly
+      // If we already know the playlist ID (from URL), go directly
       if (playlistId) {
         router.push(`/playlist/${playlistId}?code=${encodeURIComponent(code)}`)
         return
       }
 
-      // 3) Otherwise look up the playlist by code
+      // Otherwise look up the playlist by code
       const res = await fetch(`/api/playlists/access?code=${encodeURIComponent(code)}`)
       const json = await res.json()
 
