@@ -110,13 +110,5 @@ export default function MobileNav() {
       <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </nav>
   )
-      >
-        <HiUser className="h-6 w-6" />
-        <span className="text-[10px] font-medium">{session ? 'Perfil' : 'Entrar'}</span>
-      </Link>
-
-      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
-    </nav>
-  )
 }
 
