@@ -136,22 +136,22 @@ export default function ShareModal({
               <button
                 onClick={handleToggle}
                 disabled={isLoading}
+                role="switch"
+                aria-checked={shareEnabled}
                 aria-label={shareEnabled ? 'Desativar compartilhamento' : 'Ativar compartilhamento'}
-                className={`relative h-6 w-11 flex-shrink-0 rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-60 ${
-                  shareEnabled ? 'bg-spotify-green' : 'bg-spotify-hover'
+                className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer items-center rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-spotify-green focus-visible:ring-offset-2 focus-visible:ring-offset-spotify-card disabled:cursor-not-allowed disabled:opacity-50 ${
+                  shareEnabled ? 'border-spotify-green bg-spotify-green' : 'border-white/10 bg-white/10'
                 }`}
               >
-                {isLoading ? (
-                  <span className="absolute inset-0 flex items-center justify-center">
-                    <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  </span>
-                ) : (
-                  <span
-                    className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                      shareEnabled ? 'translate-x-[22px]' : 'translate-x-0.5'
-                    }`}
-                  />
-                )}
+                <span
+                  className={`pointer-events-none flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-md ring-0 transition-transform duration-200 ease-in-out ${
+                    shareEnabled ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                >
+                  {isLoading && (
+                    <span className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-spotify-green border-t-transparent" />
+                  )}
+                </span>
               </button>
             </div>
 
