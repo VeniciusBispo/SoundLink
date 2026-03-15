@@ -368,6 +368,7 @@ function PlaylistPageInner() {
           playlistId={id}
           isOpen={true}
           onClose={() => setIsShareOpen(false)}
+          isPublic={currentPlaylist.isPublic}
           initialShareEnabled={currentPlaylist.shareEnabled ?? false}
           initialShareCode={currentPlaylist.shareCode ?? null}
           onShareChanged={(enabled, code) =>
