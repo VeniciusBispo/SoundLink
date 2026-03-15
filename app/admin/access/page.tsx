@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { HiChartBar, HiSearch, HiUser, HiDesktopComputer, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { HiChartBar, HiSearch, HiUser, HiDesktopComputer, HiChevronLeft, HiChevronRight, HiRefresh } from 'react-icons/hi'
 import AdminLayout from '@/components/admin/AdminLayout'
 
 interface AccessLog {
@@ -67,8 +67,15 @@ export default function AdminAccessPage() {
             <h2 className="text-xl font-bold text-white">Acessos</h2>
             <p className="text-sm text-spotify-text">{total} registros</p>
           </div>
-          <div className="flex gap-2">
-            <div className="relative">
+          <div className="flex gap-2">            <button
+                onClick={() => fetchLogs(page, pathFilter, userFilter)}
+                disabled={loading}
+                className="flex items-center gap-1.5 rounded-xl bg-[#1a1a1a] px-3 py-2 text-sm text-spotify-text ring-1 ring-white/10 hover:text-white hover:ring-white/20 transition-colors disabled:opacity-50"
+                title="Atualizar lista"
+              >
+                <HiRefresh className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                Atualizar
+              </button>            <div className="relative">
               <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-spotify-text" />
               <input
                 value={pathFilter}
