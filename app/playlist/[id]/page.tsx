@@ -363,15 +363,18 @@ function PlaylistPageInner() {
           existingVideoIds={existingVideoIds}
         />
       )}
-      {isOwner && (
+      {isOwner && isShareOpen && (
         <ShareModal
           playlistId={id}
-          isOpen={isShareOpen}
+          isOpen={true}
           onClose={() => setIsShareOpen(false)}
           initialShareEnabled={currentPlaylist.shareEnabled ?? false}
           initialShareCode={currentPlaylist.shareCode ?? null}
-          onShareChanged={(shareEnabled, shareCode) =>
-            updatePlaylist(id, { shareEnabled, shareCode: shareCode ?? undefined })
+          onShareChanged={(enabled, code) =>
+            updatePlaylist(id, code !== null
+              ? { shareEnabled: enabled, shareCode: code }
+              : { shareEnabled: enabled }
+            )
           }
         />
       )}

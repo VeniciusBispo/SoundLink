@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { HiX, HiClipboard, HiCheck } from 'react-icons/hi'
 import { enableShare, disableShare } from '@/services/playlistService'
 
@@ -27,7 +27,21 @@ export default function ShareModal({
   const [copiedField, setCopiedField] = useState<'link' | 'code' | null>(null)
 
   const origin = typeof window !== 'undefined' ? window.location.origin.replace(/\.$/, '') : ''
-  const shareUrl = shareCode ? `${origin}/playlist/${playlistId}?code=${shareCode}` : null
+  const shareUrl = shareCode ? `${origin}/playlist/${playlistId}?code=${shareCode}` : ''
+
+  // Auto-generate shareCode if sharing is enabled but no code exists (DB inconsistency)
+  useEffect(() => {
+    if (!shareEnabled || shareCode) return
+    setIsLoading(true)
+    enableShare(playlistId)
+      .then(({ shareCode: code }) => {
+        setShareCode(code)
+        onShareChanged?.(true, code)
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const copyToClipboard = async (text: string, field: 'link' | 'code') => {
     try {
@@ -112,7 +126,7 @@ export default function ShareModal({
         </div>
 
         {/* Share details — only when enabled */}
-        {shareEnabled && shareCode && shareUrl && (
+        {shareEnabled && shareCode && (
           <div className="space-y-3">
             {/* Link row */}
             <div className="rounded-xl bg-spotify-dark p-3">
