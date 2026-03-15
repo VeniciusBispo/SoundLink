@@ -7,6 +7,7 @@ import type { Song } from '@/types'
 import { formatDuration } from '@/lib/utils'
 import { usePlayer } from '@/hooks/usePlayer'
 import MainLayout from '@/components/layout/MainLayout'
+import AdBanner from '@/components/ads/AdBanner'
 
 interface Meta {
   total: number
@@ -66,6 +67,9 @@ export default function SongsPage() {
           )}
         </div>
       </div>
+
+      {/* Ad — above song list */}
+      <AdBanner slot="SLOT_SONGS_TOP" format="horizontal" className="rounded-xl" />
 
       {/* Song list */}
       <div className="flex flex-col">
@@ -157,6 +161,9 @@ export default function SongsPage() {
           })
         )}
       </div>
+
+      {/* Ad — between list and pagination */}
+      <AdBanner slot="SLOT_SONGS_BOTTOM" format="rectangle" className="mx-auto rounded-xl" />
 
       {/* Pagination */}
       {meta.pages > 1 && (

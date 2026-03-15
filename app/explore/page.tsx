@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import PlaylistGrid from '@/components/playlist/PlaylistGrid'
+import AdBanner from '@/components/ads/AdBanner'
 import type { Playlist } from '@/types'
 import { getPublicPlaylists } from '@/services/playlistService'
 
@@ -44,6 +45,9 @@ export default function ExplorePage() {
         </h1>
         <p className="mb-6 text-sm text-spotify-text">{total} public playlists</p>
 
+        {/* Ad — top of explore */}
+        <AdBanner slot="SLOT_EXPLORE_TOP" format="horizontal" className="mb-6 rounded-xl" />
+
         {isLoading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -56,6 +60,11 @@ export default function ExplorePage() {
           </div>
         ) : (
           <PlaylistGrid playlists={filtered} />
+        )}
+
+        {/* Ad — below grid */}
+        {!isLoading && (
+          <AdBanner slot="SLOT_EXPLORE_BOTTOM" format="horizontal" className="mt-8 rounded-xl" />
         )}
 
         {/* Pagination */}
