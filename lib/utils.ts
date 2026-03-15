@@ -1,8 +1,8 @@
-type ClassValue = string | number | boolean | null | undefined | ClassValue[]
+type ClassValue = string | number | boolean | null | undefined
 
 // Lightweight classname helper (no external dependency)
 export function cn(...inputs: ClassValue[]): string {
-  return (inputs.flat(Infinity) as (string | number | boolean | null | undefined)[])
+  return inputs
     .filter(Boolean)
     .join(' ')
     .replace(/\s+/g, ' ')
