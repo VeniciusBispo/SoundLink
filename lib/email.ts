@@ -24,7 +24,8 @@ function buildEmailHtml(verifyUrl: string) {
 
 // Returns true if email was sent successfully
 export async function sendVerificationEmail(email: string, token: string): Promise<boolean> {
-  const baseUrl = process.env.NEXTAUTH_URL ?? 'https://soundlink-app.netlify.app'
+  const rawBase = process.env.NEXTAUTH_URL ?? 'https://soundlink-app.netlify.app'
+  const baseUrl = rawBase.replace(/\.(\/|$)/, '$1').replace(/\/$/, '')
   const verifyUrl = `${baseUrl}/api/auth/verify-email?token=${token}`
   const html = buildEmailHtml(verifyUrl)
   const subject = 'Confirme seu e-mail — SoundLink'

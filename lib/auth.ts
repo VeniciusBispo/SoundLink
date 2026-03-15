@@ -4,6 +4,13 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
+// Netlify DNS sometimes appends a trailing dot to the domain (e.g. "app.netlify.app.")
+// which breaks NextAuth's server-side URL validation and redirect building.
+// Sanitize it once at module load so every NextAuth operation uses the clean URL.
+if (process.env.NEXTAUTH_URL) {
+  process.env.NEXTAUTH_URL = process.env.NEXTAUTH_URL.replace(/\.(?=\/|$)/, '')
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions['adapter'],
   providers: [
