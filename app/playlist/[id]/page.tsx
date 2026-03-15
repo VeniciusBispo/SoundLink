@@ -17,6 +17,7 @@ import {
 import MainLayout from '@/components/layout/MainLayout'
 import SongList from '@/components/playlist/SongList'
 import AddSongModal from '@/components/playlist/AddSongModal'
+import ImportPlaylistModal from '@/components/playlist/ImportPlaylistModal'
 import ShareModal from '@/components/playlist/ShareModal'
 import Button from '@/components/ui/Button'
 import {
@@ -46,6 +47,7 @@ function PlaylistPageInner() {
   const [codeInput, setCodeInput] = useState('')
   const [codeError, setCodeError] = useState('')
   const [isAddSongOpen, setIsAddSongOpen] = useState(false)
+  const [isImportOpen, setIsImportOpen] = useState(false)
   const [isShareOpen, setIsShareOpen] = useState(false)
 
   const currentPlaylist = usePlaylistStore((s) => s.currentPlaylist)
@@ -279,6 +281,15 @@ function PlaylistPageInner() {
             <Button
               variant="ghost"
               size="sm"
+              onClick={() => setIsImportOpen(true)}
+              className="flex items-center gap-1.5"
+            >
+              <HiPlus className="h-4 w-4" />
+              <span className="hidden sm:inline">Importar YT</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setIsShareOpen(true)}
               className="flex items-center gap-1.5"
             >
@@ -332,6 +343,13 @@ function PlaylistPageInner() {
         <AddSongModal
           isOpen={isAddSongOpen}
           onClose={() => setIsAddSongOpen(false)}
+          playlistId={id}
+        />
+      )}
+      {isOwner && (
+        <ImportPlaylistModal
+          isOpen={isImportOpen}
+          onClose={() => setIsImportOpen(false)}
           playlistId={id}
         />
       )}
