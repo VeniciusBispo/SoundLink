@@ -28,7 +28,7 @@ export default function Header() {
                 <span className="max-w-[80px] truncate">{session.user.username}</span>
               </Link>
               <button
-                onClick={() => signOut({ callbackUrl: '/login' })}
+                onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/login` })}
                 className="rounded-full p-2 text-spotify-text hover:text-white"
                 title="Sair"
               >
@@ -72,7 +72,7 @@ export default function Header() {
               <span>{session.user.username}</span>
             </Link>
             <button
-              onClick={() => signOut({ callbackUrl: '/login' })}
+              onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/login` })}
               className="rounded-full p-2 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
               title="Sair"
             >
