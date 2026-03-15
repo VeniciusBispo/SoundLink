@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRef, useState } from 'react'
 import { HiChevronLeft, HiChevronRight, HiMusicNote } from 'react-icons/hi'
+import { useSession } from 'next-auth/react'
 import { useRecentPlaylists } from '@/hooks/useRecentPlaylists'
 import type { Playlist } from '@/types'
 import PlaylistCard from '@/components/playlist/PlaylistCard'
@@ -75,30 +76,57 @@ function RecentCard({ item }: { item: ReturnType<typeof useRecentPlaylists>['rec
 // ── Empty state CTA ──────────────────────────────────────────────────────────
 
 function EmptyStateCTA({ onCreateOpen }: { onCreateOpen: () => void }) {
+  const { data: session } = useSession()
+
   return (
     <div className="my-6 flex flex-col items-center justify-center gap-6 rounded-2xl bg-gradient-to-br from-purple-900/30 to-spotify-card p-8 text-center sm:flex-row sm:text-left">
       <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-spotify-green/10 text-spotify-green">
         <HiMusicNote className="h-8 w-8" />
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="text-lg font-bold text-white">Sua biblioteca está vazia</h3>
-        <p className="mt-1 text-sm text-spotify-text">
-          Crie sua primeira playlist ou explore as playlists públicas da comunidade.
-        </p>
-        <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
-          <button
-            onClick={onCreateOpen}
-            className="rounded-full bg-spotify-green px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95"
-          >
-            Criar playlist
-          </button>
-          <Link
-            href="/explore"
-            className="rounded-full border border-white/20 bg-transparent px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
-          >
-            Explorar playlists
-          </Link>
-        </div>
+        {session ? (
+          <>
+            <h3 className="text-lg font-bold text-white">Sua biblioteca está vazia</h3>
+            <p className="mt-1 text-sm text-spotify-text">
+              Crie sua primeira playlist ou explore as playlists públicas da comunidade.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
+              <button
+                onClick={onCreateOpen}
+                className="rounded-full bg-spotify-green px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95"
+              >
+                Criar playlist
+              </button>
+              <Link
+                href="/explore"
+                className="rounded-full border border-white/20 bg-transparent px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
+              >
+                Explorar playlists
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <h3 className="text-lg font-bold text-white">Descubra o SoundLink</h3>
+            <p className="mt-1 text-sm text-spotify-text">
+              Crie uma conta para salvar playlists ou explore as playlists públicas da comunidade.
+            </p>
+            <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
+              <Link
+                href="/register"
+                className="rounded-full bg-spotify-green px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95"
+              >
+                Criar conta
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-full border border-white/20 bg-transparent px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
+              >
+                Entrar
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   )

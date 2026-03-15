@@ -1,7 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HiX } from 'react-icons/hi'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useUIStore } from '@/store/uiStore'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import Modal from '@/components/ui/Modal'
@@ -10,6 +12,16 @@ export default function CreatePlaylistModal() {
   const isOpen = useUIStore((s) => s.isCreatePlaylistModalOpen)
   const close = useUIStore((s) => s.closeCreatePlaylistModal)
   const { create } = useMyPlaylists()
+  const { data: session } = useSession()
+  const router = useRouter()
+
+  // Redirect to login if modal is opened without an active session
+  useEffect(() => {
+    if (isOpen && !session) {
+      close()
+      router.push('/login')
+    }
+  }, [isOpen, session, close, router])
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
