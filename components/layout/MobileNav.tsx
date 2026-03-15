@@ -70,6 +70,19 @@ export default function MobileNav() {
         <span className="text-[10px] font-medium">Feedback</span>
       </button>
 
+      {session?.user?.role === 'ADMIN' && (
+        <Link
+          href="/admin"
+          className={cn(
+            'flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+            pathname.startsWith('/admin') ? 'text-spotify-green' : 'text-spotify-text'
+          )}
+        >
+          <HiCollection className="h-6 w-6" />
+          <span className="text-[10px] font-medium">Admin</span>
+        </Link>
+      )}
+
       <Link
         href={session ? '/profile' : '/login'}
         className={cn(

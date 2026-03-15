@@ -15,6 +15,7 @@ model User {
   email         String    @unique
   password      String?
   avatar        String?
+  role          String    @default("USER")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -119,4 +120,18 @@ model Feedback {
   message   String
   email     String?
   createdAt DateTime @default(now())
+}
+
+model AccessLog {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  path      String
+  method    String   @default("GET")
+  userId    String?
+  username  String?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
 }

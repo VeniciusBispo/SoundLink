@@ -129,16 +129,16 @@ export default function Sidebar() {
         <span className="font-medium">Enviar feedback</span>
       </button>
 
-      {session && (
+      {session?.user?.role === 'ADMIN' && (
         <Link
-          href="/admin/feedback"
+          href="/admin"
           className={cn(
             'flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm text-spotify-text transition-colors hover:bg-white/5 hover:text-white',
-            pathname === '/admin/feedback' && 'text-white bg-spotify-hover'
+            pathname.startsWith('/admin') && 'text-white bg-spotify-hover'
           )}
         >
           <HiCollection className="h-5 w-5 flex-shrink-0 text-spotify-green" />
-          <span className="font-medium">Ver feedbacks</span>
+          <span className="font-medium">Painel Admin</span>
         </Link>
       )}
 
