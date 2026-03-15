@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { HiPlay, HiTrash } from 'react-icons/hi'
 import type { PlaylistSong } from '@/types'
@@ -15,10 +15,34 @@ interface SongListProps {
 }
 
 export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
-  const { playSong, currentSong, isPlaying } = usePlayer()
+  const { playSong, currentSong, isPlaying, duration: liveDuration } = usePlayer()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  // Cache resolved durations for songs that have duration=0 in DB
+  const [resolvedDurations, setResolvedDurations] = useState<Record<string, number>>({})
 
   const allSongs = songs.map((ps) => ps.song)
+
+  // Fetch duration for songs stored with duration=0
+  useEffect(() => {
+    const missing = songs.filter((ps) => ps.song.duration === 0)
+    if (!missing.length) return
+
+    missing.forEach(async (ps) => {
+      const { song } = ps
+      if (resolvedDurations[song.id] !== undefined) return
+      try {
+        const res = await fetch(`/api/youtube?videoId=${encodeURIComponent(song.youtubeVideoId)}`)
+        if (!res.ok) return
+        const data = await res.json()
+        if (data.duration > 0) {
+          setResolvedDurations((prev) => ({ ...prev, [song.id]: data.duration }))
+        }
+      } catch {
+        // silent
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [songs])
 
   if (!songs.length) {
     return (
@@ -109,7 +133,13 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
                   <HiTrash className="h-4 w-4" />
                 </button>
               )}
-              <span className="text-sm text-spotify-text">{formatDuration(song.duration)}</span>
+              <span className="text-sm text-spotify-text">
+                {formatDuration(
+                  isActive && liveDuration > 0
+                    ? liveDuration
+                    : resolvedDurations[song.id] ?? song.duration
+                )}
+              </span>
             </div>
           </div>
         )

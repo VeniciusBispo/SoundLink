@@ -1,22 +1,22 @@
-// Prisma Schema for SoundLink
+// Prisma Schema for SoundLink — MongoDB
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String     @id @default(cuid())
-  username      String     @unique
-  email         String     @unique
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  username      String    @unique
+  email         String    @unique
   password      String?
   avatar        String?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
   playlists     Playlist[]
 
@@ -24,15 +24,13 @@ model User {
   emailVerified DateTime?
   accounts      Account[]
   sessions      Session[]
-
-  @@map("users")
 }
 
 model Playlist {
-  id          String   @id @default(cuid())
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   description String?
-  ownerId     String
+  ownerId     String   @db.ObjectId
   isPublic    Boolean  @default(true)
   coverImage  String?
   createdAt   DateTime @default(now())
@@ -43,75 +41,69 @@ model Playlist {
 
   @@index([ownerId])
   @@index([isPublic])
-  @@map("playlists")
 }
 
 model Song {
-  id             String   @id @default(cuid())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
   youtubeVideoId String   @unique
   title          String
-  duration       Int      // in seconds
+  duration       Int
   thumbnail      String
   channel        String
   createdAt      DateTime @default(now())
 
   playlists PlaylistSong[]
-
-  @@map("songs")
 }
 
 model PlaylistSong {
-  playlistId String
-  songId     String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  playlistId String   @db.ObjectId
+  songId     String   @db.ObjectId
   orderIndex Int      @default(0)
   addedAt    DateTime @default(now())
 
   playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   song     Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
 
-  @@id([playlistId, songId])
+  @@unique([playlistId, songId])
   @@index([playlistId])
-  @@map("playlist_songs")
 }
 
 // NextAuth Models
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
+  id                String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String  @db.ObjectId
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@map("accounts")
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
   expires      DateTime
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("sessions")
 }
 
 model VerificationToken {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
-  @@map("verification_tokens")
 }

@@ -75,7 +75,7 @@ export interface YTPlayer {
   destroy(): void
 }
 
-export declare global {
+declare global {
   interface Window {
     YT: {
       Player: new (

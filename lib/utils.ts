@@ -1,9 +1,8 @@
-import { type ClassValue, clsx } from 'clsx'
+type ClassValue = string | number | boolean | null | undefined | ClassValue[]
 
-// Lightweight classname helper (avoids adding clsx as a dep if not needed)
+// Lightweight classname helper (no external dependency)
 export function cn(...inputs: ClassValue[]): string {
-  return inputs
-    .flat()
+  return (inputs.flat(Infinity) as (string | number | boolean | null | undefined)[])
     .filter(Boolean)
     .join(' ')
     .replace(/\s+/g, ' ')

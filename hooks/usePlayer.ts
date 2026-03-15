@@ -3,9 +3,6 @@
 import { usePlayerStore } from '@/store/playerStore'
 import type { Song } from '@/types'
 
-/**
- * Convenience hook that exposes the player actions and state.
- */
 export function usePlayer() {
   const currentSong = usePlayerStore((s) => s.currentSong)
   const queue = usePlayerStore((s) => s.queue)
@@ -13,6 +10,8 @@ export function usePlayer() {
   const isShuffle = usePlayerStore((s) => s.isShuffle)
   const volume = usePlayerStore((s) => s.volume)
   const isLoading = usePlayerStore((s) => s.isLoading)
+  const currentTime = usePlayerStore((s) => s.currentTime)
+  const duration = usePlayerStore((s) => s.duration)
 
   const playSong = usePlayerStore((s) => s.playSong)
   const togglePlay = usePlayerStore((s) => s.togglePlay)
@@ -20,6 +19,10 @@ export function usePlayer() {
   const previous = usePlayerStore((s) => s.previous)
   const toggleShuffle = usePlayerStore((s) => s.toggleShuffle)
   const setVolume = usePlayerStore((s) => s.setVolume)
+  const seek = usePlayerStore((s) => s.seek)
+  const seekBackward = usePlayerStore((s) => s.seekBackward)
+  const seekForward = usePlayerStore((s) => s.seekForward)
+  const replayFromStart = usePlayerStore((s) => s.replayFromStart)
 
   const playPlaylist = (songs: Song[], startIndex = 0) => {
     if (!songs.length) return
@@ -33,6 +36,8 @@ export function usePlayer() {
     isShuffle,
     volume,
     isLoading,
+    currentTime,
+    duration,
     playSong,
     playPlaylist,
     togglePlay,
@@ -40,5 +45,9 @@ export function usePlayer() {
     previous,
     toggleShuffle,
     setVolume,
+    seek,
+    seekBackward,
+    seekForward,
+    replayFromStart,
   }
 }

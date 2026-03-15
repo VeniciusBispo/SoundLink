@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import { usePlayerStore } from '@/store/playerStore'
 import { loadYouTubeAPI } from '@/services/youtubeService'
+import type { YTPlayer } from '@/types'
 
 /**
  * Invisible component that mounts the YouTube IFrame Player and wires it
@@ -10,13 +11,16 @@ import { loadYouTubeAPI } from '@/services/youtubeService'
  */
 export default function YouTubePlayer() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const playerRef = useRef<ReturnType<typeof window.YT.Player> | null>(null)
+  const playerRef = useRef<YTPlayer | null>(null)
+  const isReadyRef = useRef(false)
 
   const setPlayer = usePlayerStore((s) => s.setPlayer)
   const setIsPlaying = usePlayerStore((s) => s.setIsPlaying)
   const setIsLoading = usePlayerStore((s) => s.setIsLoading)
   const next = usePlayerStore((s) => s.next)
   const volume = usePlayerStore((s) => s.volume)
+  const setCurrentTime = usePlayerStore((s) => s.setCurrentTime)
+  const setDuration = usePlayerStore((s) => s.setDuration)
 
   useEffect(() => {
     loadYouTubeAPI(() => {
@@ -34,6 +38,7 @@ export default function YouTubePlayer() {
         },
         events: {
           onReady: (event) => {
+            isReadyRef.current = true
             event.target.setVolume(volume)
             setPlayer(event.target)
           },
@@ -70,8 +75,26 @@ export default function YouTubePlayer() {
 
   // Keep volume in sync without recreating the player
   useEffect(() => {
-    playerRef.current?.setVolume(volume)
+    if (isReadyRef.current) {
+      playerRef.current?.setVolume(volume)
+    }
   }, [volume])
+
+  // Poll current time and duration every 500 ms
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (!isReadyRef.current || !playerRef.current) return
+      try {
+        const ct = playerRef.current.getCurrentTime()
+        const dur = playerRef.current.getDuration()
+        if (isFinite(ct)) setCurrentTime(ct)
+        if (isFinite(dur) && dur > 0) setDuration(dur)
+      } catch {
+        // player not fully initialised yet
+      }
+    }, 500)
+    return () => clearInterval(id)
+  }, [setCurrentTime, setDuration])
 
   return <div ref={containerRef} className="hidden" aria-hidden="true" />
 }
