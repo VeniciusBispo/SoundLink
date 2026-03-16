@@ -21,43 +21,70 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.identifier || !credentials?.password) return null
+  try {
 
-        const isEmail = credentials.identifier.includes('@')
+    console.log("LOGIN ATTEMPT:", credentials?.identifier)
 
-        const user = await prisma.user.findFirst({
-          where: isEmail
-            ? { email: credentials.identifier.toLowerCase() }
-            : { username: credentials.identifier },
-        })
+    if (!credentials?.identifier || !credentials?.password) {
+      console.log("Missing credentials")
+      return null
+    }
 
-        if (!user || !user.password) return null
+    const isEmail = credentials.identifier.includes('@')
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-        if (!isPasswordValid) return null
+    const user = await prisma.user.findFirst({
+      where: isEmail
+        ? { email: credentials.identifier.toLowerCase() }
+        : { username: credentials.identifier },
+    })
 
-        // Block login only if a verification token is pending AND an email provider is configured
-        const emailProviderConfigured = !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
-        if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
-          throw new Error('EMAIL_NOT_VERIFIED')
-        }
+    console.log("USER FOUND:", user?.id)
 
-        // If no email provider, auto-verify legacy unverified accounts on first login
-        if (!emailProviderConfigured && !user.emailVerified) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: { emailVerified: new Date(), verificationToken: null, verificationExpires: null },
-          })
-        }
+    if (!user || !user.password) {
+      console.log("User not found or missing password")
+      return null
+    }
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.username,
-          image: user.avatar,
-          role: user.role,
-        }
-      },
+    const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
+    console.log("PASSWORD VALID:", isPasswordValid)
+
+    if (!isPasswordValid) return null
+
+    const emailProviderConfigured =
+      !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+
+    if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
+      console.log("Email not verified")
+      throw new Error('EMAIL_NOT_VERIFIED')
+    }
+
+    if (!emailProviderConfigured && !user.emailVerified) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerified: new Date(),
+          verificationToken: null,
+          verificationExpires: null
+        },
+      })
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.username,
+      image: user.avatar,
+      role: user.role,
+      avatar: user.avatar,
+      banner: user.banner
+    }
+
+  } catch (error) {
+    console.error("AUTH ERROR:", error)
+    return null
+  }
+},
     }),
   ],
   session: {
