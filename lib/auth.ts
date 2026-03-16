@@ -12,7 +12,7 @@ if (process.env.NEXTAUTH_URL) {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as NextAuthOptions['adapter'],
+  // adapter: PrismaAdapter(prisma) as NextAuthOptions['adapter'],
   providers: [
     CredentialsProvider({
       name: 'credentials',
