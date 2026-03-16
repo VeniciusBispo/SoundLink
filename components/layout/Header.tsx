@@ -24,7 +24,15 @@ export default function Header() {
                 href="/profile"
                 className="flex items-center gap-1.5 rounded-full bg-spotify-card px-2.5 py-1.5 text-xs font-semibold text-white"
               >
-                <HiUser className="h-4 w-4" />
+                {session.user.image ? (
+                  session.user.image.startsWith('data:image') ? (
+                    <img src={session.user.image} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
+                  ) : (
+                    <span className="text-2xl">{session.user.image}</span>
+                  )
+                ) : (
+                  <HiUser className="h-4 w-4" />
+                )}
                 <span className="max-w-[80px] truncate">{session.user.username}</span>
               </Link>
               <button
@@ -60,12 +68,11 @@ export default function Header() {
               className="flex items-center gap-2 rounded-full bg-spotify-card px-3 py-1.5 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
             >
               {session.user.image ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={session.user.image}
-                  alt={session.user.username}
-                  className="h-6 w-6 rounded-full object-cover"
-                />
+                session.user.image.startsWith('data:image') ? (
+                  <img src={session.user.image} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
+                ) : (
+                  <span className="text-2xl">{session.user.image}</span>
+                )
               ) : (
                 <HiUser className="h-5 w-5" />
               )}

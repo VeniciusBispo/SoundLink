@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+const AvatarPicker = dynamic(() => import('@/components/ui/AvatarPicker'), { ssr: false })
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
@@ -44,9 +46,10 @@ export default function ProfilePage() {
 
   // Profile edit state
   const [username, setUsername] = useState('')
-  const [avatar, setAvatar] = useState('')
+  const [avatar, setAvatar] = useState('') // URL, emoji ou avatar
   const [profileMsg, setProfileMsg] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
   const [savingProfile, setSavingProfile] = useState(false)
+  const [banner, setBanner] = useState<string>('');
 
   // Password state
   const [currentPassword, setCurrentPassword] = useState('')
@@ -65,6 +68,7 @@ export default function ProfilePage() {
         setProfile(p)
         setUsername(p.username)
         setAvatar(p.avatar ?? '')
+        if (p.banner) setBanner(p.banner)
       }).catch(console.error)
     }
   }, [status, router])
@@ -74,9 +78,9 @@ export default function ProfilePage() {
     setSavingProfile(true)
     setProfileMsg(null)
     try {
-      const updated = await updateProfile({ username: username.trim(), avatar: avatar.trim() || undefined })
+      const updated = await updateProfile({ username: username.trim(), avatar: avatar.trim() || undefined, banner: banner || undefined })
       setProfile((prev) => prev ? { ...prev, ...updated } : prev)
-      await updateSession({ name: updated.username })
+      await updateSession({ name: updated.username, image: updated.avatar, banner: updated.banner })
       setProfileMsg({ type: 'success', msg: 'Perfil atualizado com sucesso!' })
     } catch (e: unknown) {
       setProfileMsg({ type: 'error', msg: e instanceof Error ? e.message : 'Erro ao salvar' })
@@ -132,29 +136,36 @@ export default function ProfilePage() {
 
   return (
     <MainLayout>
-      {/* Hero */}
-      <div className="flex flex-col gap-6 bg-gradient-to-b from-indigo-900/40 to-transparent px-6 py-8 sm:flex-row sm:items-end">
-        <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 shadow-xl overflow-hidden">
-          {profile.avatar ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={profile.avatar} alt={profile.username} className="h-full w-full object-cover" />
-          ) : (
-            <HiUser className="h-14 w-14 text-white" />
-          )}
-        </div>
-        <div className="flex-1">
-          <p className="mb-0.5 text-xs font-semibold uppercase tracking-widest text-white/60">Perfil</p>
-          <h1 className="text-3xl font-black text-white sm:text-4xl">{profile.username}</h1>
-          <p className="mt-1 text-sm text-spotify-text">{profile.email}</p>
-          <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-spotify-text">
-            <span><HiCollection className="mr-1 inline h-4 w-4" />{profile._count.playlists} playlists</span>
-            <span className="text-white/30">·</span>
-            <span>Membro desde {memberSince}</span>
+      {/* Banner estilo Discord */}
+      <div className="relative w-full h-40 bg-gradient-to-br from-indigo-900 to-purple-800 mb-16">
+        {banner && (
+          <img src={banner} alt="Banner" className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute left-8 -bottom-16 flex items-end gap-4">
+          <div className="h-32 w-32 rounded-full bg-spotify-card border-4 border-black overflow-hidden flex items-center justify-center">
+            {avatar ? (
+              avatar.startsWith('data:image') ? (
+                <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-7xl">{avatar}</span>
+              )
+            ) : (
+              <HiUser className="h-20 w-20 text-white" />
+            )}
+          </div>
+          <div className="flex flex-col gap-1 pb-4">
+            <h1 className="text-3xl font-black text-white drop-shadow-lg">{profile?.username}</h1>
+            <p className="text-white/80 text-sm">{profile?.email}</p>
+            <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
+              <span><HiCollection className="mr-1 inline h-4 w-4" />{profile?._count.playlists} playlists</span>
+              <span className="text-white/30">·</span>
+              <span>Membro desde {memberSince}</span>
+            </div>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/` })}
-          className="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white"
+          className="absolute top-4 right-4 flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white bg-black/40"
         >
           <HiLogout className="h-4 w-4" />
           Sair
@@ -181,12 +192,10 @@ export default function ProfilePage() {
 
       {/* Tab content */}
       <div className="px-6 py-8 max-w-xl">
-
         {/* ——— PERFIL ——— */}
         {tab === 'perfil' && (
-          <div className="flex flex-col gap-5">
+          <form className="flex flex-col gap-5" onSubmit={async (e) => { e.preventDefault(); await handleSaveProfile() }}>
             <h2 className="text-lg font-bold text-white">Informações do perfil</h2>
-
             <div className="flex flex-col gap-1.5">
               <label className="text-sm text-spotify-text">Nome de usuário</label>
               <input
@@ -195,56 +204,43 @@ export default function ProfilePage() {
                 className="rounded-xl bg-spotify-card px-4 py-3 text-sm text-white placeholder-spotify-text/50 outline-none ring-1 ring-white/10 focus:ring-spotify-green transition"
                 placeholder="seunome"
                 maxLength={30}
+                required
               />
             </div>
-
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm text-spotify-text">URL do avatar <span className="text-white/30">(opcional)</span></label>
-              <input
-                value={avatar}
-                onChange={(e) => setAvatar(e.target.value)}
-                className="rounded-xl bg-spotify-card px-4 py-3 text-sm text-white placeholder-spotify-text/50 outline-none ring-1 ring-white/10 focus:ring-spotify-green transition"
-                placeholder="https://..."
-              />
-              {avatar && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={avatar} alt="preview" className="mt-1 h-16 w-16 rounded-full object-cover border border-white/10" />
-              )}
+              <label className="text-sm text-spotify-text">Avatar (emoji ou imagem)</label>
+              <AvatarPicker value={avatar} onChange={setAvatar} />
             </div>
-
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm text-spotify-text">E-mail</label>
-              <input
-                value={profile.email}
-                disabled
-                className="rounded-xl bg-spotify-card/50 px-4 py-3 text-sm text-spotify-text/60 outline-none ring-1 ring-white/5 cursor-not-allowed"
-              />
-              <p className="text-xs text-spotify-text/40">O e-mail não pode ser alterado</p>
+              <label className="text-sm text-spotify-text">Banner do perfil (opcional)</label>
+              <input type="file" accept="image/*" onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onload = (ev) => {
+                    if (typeof ev.target?.result === 'string') setBanner(ev.target.result);
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }} />
+              {banner && <img src={banner} alt="Banner preview" className="mt-2 h-24 w-full object-cover rounded" />}
             </div>
-
+            <div className="flex justify-end gap-3 pt-2">
+              <Button type="submit" isLoading={savingProfile} className="bg-spotify-green px-6 py-2 text-black font-bold">Salvar</Button>
+            </div>
             {profileMsg && <Alert type={profileMsg.type} msg={profileMsg.msg} />}
-
-            <button
-              onClick={handleSaveProfile}
-              disabled={savingProfile || !username.trim()}
-              className="flex items-center justify-center gap-2 rounded-xl bg-spotify-green px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
-            >
-              <HiPencil className="h-4 w-4" />
-              {savingProfile ? 'Salvando...' : 'Salvar alterações'}
-            </button>
-          </div>
+          </form>
         )}
 
         {/* ——— SEGURANÇA ——— */}
         {tab === 'seguranca' && (
-          <form onSubmit={handleChangePassword} className="flex flex-col gap-5">
+          <form className="flex flex-col gap-5" onSubmit={handleChangePassword}>
             <h2 className="text-lg font-bold text-white">Alterar senha</h2>
-
-            {[
-              { label: 'Senha atual', value: currentPassword, set: setCurrentPassword, show: showCurrent, toggle: () => setShowCurrent((v) => !v) },
-              { label: 'Nova senha', value: newPassword, set: setNewPassword, show: showNew, toggle: () => setShowNew((v) => !v) },
-              { label: 'Confirmar nova senha', value: confirmPassword, set: setConfirmPassword, show: showConfirm, toggle: () => setShowConfirm((v) => !v) },
-            ].map(({ label, value, set, show, toggle }) => (
+            {[{
+              label: 'Nova senha', value: newPassword, set: setNewPassword, show: showNew, toggle: () => setShowNew((v) => !v)
+            }, {
+              label: 'Confirmar nova senha', value: confirmPassword, set: setConfirmPassword, show: showConfirm, toggle: () => setShowConfirm((v) => !v)
+            }].map(({ label, value, set, show, toggle }) => (
               <div key={label} className="flex flex-col gap-1.5">
                 <label className="text-sm text-spotify-text">{label}</label>
                 <div className="relative">
@@ -262,15 +258,12 @@ export default function ProfilePage() {
                 </div>
               </div>
             ))}
-
             <div className="rounded-xl bg-spotify-card/50 px-4 py-3 text-xs text-spotify-text space-y-1">
               <p className="font-medium text-white/60 mb-1">Requisitos da senha:</p>
               <p className={newPassword.length >= 8 ? 'text-spotify-green' : ''}>• Mínimo 8 caracteres</p>
               <p className={newPassword === confirmPassword && confirmPassword ? 'text-spotify-green' : ''}>• As senhas devem coincidir</p>
             </div>
-
             {passwordMsg && <Alert type={passwordMsg.type} msg={passwordMsg.msg} />}
-
             <button
               type="submit"
               disabled={savingPassword}

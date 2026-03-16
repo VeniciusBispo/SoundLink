@@ -18,6 +18,7 @@ export async function GET() {
         username: true,
         email: true,
         avatar: true,
+        banner: true,
         createdAt: true,
         _count: { select: { playlists: true } },
       },
@@ -42,7 +43,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { username, avatar } = body as { username?: string; avatar?: string }
+    const { username, avatar, banner } = body as { username?: string; avatar?: string; banner?: string }
 
     if (username) {
       const exists = await prisma.user.findFirst({
@@ -58,8 +59,9 @@ export async function PATCH(req: NextRequest) {
       data: {
         ...(username && { username }),
         ...(avatar && { avatar }),
+        ...(banner !== undefined && { banner }),
       },
-      select: { id: true, username: true, email: true, avatar: true },
+      select: { id: true, username: true, email: true, avatar: true, banner: true },
     })
 
     return NextResponse.json({ data: updated })

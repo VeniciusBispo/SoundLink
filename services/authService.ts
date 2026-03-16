@@ -27,7 +27,7 @@ export async function getProfile() {
 /**
  * Update the current user's profile.
  */
-export async function updateProfile(data: { username?: string; avatar?: string }) {
+export async function updateProfile(data: { username?: string; avatar?: string; banner?: string }) {
   const res = await fetch('/api/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },

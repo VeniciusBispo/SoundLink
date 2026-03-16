@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+const AvatarPicker = dynamic(() => import('@/components/ui/AvatarPicker'), { ssr: false })
 import { HiX } from 'react-icons/hi'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -25,6 +27,7 @@ export default function CreatePlaylistModal() {
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  const [coverImage, setCoverImage] = useState('') // URL, emoji ou avatar
   const [isPublic, setIsPublic] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -40,9 +43,15 @@ export default function CreatePlaylistModal() {
     setError('')
 
     try {
-      await create({ name: name.trim(), description: description.trim() || undefined, isPublic })
+      await create({
+        name: name.trim(),
+        description: description.trim() || undefined,
+        isPublic,
+        ...(coverImage.trim() && { coverImage: coverImage.trim() })
+      })
       setName('')
       setDescription('')
+      setCoverImage('')
       setIsPublic(true)
       close()
     } catch (err) {
@@ -55,6 +64,13 @@ export default function CreatePlaylistModal() {
   return (
     <Modal isOpen={isOpen} onClose={close} title="Criar Playlist">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        {/* Campo para imagem/avatar/emoji customizável */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-white">
+            Imagem, emoji ou avatar
+          </label>
+          <AvatarPicker value={coverImage} onChange={setCoverImage} />
+        </div>
         {error && (
           <p className="rounded-md bg-red-500/20 px-3 py-2 text-sm text-red-400">{error}</p>
         )}
