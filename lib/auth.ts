@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@auth/prisma-adapter'
+// import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
@@ -21,70 +21,70 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
-  try {
+        try {
+          console.log("AUTH START")
+          console.log("LOGIN ATTEMPT:", credentials?.identifier)
 
-    console.log("LOGIN ATTEMPT:", credentials?.identifier)
+          if (!credentials?.identifier || !credentials?.password) {
+            console.log("Missing credentials")
+            return null
+          }
 
-    if (!credentials?.identifier || !credentials?.password) {
-      console.log("Missing credentials")
-      return null
-    }
+          const isEmail = credentials.identifier.includes('@')
 
-    const isEmail = credentials.identifier.includes('@')
+          const user = await prisma.user.findFirst({
+            where: isEmail
+              ? { email: credentials.identifier.toLowerCase() }
+              : { username: credentials.identifier },
+          })
 
-    const user = await prisma.user.findFirst({
-      where: isEmail
-        ? { email: credentials.identifier.toLowerCase() }
-        : { username: credentials.identifier },
-    })
+          console.log("USER FOUND:", user?.id)
 
-    console.log("USER FOUND:", user?.id)
+          if (!user || !user.password) {
+            console.log("User not found or missing password")
+            return null
+          }
 
-    if (!user || !user.password) {
-      console.log("User not found or missing password")
-      return null
-    }
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
 
-    const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+          console.log("PASSWORD VALID:", isPasswordValid)
 
-    console.log("PASSWORD VALID:", isPasswordValid)
+          if (!isPasswordValid) return null
 
-    if (!isPasswordValid) return null
+          const emailProviderConfigured =
+            !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
 
-    const emailProviderConfigured =
-      !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+          if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
+            console.log("Email not verified")
+            return { error: "EMAIL_NOT_VERIFIED" } as any
+          }
 
-    if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
-      console.log("Email not verified")
-      throw new Error('EMAIL_NOT_VERIFIED')
-    }
+          if (!emailProviderConfigured && !user.emailVerified) {
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                emailVerified: new Date(),
+                verificationToken: null,
+                verificationExpires: null
+              },
+            })
+          }
 
-    if (!emailProviderConfigured && !user.emailVerified) {
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          emailVerified: new Date(),
-          verificationToken: null,
-          verificationExpires: null
-        },
-      })
-    }
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.username,
+            image: user.avatar,
+            role: user.role,
+            avatar: user.avatar,
+            banner: user.banner
+          }
 
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.username,
-      image: user.avatar,
-      role: user.role,
-      avatar: user.avatar,
-      banner: user.banner
-    }
-
-  } catch (error) {
-    console.error("AUTH ERROR:", error)
-    return null
-  }
-},
+        } catch (error) {
+          console.error("AUTH ERROR:", error)
+          return null
+        }
+      },
     }),
   ],
   session: {
