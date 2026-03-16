@@ -50,10 +50,11 @@ function LoginForm() {
 
     setIsLoading(true)
     try {
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         identifier: identifier.trim(),
         password,
         redirect: false,
+        callbackUrl: "/"
       })
 
       if (result?.error) {
