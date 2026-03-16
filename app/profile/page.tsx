@@ -80,7 +80,7 @@ export default function ProfilePage() {
     try {
       const updated = await updateProfile({ username: username.trim(), avatar: avatar.trim() || undefined, banner: banner || undefined })
       setProfile((prev) => prev ? { ...prev, ...updated } : prev)
-      await updateSession({ name: updated.username, image: updated.avatar, banner: updated.banner })
+      await updateSession({ name: updated.username, image: updated.avatar, avatar: updated.avatar, banner: updated.banner })
       setProfileMsg({ type: 'success', msg: 'Perfil atualizado com sucesso!' })
     } catch (e: unknown) {
       setProfileMsg({ type: 'error', msg: e instanceof Error ? e.message : 'Erro ao salvar' })
@@ -137,12 +137,12 @@ export default function ProfilePage() {
   return (
     <MainLayout>
       {/* Banner estilo Discord */}
-      <div className="relative w-full h-40 bg-gradient-to-br from-indigo-900 to-purple-800 mb-16">
+      <div className="relative w-full h-[22rem] bg-gradient-to-br from-indigo-900 to-purple-800 mb-28 flex items-end">
         {banner && (
           <img src={banner} alt="Banner" className="absolute inset-0 w-full h-full object-cover" />
         )}
-        <div className="absolute left-8 -bottom-16 flex items-end gap-4">
-          <div className="h-32 w-32 rounded-full bg-spotify-card border-4 border-black overflow-hidden flex items-center justify-center">
+        <div className="relative flex items-end gap-10 w-full px-24 pb-10">
+          <div className="h-72 w-72 rounded-full bg-spotify-card border-4 border-black overflow-hidden flex items-center justify-center shadow-2xl">
             {avatar ? (
               avatar.startsWith('data:image') ? (
                 <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
@@ -153,12 +153,12 @@ export default function ProfilePage() {
               <HiUser className="h-20 w-20 text-white" />
             )}
           </div>
-          <div className="flex flex-col gap-1 pb-4">
-            <h1 className="text-3xl font-black text-white drop-shadow-lg">{profile?.username}</h1>
-            <p className="text-white/80 text-sm">{profile?.email}</p>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-white/80">
-              <span><HiCollection className="mr-1 inline h-4 w-4" />{profile?._count.playlists} playlists</span>
-              <span className="text-white/30">·</span>
+          <div className="flex flex-col gap-2 pb-6 pl-2">
+            <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] leading-tight">{profile?.username}</h1>
+            <p className="text-lg text-white/90 font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">{profile?.email}</p>
+            <div className="flex flex-wrap items-center gap-6 text-lg text-white/90 font-semibold drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
+              <span><HiCollection className="mr-1 inline h-5 w-5" />{profile?._count.playlists} playlists</span>
+              <span className="text-white/40">·</span>
               <span>Membro desde {memberSince}</span>
             </div>
           </div>

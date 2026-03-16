@@ -29,8 +29,13 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </main>
       </div>
 
+
       {/* Player fixed at bottom */}
       <PlayerBar />
+
+      {/* Footer fixo abaixo do player */}
+      {/** O Footer ficará sempre visível abaixo do player **/}
+      {require('./BottomFooter').default()}
 
       {/* Mobile bottom nav — visible only on mobile */}
       <MobileNav />

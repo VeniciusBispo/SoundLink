@@ -70,16 +70,20 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id
         token.username = user.name ?? ''
         token.role = (user as { role?: string }).role ?? 'USER'
+        token.avatar = (user as any).avatar ?? null
+        token.banner = (user as any).banner ?? null
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
         session.user.username = token.username as string
         session.user.role = token.role as string
+        session.user.avatar = (token as any).avatar ?? null
+        session.user.banner = (token as any).banner ?? null
       }
-      return session
+      return session;
     },
   },
   pages: {
@@ -97,6 +101,8 @@ declare module 'next-auth' {
       email: string
       role?: string
       image?: string | null
+      avatar?: string | null
+      banner?: string | null
     }
   }
 }

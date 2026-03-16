@@ -24,11 +24,11 @@ export default function Header() {
                 href="/profile"
                 className="flex items-center gap-1.5 rounded-full bg-spotify-card px-2.5 py-1.5 text-xs font-semibold text-white"
               >
-                {session.user.image ? (
-                  session.user.image.startsWith('data:image') ? (
-                    <img src={session.user.image} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
+                {session.user.avatar ? (
+                  session.user.avatar.startsWith('data:image') ? (
+                    <img src={session.user.avatar} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
                   ) : (
-                    <span className="text-2xl">{session.user.image}</span>
+                    <span className="text-2xl">{session.user.avatar}</span>
                   )
                 ) : (
                   <HiUser className="h-4 w-4" />
@@ -67,11 +67,11 @@ export default function Header() {
               href="/profile"
               className="flex items-center gap-2 rounded-full bg-spotify-card px-3 py-1.5 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
             >
-              {session.user.image ? (
-                session.user.image.startsWith('data:image') ? (
-                  <img src={session.user.image} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
+              {session.user.avatar ? (
+                session.user.avatar.startsWith('data:image') ? (
+                  <img src={session.user.avatar} alt={session.user.username} className="h-7 w-7 rounded-full object-cover" />
                 ) : (
-                  <span className="text-2xl">{session.user.image}</span>
+                  <span className="text-2xl">{session.user.avatar}</span>
                 )
               ) : (
                 <HiUser className="h-5 w-5" />
