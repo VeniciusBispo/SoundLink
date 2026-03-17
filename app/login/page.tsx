@@ -50,11 +50,13 @@ function LoginForm() {
 
     setIsLoading(true)
     try {
+      const callbackUrl = searchParams.get('callbackUrl') || '/'
+      const safeCallbackUrl = callbackUrl.startsWith('/') ? callbackUrl : '/'
       const result = await signIn("credentials", {
         identifier: identifier.trim(),
         password,
         redirect: false,
-        callbackUrl: "/"
+        callbackUrl: safeCallbackUrl
       })
 
       if (result?.error) {
@@ -64,8 +66,8 @@ function LoginForm() {
           setError('E-mail, nome de usuário ou senha incorretos.')
         }
       } else {
-        router.push('/')
         router.refresh()
+        router.push(safeCallbackUrl)
       }
     } catch {
       setError('Algo deu errado. Tente novamente.')

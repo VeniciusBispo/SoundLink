@@ -65,10 +65,15 @@ export async function POST(req: NextRequest) {
       try {
         emailSent = await sendVerificationEmail(email, verificationToken)
         if (!emailSent) {
+          // Se falhar ao enviar, removemos o usuário para permitir nova tentativa
+          await prisma.user.delete({ where: { id: user.id } })
           console.error('[register] sendVerificationEmail returned false for:', email)
+          return NextResponse.json({ error: 'Erro ao enviar e-mail. Tente novamente.' }, { status: 500 })
         }
       } catch (emailErr) {
+        await prisma.user.delete({ where: { id: user.id } })
         console.error('Failed to send verification email:', emailErr)
+        return NextResponse.json({ error: 'Erro de comunicação ao enviar e-mail.' }, { status: 500 })
       }
     } else if (!emailProviderConfigured) {
       console.warn('[register] No email provider configured (RESEND_API_KEY / SMTP_HOST missing). Skipping verification email.')

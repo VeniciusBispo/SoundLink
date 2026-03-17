@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth'
+import { type NextAuthOptions, type DefaultSession } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 // import { PrismaAdapter } from '@auth/prisma-adapter'
 import bcrypt from 'bcryptjs'
@@ -46,8 +46,8 @@ export const authOptions: NextAuthOptions = {
             return null
           }
 
-          //const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-          const isPasswordValid = true
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
           console.log("PASSWORD VALID:", isPasswordValid)
 
           if (!isPasswordValid) return null
@@ -74,7 +74,7 @@ export const authOptions: NextAuthOptions = {
           return {
             id: user.id,
             email: user.email,
-            name: user.username,
+            name: user.username ?? '',
             image: user.avatar,
             role: user.role,
             avatar: user.avatar,
@@ -96,16 +96,18 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.email = user.email!
         token.username = user.name ?? ''
         token.role = (user as { role?: string }).role ?? 'USER'
         token.avatar = (user as any).avatar ?? null
         token.banner = (user as any).banner ?? null
       }
-      return token;
+      return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
+        session.user.id = token.id
+        session.user.email = token.email
         session.user.username = token.username as string
         session.user.role = token.role as string
         session.user.avatar = (token as any).avatar ?? null
@@ -126,12 +128,10 @@ declare module 'next-auth' {
     user: {
       id: string
       username: string
-      email: string
       role?: string
-      image?: string | null
       avatar?: string | null
       banner?: string | null
-    }
+    } & DefaultSession['user']
   }
 }
 
@@ -140,5 +140,7 @@ declare module 'next-auth/jwt' {
     id: string
     username: string
     role?: string
+    avatar?: string | null
+    banner?: string | null
   }
 }
