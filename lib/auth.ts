@@ -22,68 +22,54 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
-        try {
-          console.log("AUTH START")
-          console.log("LOGIN ATTEMPT:", credentials?.identifier)
-
-          if (!credentials?.identifier || !credentials?.password) {
-            console.log("Missing credentials")
-            return null
-          }
-
-          const isEmail = credentials.identifier.includes('@')
-
-          const user = await prisma.user.findFirst({
-            where: isEmail
-              ? { email: credentials.identifier.toLowerCase() }
-              : { username: credentials.identifier },
-          })
-
-          console.log("USER FOUND:", user?.id)
-
-          if (!user || !user.password) {
-            console.log("User not found or missing password")
-            return null
-          }
-
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
-          console.log("PASSWORD VALID:", isPasswordValid)
-
-          if (!isPasswordValid) return null
-
-          const emailProviderConfigured =
-            !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
-
-          if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
-            console.log("Email not verified")
-            throw new Error("EMAIL_NOT_VERIFIED")
-          }
-
-          if (!emailProviderConfigured && !user.emailVerified) {
-            await prisma.user.update({
-              where: { id: user.id },
-              data: {
-                emailVerified: new Date(),
-                verificationToken: null,
-                verificationExpires: null
-              },
-            })
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.username ?? '',
-            image: user.avatar,
-            role: user.role,
-            avatar: user.avatar,
-            banner: user.banner
-          }
-
-        } catch (error) {
-          console.error("AUTH ERROR:", error)
+        if (!credentials?.identifier || !credentials?.password) {
+          // Retornar null indica falha genérica de credenciais
           return null
+        }
+
+        const isEmail = credentials.identifier.includes('@')
+
+        const user = await prisma.user.findFirst({
+          where: isEmail
+            ? { email: credentials.identifier.toLowerCase() }
+            : { username: credentials.identifier },
+        })
+
+        if (!user || !user.password) {
+          return null
+        }
+
+        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
+        if (!isPasswordValid) return null
+
+        const emailProviderConfigured =
+          !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+
+        // Ao lançar erro aqui SEM o try/catch, o NextAuth redireciona para:
+        // /api/auth/signin?error=EMAIL_NOT_VERIFIED
+        if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
+          throw new Error("EMAIL_NOT_VERIFIED")
+        }
+
+        if (!emailProviderConfigured && !user.emailVerified) {
+          await prisma.user.update({
+            where: { id: user.id },
+            data: {
+              emailVerified: new Date(),
+              verificationToken: null,
+              verificationExpires: null
+            },
+          })
+        }
+
+        return {
+          id: user.id,
+          email: user.email!, // Email é obrigatório no seu schema
+          username: user.username,
+          role: user.role,
+          avatar: user.avatar,
+          banner: user.banner
         }
       },
     }),
@@ -96,22 +82,27 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.email = user.email || ''
-        token.username = user.name ?? ''
-        token.role = (user as { role?: string }).role ?? 'USER'
-        token.avatar = (user as any).avatar ?? null
-        token.banner = (user as any).banner ?? null
+        token.email = user.email // email is required on our user
+        token.username = user.username
+        token.role = user.role
+        // Do not add large fields like avatar/banner to the JWT to keep it small
       }
       return token
     },
     async session({ session, token }) {
-      if (session.user) {
+      if (token && session.user) {
         session.user.id = token.id
         session.user.email = token.email
-        session.user.username = token.username as string
-        session.user.role = token.role as string
-        session.user.avatar = (token as any).avatar ?? null
-        session.user.banner = (token as any).banner ?? null
+        session.user.username = token.username
+        session.user.role = token.role
+
+        // To avoid bloating the JWT, we fetch non-critical session data on-demand.
+        const userDetails = await prisma.user.findUnique({
+          where: { id: token.id },
+          select: { avatar: true, banner: true },
+        })
+        session.user.avatar = userDetails?.avatar ?? null
+        session.user.banner = userDetails?.banner ?? null
       }
       return session;
     },
@@ -124,23 +115,12 @@ export const authOptions: NextAuthOptions = {
 
 // Extend the built-in session types
 declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string
-      username: string
-      role?: string
-      avatar?: string | null
-      banner?: string | null
-    } & DefaultSession['user']
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
+  interface User {
     id: string
     username: string
-    role?: string
-    avatar?: string | null
-    banner?: string | null
+    email: string
+    role: string
+    avatar: string | null
+    banner: string | null
   }
 }
