@@ -1,108 +1,163 @@
-// c:\Users\vinic\Desktop\Musicnews\app\forgot-password\page.tsx
+// c:\Users\vinic\Desktop\Musicnews\app\reset-password\page.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
-import { HiArrowLeft, HiCheck } from 'react-icons/hi'
-import Logo from '@/components/ui/Logo'
-import Button from '@/components/ui/Button'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { HiEye, HiEyeOff, HiCheck } from 'react-icons/hi'
 
-export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSent, setIsSent] = useState(false)
+function ResetPasswordForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const token = searchParams.get('token')
+
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email.trim()) return
-
-    setIsLoading(true)
     setError('')
 
+    if (!token) {
+      setError('Token inválido ou ausente.')
+      return
+    }
+
+    if (password.length < 8) {
+      setError('A senha deve ter no mínimo 8 caracteres.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('As senhas não coincidem.')
+      return
+    }
+
+    setIsLoading(true)
+
     try {
-      const res = await fetch('/api/auth/forgot-password', {
+      const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ token, password }),
       })
 
-      if (res.ok) {
-        setIsSent(true)
-      } else {
-        const data = await res.json()
-        throw new Error(data.error || 'Erro ao solicitar recuperação')
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Erro ao redefinir senha')
       }
-    } catch (err) {
-      setError((err as Error).message)
+
+      setSuccess(true)
+      setTimeout(() => {
+        router.push('/login?reset=success')
+      }, 3000)
+    } catch (err: any) {
+      setError(err.message)
     } finally {
       setIsLoading(false)
     }
   }
 
+  if (!token) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#121212] px-4 text-white">
+        <div className="w-full max-w-md rounded-lg bg-[#181818] p-8 text-center shadow-lg">
+          <p className="mb-4 text-gray-300">Link de redefinição inválido ou ausente.</p>
+          <Link href="/login" className="font-bold text-[#1DB954] hover:underline">
+            Voltar para Login
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
-      <Link href="/" className="mb-8 flex items-center gap-2.5">
-        <Logo size={40} />
-        <span className="text-2xl font-extrabold text-white">SoundLink</span>
-      </Link>
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#121212] px-4 text-white">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold tracking-tight">SoundLink</h1>
+      </div>
 
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10">
-        <Link
-          href="/login"
-          className="mb-6 flex items-center gap-2 text-sm text-spotify-text hover:text-white transition-colors"
-        >
-          <HiArrowLeft className="h-4 w-4" />
-          Voltar para login
-        </Link>
+      <div className="w-full max-w-md rounded-lg bg-[#181818] p-8 shadow-lg">
+        <h2 className="mb-6 text-center text-2xl font-bold">Redefinir Senha</h2>
 
-        <h1 className="mb-2 text-2xl font-bold text-white">Recuperar senha</h1>
-        <p className="mb-6 text-sm text-spotify-text">
-          Informe seu e-mail para receber um link de redefinição.
-        </p>
-
-        {isSent ? (
-          <div className="flex flex-col items-center rounded-xl bg-spotify-green/10 p-6 text-center">
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-spotify-green">
-              <HiCheck className="h-6 w-6 text-black" />
+        {success ? (
+          <div className="text-center">
+            <div className="mb-4 flex justify-center">
+              <div className="rounded-full bg-green-900/30 p-3">
+                <HiCheck className="h-8 w-8 text-[#1DB954]" />
+              </div>
             </div>
-            <h3 className="mb-1 font-bold text-white">Verifique seu e-mail</h3>
-            <p className="text-sm text-spotify-text">
-              Enviamos um link para <strong>{email}</strong>.
-            </p>
-            <p className="mt-4 text-xs text-spotify-text/60">
-              Pode levar alguns minutos. Verifique também sua caixa de spam.
-            </p>
+            <h3 className="text-xl font-bold">Senha alterada!</h3>
+            <p className="mt-2 text-gray-400">Você será redirecionado para o login em instantes...</p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <p className="rounded-xl bg-red-500/20 px-3 py-2 text-center text-sm text-red-400">
+              <div className="rounded border border-red-500/50 bg-red-500/10 p-3 text-center text-sm text-red-500">
                 {error}
-              </p>
+              </div>
             )}
 
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-white">
-                E-mail
+              <label className="mb-1 block text-sm font-medium text-gray-300">
+                Nova Senha
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded border border-gray-600 bg-[#282828] p-3 text-white placeholder-gray-400 focus:border-[#1DB954] focus:outline-none"
+                  placeholder="Mínimo 8 caracteres"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-400 hover:text-white"
+                >
+                  {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-300">
+                Confirmar Senha
               </label>
               <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
+                type="password"
                 required
-                className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full rounded border border-gray-600 bg-[#282828] p-3 text-white placeholder-gray-400 focus:border-[#1DB954] focus:outline-none"
+                placeholder="Repita a nova senha"
               />
             </div>
 
-            <Button type="submit" isLoading={isLoading} className="mt-2 w-full">
-              Enviar link
-            </Button>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="mt-4 w-full rounded-full bg-[#1DB954] py-3 font-bold text-black transition hover:bg-[#1ed760] hover:scale-105 disabled:opacity-70 disabled:hover:scale-100"
+            >
+              {isLoading ? 'Salvando...' : 'Alterar Senha'}
+            </button>
           </form>
         )}
       </div>
     </div>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-[#121212] text-white">Carregando...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   )
 }
