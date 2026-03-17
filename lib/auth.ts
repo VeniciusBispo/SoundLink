@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
 
           if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
             console.log("Email not verified")
-            return { error: "EMAIL_NOT_VERIFIED" } as any
+            throw new Error("EMAIL_NOT_VERIFIED")
           }
 
           if (!emailProviderConfigured && !user.emailVerified) {
@@ -96,7 +96,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.email = user.email!
+        token.email = user.email || ''
         token.username = user.name ?? ''
         token.role = (user as { role?: string }).role ?? 'USER'
         token.avatar = (user as any).avatar ?? null
