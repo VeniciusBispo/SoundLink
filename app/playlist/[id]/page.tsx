@@ -65,6 +65,7 @@ function PlaylistPageInner() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isCoverOpen, setIsCoverOpen] = useState(false)
   const [coverDraft, setCoverDraft] = useState('')
+  const [nameDraft, setNameDraft] = useState('')
   const [isSavingCover, setIsSavingCover] = useState(false)
   const [coverError, setCoverError] = useState('')
 
@@ -147,17 +148,26 @@ function PlaylistPageInner() {
   const openCoverModal = () => {
     setCoverError('')
     setCoverDraft(currentPlaylist?.coverImage ?? '')
+    setNameDraft(currentPlaylist?.name ?? '')
     setIsCoverOpen(true)
   }
 
   const handleSaveCover = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!nameDraft.trim()) {
+      setCoverError('O nome da playlist é obrigatório')
+      return
+    }
     setCoverError('')
     setIsSavingCover(true)
     try {
-      const next = coverDraft.trim()
-      const updated = await updatePlaylistApi(id, { coverImage: next ? next : null })
-      updatePlaylist(id, { coverImage: updated.coverImage ?? null })
+      const nextCover = coverDraft.trim()
+      const nextName = nameDraft.trim()
+      const updated = await updatePlaylistApi(id, {
+        name: nextName,
+        coverImage: nextCover ? nextCover : null,
+      })
+      updatePlaylist(id, { name: updated.name, coverImage: updated.coverImage ?? null })
       setIsCoverOpen(false)
     } catch (err) {
       setCoverError((err as Error).message)
@@ -463,9 +473,27 @@ function PlaylistPageInner() {
         playlistName={currentPlaylist.name}
       />
 
-      <Modal isOpen={isCoverOpen} onClose={() => setIsCoverOpen(false)} title="Editar capa da playlist">
+      <Modal isOpen={isCoverOpen} onClose={() => setIsCoverOpen(false)} title="Editar Playlist">
         <form onSubmit={handleSaveCover} className="flex flex-col gap-4">
-          <PlaylistCoverPicker value={coverDraft} onChange={setCoverDraft} />
+          {/* Campo para nome */}
+          <div>
+            <label htmlFor="edit-name" className="mb-1.5 block text-sm font-medium text-white">
+              Nome da playlist
+            </label>
+            <input
+              id="edit-name"
+              type="text"
+              value={nameDraft}
+              onChange={(e) => setNameDraft(e.target.value)}
+              placeholder="Nome da playlist"
+              className="w-full rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
+            />
+          </div>
+          {/* Campo para capa */}
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-white">Capa da playlist</label>
+            <PlaylistCoverPicker value={coverDraft} onChange={setCoverDraft} />
+          </div>
           {coverError && (
             <div className="rounded-xl bg-red-500/20 px-3 py-2 text-center text-sm text-red-400">
               {coverError}
