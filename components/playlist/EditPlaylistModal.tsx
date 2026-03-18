@@ -3,27 +3,18 @@
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 const PlaylistCoverPicker = dynamic(() => import('@/components/playlist/PlaylistCoverPicker'), { ssr: false })
-import { HiX } from 'react-icons/hi'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useUIStore } from '@/store/uiStore'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import Modal from '@/components/ui/Modal'
 
-export default function CreatePlaylistModal() {
-  const isOpen = useUIStore((s) => s.isCreatePlaylistModalOpen)
-  const close = useUIStore((s) => s.closeCreatePlaylistModal)
-  const { create } = useMyPlaylists()
-  const { data: session } = useSession()
-  const router = useRouter()
-
-  // Redirect to login if modal is opened without an active session
-  useEffect(() => {
-    if (isOpen && !session) {
-      close()
-      router.push('/login')
-    }
-  }, [isOpen, session, close, router])
+export default function EditPlaylistModal() {
+  // Assume que o store foi atualizado para suportar o estado de edição
+  const isOpen = useUIStore((s) => s.isEditPlaylistModalOpen)
+  const close = useUIStore((s) => s.closeEditPlaylistModal)
+  const playlistToEdit = useUIStore((s) => s.playlistToEdit)
+  
+  // Assume que o hook useMyPlaylists expõe a função update
+  const { update } = useMyPlaylists()
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -32,6 +23,17 @@ export default function CreatePlaylistModal() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
 
+  // Preenche os campos quando a modal abre e existe uma playlist para editar
+  useEffect(() => {
+    if (isOpen && playlistToEdit) {
+      setName(playlistToEdit.name)
+      setDescription(playlistToEdit.description || '')
+      setCoverImage(playlistToEdit.coverImage || '')
+      setIsPublic(playlistToEdit.isPublic)
+      setError('')
+    }
+  }, [isOpen, playlistToEdit])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) {
@@ -39,20 +41,18 @@ export default function CreatePlaylistModal() {
       return
     }
 
+    if (!playlistToEdit) return
+
     setIsLoading(true)
     setError('')
 
     try {
-      await create({
+      await update(playlistToEdit.id, {
         name: name.trim(),
         description: description.trim() || undefined,
         isPublic,
-        ...(coverImage.trim() && { coverImage: coverImage.trim() })
+        coverImage: coverImage.trim() || null
       })
-      setName('')
-      setDescription('')
-      setCoverImage('')
-      setIsPublic(true)
       close()
     } catch (err) {
       setError((err as Error).message)
@@ -62,9 +62,9 @@ export default function CreatePlaylistModal() {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={close} title="Criar Playlist">
+    <Modal isOpen={isOpen} onClose={close} title="Editar Playlist">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Campo para imagem/avatar/emoji customizável */}
+        {/* Campo para imagem/avatar/emoji - Já existente conforme mencionado */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-white">
             Capa da playlist
@@ -76,14 +76,14 @@ export default function CreatePlaylistModal() {
         )}
 
         <div>
-          <label htmlFor="playlist-desc" className="mb-1.5 block text-sm font-medium text-white">
+          <label htmlFor="edit-playlist-desc" className="mb-1.5 block text-sm font-medium text-white">
             Descrição
           </label>
           <textarea
-            id="playlist-desc"
+            id="edit-playlist-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Dê uma descrição para sua playlist"
+            placeholder="Descrição da playlist"
             maxLength={300}
             rows={3}
             className="w-full resize-none rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
@@ -117,7 +117,7 @@ export default function CreatePlaylistModal() {
             disabled={isLoading}
             className="rounded-full bg-spotify-green px-6 py-2 text-sm font-bold text-black hover:scale-105 transition-transform disabled:opacity-60"
           >
-            {isLoading ? 'Criando…' : 'Criar'}
+            {isLoading ? 'Salvando…' : 'Salvar'}
           </button>
         </div>
       </form>

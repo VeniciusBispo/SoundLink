@@ -6,6 +6,7 @@ import { HiMail, HiCheckCircle } from 'react-icons/hi'
 import Logo from '@/components/ui/Logo'
 import Button from '@/components/ui/Button'
 
+
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
