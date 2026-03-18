@@ -20,6 +20,7 @@ const SUGGESTED_EMOJIS = [
 
 export default function PlaylistCoverPicker({ value, onChange, name, onNameChange }: Props) {
   const [urlInput, setUrlInput] = useState('')
+  const [showEmojis, setShowEmojis] = useState(false)
 
   const preview = useMemo(() => {
     const v = value?.trim()
@@ -116,31 +117,43 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs text-spotify-text">Ou use um emoji</label>
-        <input
-          type="text"
-          inputMode="text"
-          value={!isLikelyImageSrc(value) ? value : ''}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Ex: 🎵"
-          className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
-        />
-        <div className="mt-1 flex flex-wrap gap-2">
-          {SUGGESTED_EMOJIS.map((emoji) => (
-            <button
-              key={emoji}
-              type="button"
-              onClick={() => onChange(emoji)}
-              className={`flex h-9 w-9 items-center justify-center rounded-md text-xl transition-all hover:scale-110 ${
-                value === emoji
-                  ? 'bg-spotify-green text-black scale-110 shadow-lg'
-                  : 'bg-spotify-hover text-white hover:bg-spotify-card'
-              }`}
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
+        <button
+          type="button"
+          onClick={() => setShowEmojis((prev) => !prev)}
+          className="flex items-center gap-1.5 text-xs text-spotify-text hover:text-white transition-colors w-fit"
+        >
+          <span className={`transition-transform duration-200 ${showEmojis ? 'rotate-90' : ''}`}>▶</span>
+          Ou use um emoji
+        </button>
+
+        {showEmojis && (
+          <>
+            <input
+              type="text"
+              inputMode="text"
+              value={!isLikelyImageSrc(value) ? value : ''}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="Ex: 🎵"
+              className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+            />
+            <div className="mt-1 flex flex-wrap gap-2">
+              {SUGGESTED_EMOJIS.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  onClick={() => onChange(emoji)}
+                  className={`flex h-9 w-9 items-center justify-center rounded-md text-xl transition-all hover:scale-110 ${
+                    value === emoji
+                      ? 'bg-spotify-green text-black scale-110 shadow-lg'
+                      : 'bg-spotify-hover text-white hover:bg-spotify-card'
+                  }`}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   )
