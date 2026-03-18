@@ -64,12 +64,26 @@ export default function EditPlaylistModal() {
   return (
     <Modal isOpen={isOpen} onClose={close} title="Editar Playlist">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Campo para imagem/avatar/emoji - Já existente conforme mencionado */}
+        {/* Campo para nome da playlist */}
+        <div>
+          <label htmlFor="edit-playlist-name" className="mb-1.5 block text-sm font-medium text-white">
+            Nome da playlist
+          </label>
+          <input
+            id="edit-playlist-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Nome da playlist"
+            className="w-full rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
+          />
+        </div>
+        {/* Campo para imagem/avatar/emoji */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-white">
             Capa da playlist
           </label>
-          <PlaylistCoverPicker value={coverImage} onChange={setCoverImage} name={name} onNameChange={setName} />
+          <PlaylistCoverPicker value={coverImage} onChange={setCoverImage} />
         </div>
         {error && (
           <p className="rounded-md bg-red-500/20 px-3 py-2 text-sm text-red-400">{error}</p>
