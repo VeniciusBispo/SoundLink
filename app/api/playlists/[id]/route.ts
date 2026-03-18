@@ -34,7 +34,8 @@ export async function GET(req: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({ data: playlist })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id][GET] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
@@ -59,6 +60,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       name: z.string().min(1).max(100).optional(),
       description: z.string().max(300).optional(),
       isPublic: z.boolean().optional(),
+      coverImage: z.string().max(2_000_000).nullable().optional(), // allow clearing
     })
 
     const body = await req.json()
@@ -77,7 +79,8 @@ export async function PATCH(req: NextRequest, { params }: Params) {
     })
 
     return NextResponse.json({ data: updated })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id][PATCH] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
@@ -100,7 +103,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
 
     await prisma.playlist.delete({ where: { id: params.id } })
     return NextResponse.json({ data: { success: true } })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id][DELETE] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

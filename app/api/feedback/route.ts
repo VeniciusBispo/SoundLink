@@ -29,7 +29,8 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ data: { success: true } }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error('[feedback][POST] error:', error)
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
   }
 }

@@ -43,7 +43,9 @@ export async function GET(req: NextRequest) {
           await prisma.song.updateMany({
             where: { youtubeVideoId: videoId, duration: 0 },
             data: { duration: dur },
-          }).catch(() => {})
+          }).catch((error) => {
+            console.warn('[youtube][GET] failed to persist duration:', error)
+          })
         }
         return NextResponse.json({
           videoId,
@@ -91,7 +93,9 @@ export async function GET(req: NextRequest) {
     await prisma.song.updateMany({
       where: { youtubeVideoId: videoId, duration: 0 },
       data: { duration },
-    }).catch(() => {})
+    }).catch((error) => {
+      console.warn('[youtube][GET] failed to persist duration (fallback):', error)
+    })
   }
 
   return NextResponse.json({

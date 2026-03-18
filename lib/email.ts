@@ -1,4 +1,6 @@
-import nodemailer from 'nodemailer'
+// c:\Users\vinic\Desktop\Musicnews\lib\email.ts
+
+import { parseEmailFrom } from '@/lib/email-from'
 
 function buildEmailHtml(verifyUrl: string) {
   return `
@@ -34,41 +36,52 @@ export async function sendVerificationEmail(email: string, token: string): Promi
   const html = buildEmailHtml(verifyUrl)
   const text = buildEmailText(verifyUrl)
   const subject = 'Confirme seu e-mail — SoundLink'
-  const from = process.env.EMAIL_FROM ?? 'SoundLink <noreply@soundlink.com>'
 
-  // Log para depuração no Netlify
+  // Aceita tanto BREVO_API_KEY quanto SMTP_PASS (compatibilidade)
+  const apiKey = process.env.BREVO_API_KEY || process.env.SMTP_PASS
+
+  const sender = parseEmailFrom(process.env.EMAIL_FROM, 'a50286001@smtp-brevo.com', 'SoundLink')
+
   console.log(`[Email Service] Tentando enviar e-mail para: ${email}`)
-  console.log(`[Email Service] Remetente: ${from}`)
-  console.log(`[Email Service] SMTP_HOST configurado: ${!!process.env.SMTP_HOST}`)
+  console.log(`[Email Service] API Key configurada: ${!!apiKey}`)
+  console.log(`[Email Service] Remetente: ${sender.formatted}`)
 
-  try {
-    // Option 1: SMTP via nodemailer
-    if (process.env.SMTP_HOST) {
-      const transportConfig = {
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT ?? '587'),
-        secure: process.env.SMTP_PORT === '465',
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      }
-
-      console.log(`[Email Service] Criando transporte com host: ${transportConfig.host}`)
-      const transporter = nodemailer.createTransport(transportConfig)
-
-      // Verifica a conexão e autenticação
-      await transporter.verify()
-      console.log('[Email Service] Transporte verificado com sucesso.')
-
-      console.log('[Email Service] Enviando e-mail...')
-      await transporter.sendMail({ from, to: email, subject, html, text })
-      console.log('[Email Service] E-mail enviado com sucesso.')
-      return true
-    }
-
-    // Fallback for development (log to console)
-    console.log('⚠️ [Email Service] Fallback: Nenhuma configuração de SMTP encontrada.')
+  // Fallback para desenvolvimento (apenas log)
+  if (!apiKey) {
+    console.log('⚠️ [Email Service] Nenhuma API key configurada. Usando fallback de log.')
     console.log(`To: ${email}`)
     console.log(`Link: ${verifyUrl}`)
-    // In dev, we can consider this a "success" to not block the registration flow
+    return true
+  }
+
+  try {
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': apiKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        sender: {
+          name: sender.name,
+          email: sender.email,
+        },
+        to: [{ email }],
+        subject,
+        htmlContent: html,
+        textContent: text,
+      }),
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      console.error('[Email Service] Erro na API do Brevo:', data)
+      return false
+    }
+
+    console.log('[Email Service] E-mail enviado com sucesso via API Brevo:', data.messageId)
     return true
   } catch (error) {
     console.error('[Email Service] ERRO FATAL ao enviar e-mail de verificação:', error)

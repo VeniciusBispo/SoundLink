@@ -12,6 +12,10 @@ interface PlaylistCardProps {
   className?: string
 }
 
+function isLikelyImageSrc(v: string) {
+  return /^data:image\//.test(v) || /^https?:\/\//.test(v) || v.startsWith('/')
+}
+
 export default function PlaylistCard({ playlist, className }: PlaylistCardProps) {
   const { playPlaylist } = usePlayer()
 
@@ -32,7 +36,7 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
     >
       {/* Cover image */}
       <div className="relative aspect-square w-full overflow-hidden rounded-lg shadow-lg">
-        {playlist.coverImage ? (
+        {playlist.coverImage && isLikelyImageSrc(playlist.coverImage) ? (
           <Image
             src={playlist.coverImage}
             alt={playlist.name}
@@ -40,6 +44,10 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 15vw"
           />
+        ) : playlist.coverImage ? (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
+            <span className="text-5xl">{playlist.coverImage}</span>
+          </div>
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
             <HiMusicNote className="h-10 w-10 text-spotify-green/60" />

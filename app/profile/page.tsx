@@ -12,7 +12,7 @@ import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { getProfile, updateProfile } from '@/services/authService'
 import {
-  HiMusicNote, HiUser, HiPencil, HiLockClosed, HiCollection,
+  HiUser, HiLockClosed, HiCollection,
   HiCheckCircle, HiExclamationCircle, HiLogout, HiEye, HiEyeOff,
 } from 'react-icons/hi'
 
@@ -137,35 +137,51 @@ export default function ProfilePage() {
   return (
     <MainLayout>
       {/* Banner estilo Discord */}
-      <div className="relative w-full h-[22rem] bg-gradient-to-br from-indigo-900 to-purple-800 mb-28 flex items-end">
+      <div className="relative w-full bg-gradient-to-br from-indigo-900 to-purple-800">
         {banner && (
-          <img src={banner} alt="Banner" className="absolute inset-0 w-full h-full object-cover" />
+          <img src={banner} alt="Banner" className="absolute inset-0 h-full w-full object-cover" />
         )}
-        <div className="relative flex items-end gap-10 w-full px-24 pb-10">
-          <div className="h-72 w-72 rounded-full bg-spotify-card border-4 border-black overflow-hidden flex items-center justify-center shadow-2xl">
-            {avatar ? (
-              avatar.startsWith('data:image') ? (
-                <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
-              ) : (
-                <span className="text-7xl">{avatar}</span>
-              )
-            ) : (
-              <HiUser className="h-20 w-20 text-white" />
-            )}
-          </div>
-          <div className="flex flex-col gap-2 pb-6 pl-2">
-            <h1 className="text-5xl font-extrabold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] leading-tight">{profile?.username}</h1>
-            <p className="text-lg text-white/90 font-medium drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">{profile?.email}</p>
-            <div className="flex flex-wrap items-center gap-6 text-lg text-white/90 font-semibold drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)]">
-              <span><HiCollection className="mr-1 inline h-5 w-5" />{profile?._count.playlists} playlists</span>
-              <span className="text-white/40">·</span>
-              <span>Membro desde {memberSince}</span>
+        <div className="relative px-4 pb-6 pt-16 sm:px-6 md:pt-20">
+          <div className="mx-auto max-w-5xl">
+            <div className="flex flex-col items-center gap-4 text-center md:flex-row md:items-end md:gap-6 md:text-left">
+              <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-black bg-spotify-card shadow-2xl sm:h-32 sm:w-32 md:h-40 md:w-40">
+                {avatar ? (
+                  avatar.startsWith('data:image') ? (
+                    <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="text-5xl sm:text-6xl">{avatar}</span>
+                    </div>
+                  )
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center">
+                    <HiUser className="h-14 w-14 text-white sm:h-16 sm:w-16" />
+                  </div>
+                )}
+              </div>
+
+              <div className="min-w-0 pb-1 md:pb-4">
+                <h1 className="break-words text-2xl font-extrabold leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.7)] sm:text-3xl md:text-4xl">
+                  {profile?.username}
+                </h1>
+                <p className="mt-1 break-words text-sm font-medium text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)] sm:text-base">
+                  {profile?.email}
+                </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm font-semibold text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.7)] md:justify-start">
+                  <span className="inline-flex items-center gap-1.5">
+                    <HiCollection className="h-4 w-4" />
+                    {profile?._count.playlists} playlists
+                  </span>
+                  <span className="text-white/40">·</span>
+                  <span>Membro desde {memberSince}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/` })}
-          className="absolute top-4 right-4 flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white bg-black/40"
+          className="absolute right-3 top-3 flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white sm:right-4 sm:top-4"
         >
           <HiLogout className="h-4 w-4" />
           Sair
@@ -173,12 +189,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 border-b border-white/10 px-6">
+      <div className="border-b border-white/10 px-2 sm:px-6">
+        <div className="flex gap-1 overflow-x-auto scrollbar-hide">
         {tabs.map((t) => (
           <button
             key={t.id}
             onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+            className={`flex min-h-[44px] flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
               tab === t.id
                 ? 'border-spotify-green text-white'
                 : 'border-transparent text-spotify-text hover:text-white'
@@ -188,10 +205,11 @@ export default function ProfilePage() {
             {t.label}
           </button>
         ))}
+        </div>
       </div>
 
       {/* Tab content */}
-      <div className="px-6 py-8 max-w-xl">
+      <div className="mx-auto max-w-xl px-4 py-6 sm:px-6 sm:py-8">
         {/* ——— PERFIL ——— */}
         {tab === 'perfil' && (
           <form className="flex flex-col gap-5" onSubmit={async (e) => { e.preventDefault(); await handleSaveProfile() }}>
@@ -213,20 +231,25 @@ export default function ProfilePage() {
             </div>
             <div className="flex flex-col gap-1.5">
               <label className="text-sm text-spotify-text">Banner do perfil (opcional)</label>
-              <input type="file" accept="image/*" onChange={e => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  const reader = new FileReader();
-                  reader.onload = (ev) => {
-                    if (typeof ev.target?.result === 'string') setBanner(ev.target.result);
-                  };
-                  reader.readAsDataURL(file);
-                }
-              }} />
-              {banner && <img src={banner} alt="Banner preview" className="mt-2 h-24 w-full object-cover rounded" />}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                      if (typeof ev.target?.result === 'string') setBanner(ev.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                  }
+                }}
+                className="block w-full text-sm text-spotify-text file:mr-3 file:rounded-lg file:border-0 file:bg-spotify-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-spotify-card"
+              />
+              {banner && <img src={banner} alt="Banner preview" className="mt-2 h-24 w-full rounded-xl object-cover ring-1 ring-white/10" />}
             </div>
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="submit" isLoading={savingProfile} className="bg-spotify-green px-6 py-2 text-black font-bold">Salvar</Button>
+              <Button type="submit" isLoading={savingProfile} className="w-full sm:w-auto">Salvar</Button>
             </div>
             {profileMsg && <Alert type={profileMsg.type} msg={profileMsg.msg} />}
           </form>

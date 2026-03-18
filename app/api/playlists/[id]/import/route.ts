@@ -88,7 +88,8 @@ export async function POST(req: NextRequest, { params }: Params) {
     }
 
     return NextResponse.json({ imported: newSongs.length, skipped })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id/import][POST] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

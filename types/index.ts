@@ -149,6 +149,7 @@ export interface CreatePlaylistInput {
   name: string
   description?: string
   isPublic: boolean
+  coverImage?: string | null
 }
 
 export interface AddSongInput {

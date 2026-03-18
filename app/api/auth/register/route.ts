@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    const emailProviderConfigured = !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST)
+    const emailProviderConfigured = !!(process.env.RESEND_API_KEY || process.env.SMTP_HOST || process.env.SMTP_PASS || process.env.BREVO_API_KEY)
 
     // Only require verification if an email provider is configured
     const verificationToken = emailProviderConfigured ? randomBytes(32).toString('hex') : null

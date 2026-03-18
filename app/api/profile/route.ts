@@ -29,7 +29,8 @@ export async function GET() {
     }
 
     return NextResponse.json({ data: user })
-  } catch {
+  } catch (error) {
+    console.error('[profile][GET] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
@@ -65,7 +66,8 @@ export async function PATCH(req: NextRequest) {
     })
 
     return NextResponse.json({ data: updated })
-  } catch {
+  } catch (error) {
+    console.error('[profile][PATCH] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

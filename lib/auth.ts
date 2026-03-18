@@ -43,8 +43,12 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordValid) return null
 
-        const emailProviderConfigured =
-          !!process.env.SMTP_HOST
+        const emailProviderConfigured = !!(
+          process.env.BREVO_API_KEY ||
+          process.env.SMTP_PASS ||
+          process.env.SMTP_HOST ||
+          process.env.RESEND_API_KEY
+        )
 
         // Ao lançar erro aqui SEM o try/catch, o NextAuth redireciona para:
         // /api/auth/signin?error=EMAIL_NOT_VERIFIED

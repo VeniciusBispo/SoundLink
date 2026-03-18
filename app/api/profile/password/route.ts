@@ -46,7 +46,8 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ message: 'Senha atualizada com sucesso' })
-  } catch {
+  } catch (error) {
+    console.error('[profile/password][POST] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

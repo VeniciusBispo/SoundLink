@@ -20,9 +20,10 @@ const variantClasses: Record<Variant, string> = {
 }
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-4 py-1.5 text-xs',
-  md: 'px-6 py-2 text-sm',
-  lg: 'px-8 py-3 text-base',
+  // Mobile-first: keep touch targets >= 44px
+  sm: 'px-4 py-2.5 text-sm',
+  md: 'px-6 py-3 text-sm',
+  lg: 'px-8 py-3.5 text-base',
 }
 
 export default function Button({
@@ -38,7 +39,7 @@ export default function Button({
     <button
       disabled={disabled || isLoading}
       className={cn(
-        'inline-flex items-center justify-center rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-spotify-green focus:ring-offset-2 focus:ring-offset-spotify-black disabled:cursor-not-allowed disabled:opacity-60',
+        'inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-spotify-green focus:ring-offset-2 focus:ring-offset-spotify-black disabled:cursor-not-allowed disabled:opacity-60',
         variantClasses[variant],
         sizeClasses[size],
         className

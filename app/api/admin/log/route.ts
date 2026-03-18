@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
         userAgent: body.userAgent ?? null,
       },
     })
-  } catch {
-    // silently ignore logging errors
+  } catch (error) {
+    console.warn('[admin/log][POST] accessLog failed:', error)
   }
 
   return NextResponse.json({ ok: true })

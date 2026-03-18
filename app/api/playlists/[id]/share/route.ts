@@ -31,7 +31,8 @@ export async function POST(_req: NextRequest, { params }: Params) {
     })
 
     return NextResponse.json({ data: { shareCode: updated.shareCode } })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id/share][POST] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
@@ -58,7 +59,8 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
     })
 
     return NextResponse.json({ data: {} })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id/share][DELETE] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

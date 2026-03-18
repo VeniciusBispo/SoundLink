@@ -49,6 +49,10 @@ function Carousel({ children }: { children: React.ReactNode }) {
 
 // ── Compact horizontal card (used in "Continuar ouvindo") ────────────────────
 
+function isLikelyImageSrc(v: string) {
+  return /^data:image\//.test(v) || /^https?:\/\//.test(v) || v.startsWith('/')
+}
+
 function RecentCard({ item }: { item: ReturnType<typeof useRecentPlaylists>['recent'][number] }) {
   return (
     <Link
@@ -57,8 +61,12 @@ function RecentCard({ item }: { item: ReturnType<typeof useRecentPlaylists>['rec
       style={{ width: 220, scrollSnapAlign: 'start' }}
     >
       <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
-        {item.coverImage ? (
+        {item.coverImage && isLikelyImageSrc(item.coverImage) ? (
           <Image src={item.coverImage} alt={item.name} fill className="object-cover" sizes="48px" />
+        ) : item.coverImage ? (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
+            <span className="text-2xl">{item.coverImage}</span>
+          </div>
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
             <HiMusicNote className="h-5 w-5 text-spotify-green/60" />

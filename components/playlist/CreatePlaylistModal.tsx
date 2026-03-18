@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-const AvatarPicker = dynamic(() => import('@/components/ui/AvatarPicker'), { ssr: false })
+const PlaylistCoverPicker = dynamic(() => import('@/components/playlist/PlaylistCoverPicker'), { ssr: false })
 import { HiX } from 'react-icons/hi'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -27,7 +27,7 @@ export default function CreatePlaylistModal() {
 
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [coverImage, setCoverImage] = useState('') // URL, emoji ou avatar
+  const [coverImage, setCoverImage] = useState('') // URL, emoji ou data URL
   const [isPublic, setIsPublic] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -67,9 +67,9 @@ export default function CreatePlaylistModal() {
         {/* Campo para imagem/avatar/emoji customizável */}
         <div>
           <label className="mb-1.5 block text-sm font-medium text-white">
-            Imagem, emoji ou avatar
+            Capa da playlist
           </label>
-          <AvatarPicker value={coverImage} onChange={setCoverImage} />
+          <PlaylistCoverPicker value={coverImage} onChange={setCoverImage} />
         </div>
         {error && (
           <p className="rounded-md bg-red-500/20 px-3 py-2 text-sm text-red-400">{error}</p>

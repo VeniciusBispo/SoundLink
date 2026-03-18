@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from 'react'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import dynamic from 'next/dynamic'
 import {
   HiPlay,
   HiTrash,
@@ -13,6 +14,7 @@ import {
   HiLockClosed,
   HiGlobe,
   HiExternalLink,
+  HiPencil,
 } from 'react-icons/hi'
 import MainLayout from '@/components/layout/MainLayout'
 import SongList from '@/components/playlist/SongList'
@@ -21,10 +23,12 @@ import ImportPlaylistModal from '@/components/playlist/ImportPlaylistModal'
 import ShareModal from '@/components/playlist/ShareModal'
 import DeleteConfirmModal from '@/components/playlist/DeleteConfirmModal'
 import Button from '@/components/ui/Button'
+import Modal from '@/components/ui/Modal'
 import {
   getPlaylist,
   deletePlaylist,
   removeSongFromPlaylist,
+  updatePlaylist as updatePlaylistApi,
 } from '@/services/playlistService'
 import { getOfflinePlaylist } from '@/services/offlineService'
 import { usePlaylistStore } from '@/store/playlistStore'
@@ -33,6 +37,12 @@ import { usePlayer } from '@/hooks/usePlayer'
 import { useRecentPlaylists } from '@/hooks/useRecentPlaylists'
 import { formatTotalDuration } from '@/lib/utils'
 import type { Playlist } from '@/types'
+
+const PlaylistCoverPicker = dynamic(() => import('@/components/playlist/PlaylistCoverPicker'), { ssr: false })
+
+function isLikelyImageSrc(v: string) {
+  return /^data:image\//.test(v) || /^https?:\/\//.test(v) || v.startsWith('/')
+}
 
 // ─────────────────────────────────────────────────────
 // Inner component (needs useSearchParams → Suspense wrapper)
@@ -53,6 +63,10 @@ function PlaylistPageInner() {
   const [isShareOpen, setIsShareOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isCoverOpen, setIsCoverOpen] = useState(false)
+  const [coverDraft, setCoverDraft] = useState('')
+  const [isSavingCover, setIsSavingCover] = useState(false)
+  const [coverError, setCoverError] = useState('')
 
   const currentPlaylist = usePlaylistStore((s) => s.currentPlaylist)
   const setCurrentPlaylist = usePlaylistStore((s) => s.setCurrentPlaylist)
@@ -129,6 +143,28 @@ function PlaylistPageInner() {
   }
 
   const handleDelete = () => setIsDeleteOpen(true)
+
+  const openCoverModal = () => {
+    setCoverError('')
+    setCoverDraft(currentPlaylist?.coverImage ?? '')
+    setIsCoverOpen(true)
+  }
+
+  const handleSaveCover = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setCoverError('')
+    setIsSavingCover(true)
+    try {
+      const next = coverDraft.trim()
+      const updated = await updatePlaylistApi(id, { coverImage: next ? next : null })
+      updatePlaylist(id, { coverImage: updated.coverImage ?? null })
+      setIsCoverOpen(false)
+    } catch (err) {
+      setCoverError((err as Error).message)
+    } finally {
+      setIsSavingCover(false)
+    }
+  }
 
   const handleDeleteConfirm = async () => {
     setIsDeleting(true)
@@ -225,7 +261,7 @@ function PlaylistPageInner() {
       {/* Hero */}
       <div className="flex flex-col gap-4 bg-gradient-to-b from-purple-900/50 to-transparent px-4 py-6 md:flex-row md:items-end md:gap-6 md:px-6 md:py-8">
         <div className="mx-auto h-36 w-36 flex-shrink-0 overflow-hidden rounded-lg shadow-2xl md:mx-0 md:h-48 md:w-48">
-          {currentPlaylist.coverImage ? (
+          {currentPlaylist.coverImage && isLikelyImageSrc(currentPlaylist.coverImage) ? (
             <Image
               src={currentPlaylist.coverImage}
               alt={currentPlaylist.name}
@@ -233,6 +269,10 @@ function PlaylistPageInner() {
               height={192}
               className="h-full w-full object-cover"
             />
+          ) : currentPlaylist.coverImage ? (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-800 to-purple-600">
+              <span className="text-6xl">{currentPlaylist.coverImage}</span>
+            </div>
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-purple-800 to-purple-600">
               <span className="text-5xl">🎵</span>
@@ -297,6 +337,15 @@ function PlaylistPageInner() {
             >
               <HiPlus className="h-4 w-4" />
               <span className="hidden sm:inline">Adicionar</span>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={openCoverModal}
+              className="flex items-center gap-1.5"
+            >
+              <HiPencil className="h-4 w-4" />
+              <span className="hidden sm:inline">Capa</span>
             </Button>
             <Button
               variant="ghost"
@@ -397,6 +446,33 @@ function PlaylistPageInner() {
         isDeleting={isDeleting}
         playlistName={currentPlaylist.name}
       />
+
+      <Modal isOpen={isCoverOpen} onClose={() => setIsCoverOpen(false)} title="Editar capa da playlist">
+        <form onSubmit={handleSaveCover} className="flex flex-col gap-4">
+          <PlaylistCoverPicker value={coverDraft} onChange={setCoverDraft} />
+          {coverError && (
+            <div className="rounded-xl bg-red-500/20 px-3 py-2 text-center text-sm text-red-400">
+              {coverError}
+            </div>
+          )}
+          <div className="flex justify-end gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setIsCoverOpen(false)}
+              className="rounded-full px-5 py-2 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              disabled={isSavingCover}
+              className="rounded-full bg-spotify-green px-6 py-2 text-sm font-bold text-black hover:scale-105 transition-transform disabled:opacity-60"
+            >
+              {isSavingCover ? 'Salvando…' : 'Salvar'}
+            </button>
+          </div>
+        </form>
+      </Modal>
     </MainLayout>
   )
 }

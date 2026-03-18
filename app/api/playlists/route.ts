@@ -8,6 +8,7 @@ const createPlaylistSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(300).optional(),
   isPublic: z.boolean().default(true),
+  coverImage: z.string().max(2_000_000).optional(), // URL or data URL
 })
 
 // GET /api/playlists — list public playlists or user's own playlists
@@ -45,7 +46,8 @@ export async function GET(req: NextRequest) {
     ])
 
     return NextResponse.json({ data: playlists, total, page, pageSize })
-  } catch {
+  } catch (error) {
+    console.error('[playlists][GET] error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -76,7 +78,8 @@ export async function POST(req: NextRequest) {
     })
 
     return NextResponse.json({ data: playlist }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error('[playlists][POST] error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

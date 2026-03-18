@@ -65,7 +65,8 @@ export async function POST(req: NextRequest, { params }: Params) {
     })
 
     return NextResponse.json({ data: song }, { status: 201 })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id/songs][POST] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }
@@ -96,7 +97,8 @@ export async function DELETE(req: NextRequest, { params }: Params) {
     })
 
     return NextResponse.json({ data: { success: true } })
-  } catch {
+  } catch (error) {
+    console.error('[playlists/:id/songs][DELETE] error:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
   }
 }

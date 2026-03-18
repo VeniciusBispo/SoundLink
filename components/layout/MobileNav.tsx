@@ -21,7 +21,7 @@ export default function MobileNav() {
       <Link
         href="/"
         className={cn(
-          'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
           pathname === '/' ? 'text-white' : 'text-spotify-text'
         )}
       >
@@ -32,7 +32,7 @@ export default function MobileNav() {
       <Link
         href="/explore"
         className={cn(
-          'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
           pathname === '/explore' ? 'text-white' : 'text-spotify-text'
         )}
       >
@@ -43,7 +43,7 @@ export default function MobileNav() {
       <Link
         href="/songs"
         className={cn(
-          'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
           pathname === '/songs' ? 'text-white' : 'text-spotify-text'
         )}
       >
@@ -54,7 +54,7 @@ export default function MobileNav() {
       <Link
         href="/access"
         className={cn(
-          'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
           pathname === '/access' ? 'text-white' : 'text-spotify-text'
         )}
       >
@@ -65,7 +65,7 @@ export default function MobileNav() {
       {session && (
         <button
           onClick={openCreatePlaylistModal}
-          className="flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 text-spotify-text"
+          className="flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 text-spotify-text"
         >
           <div className="flex h-6 w-6 items-center justify-center rounded-md bg-spotify-green">
             <HiPlus className="h-4 w-4 text-black" />
@@ -76,7 +76,7 @@ export default function MobileNav() {
 
       <button
         onClick={() => setFeedbackOpen(true)}
-        className="flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 text-spotify-text hover:text-white transition-colors"
+        className="flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 text-spotify-text hover:text-white transition-colors"
       >
         <HiChat className="h-6 w-6" />
         <span className="text-[10px] font-medium">Sugestões</span>
@@ -98,7 +98,7 @@ export default function MobileNav() {
       <Link
         href={session ? '/profile' : '/login'}
         className={cn(
-          'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
+          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
           (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-spotify-text'
         )}
       >

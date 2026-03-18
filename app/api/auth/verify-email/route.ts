@@ -31,7 +31,8 @@ export async function GET(req: NextRequest) {
     })
 
     return NextResponse.redirect(new URL('/login?verified=1', req.url))
-  } catch {
+  } catch (error) {
+    console.error('[verify-email] erro ao verificar token:', error)
     return NextResponse.redirect(new URL('/login?error=server_error', req.url))
   }
 }

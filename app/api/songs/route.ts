@@ -36,7 +36,8 @@ export async function GET(req: NextRequest) {
       data: songs,
       meta: { total, page, pages: Math.ceil(total / take) },
     })
-  } catch {
+  } catch (error) {
+    console.error('[songs][GET] error:', error)
     return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
   }
 }
