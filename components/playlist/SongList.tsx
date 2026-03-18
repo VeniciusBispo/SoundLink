@@ -114,6 +114,11 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
                 >
                   {song.title}
                 </p>
+                {ps.addedByUsername && (
+                  <p className="truncate text-[11px] text-spotify-text/80">
+                    Adicionado por {ps.addedByUsername}
+                  </p>
+                )}
               </div>
             </div>
 

@@ -38,6 +38,7 @@ export interface PlaylistSong {
   songId: string
   orderIndex: number
   addedAt: Date
+  addedByUsername?: string | null
   song: Song
 }
 

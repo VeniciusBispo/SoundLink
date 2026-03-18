@@ -71,9 +71,14 @@ export async function addSongToPlaylist(
     duration: number
     thumbnail: string
     channel: string
-  }
+  },
+  code?: string
 ) {
-  return request(`${BASE}/${playlistId}/songs`, {
+  const url = code
+    ? `${BASE}/${playlistId}/songs?code=${encodeURIComponent(code)}`
+    : `${BASE}/${playlistId}/songs`
+
+  return request(url, {
     method: 'POST',
     body: JSON.stringify(song),
   })

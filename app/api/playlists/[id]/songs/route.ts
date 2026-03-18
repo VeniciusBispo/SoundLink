@@ -26,7 +26,17 @@ export async function POST(req: NextRequest, { params }: Params) {
     if (!playlist) {
       return NextResponse.json({ error: 'Playlist não encontrada' }, { status: 404 })
     }
-    if (playlist.ownerId !== session.user.id) {
+    const code = req.nextUrl.searchParams.get('code') ?? undefined
+
+    const isOwner = playlist.ownerId === session.user.id
+    const hasShareAccess =
+      !playlist.isPublic &&
+      !!playlist.shareEnabled &&
+      !!playlist.shareCode &&
+      !!code &&
+      playlist.shareCode === code
+
+    if (!isOwner && !hasShareAccess) {
       return NextResponse.json({ error: 'Acesso negado' }, { status: 403 })
     }
 
@@ -61,7 +71,12 @@ export async function POST(req: NextRequest, { params }: Params) {
     const orderIndex = (lastEntry?.orderIndex ?? -1) + 1
 
     await prisma.playlistSong.create({
-      data: { playlistId: params.id, songId: song.id, orderIndex },
+      data: {
+        playlistId: params.id,
+        songId: song.id,
+        orderIndex,
+        addedByUsername: session.user.username,
+      },
     })
 
     return NextResponse.json({ data: song }, { status: 201 })

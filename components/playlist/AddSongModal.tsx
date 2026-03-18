@@ -14,9 +14,10 @@ interface AddSongModalProps {
   isOpen: boolean
   onClose: () => void
   playlistId: string
+  accessCode?: string
 }
 
-export default function AddSongModal({ isOpen, onClose, playlistId }: AddSongModalProps) {
+export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }: AddSongModalProps) {
   const [url, setUrl] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
@@ -34,13 +35,17 @@ export default function AddSongModal({ isOpen, onClose, playlistId }: AddSongMod
     setIsSaving(true)
     setSaveError('')
     try {
-      const song = await addSongToPlaylist(playlistId, {
-        youtubeVideoId: videoInfo.videoId,
-        title: videoInfo.title,
-        duration: videoInfo.duration,
-        thumbnail: videoInfo.thumbnail,
-        channel: videoInfo.channel,
-      })
+      const song = await addSongToPlaylist(
+        playlistId,
+        {
+          youtubeVideoId: videoInfo.videoId,
+          title: videoInfo.title,
+          duration: videoInfo.duration,
+          thumbnail: videoInfo.thumbnail,
+          channel: videoInfo.channel,
+        },
+        accessCode
+      )
       addSongToCurrentPlaylist(song as Parameters<typeof addSongToCurrentPlaylist>[0])
       setUrl('')
       reset()

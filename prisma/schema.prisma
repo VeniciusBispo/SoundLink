@@ -69,6 +69,7 @@ model PlaylistSong {
   songId     String   @db.ObjectId
   orderIndex Int      @default(0)
   addedAt    DateTime @default(now())
+  addedByUsername String?
 
   playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
   song     Song     @relation(fields: [songId], references: [id], onDelete: Cascade)

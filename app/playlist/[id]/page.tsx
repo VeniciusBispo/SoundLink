@@ -255,6 +255,13 @@ function PlaylistPageInner() {
   const totalDuration = songs.reduce((acc, s) => acc + s.duration, 0)
   const isOwner = session?.user?.id === currentPlaylist.ownerId
   const existingVideoIds = new Set(songs.map((s) => s.youtubeVideoId))
+  const hasShareAccess =
+    !!urlCode &&
+    !currentPlaylist.isPublic &&
+    !!currentPlaylist.shareEnabled &&
+    !!currentPlaylist.shareCode &&
+    currentPlaylist.shareCode === urlCode
+  const canContribute = isOwner || hasShareAccess
 
   return (
     <MainLayout>
@@ -327,7 +334,7 @@ function PlaylistPageInner() {
           </button>
         )}
 
-        {isOwner && (
+        {canContribute && (
           <>
             <Button
               variant="ghost"
@@ -338,7 +345,8 @@ function PlaylistPageInner() {
               <HiPlus className="h-4 w-4" />
               <span className="hidden sm:inline">Adicionar</span>
             </Button>
-            <Button
+            {isOwner && (
+              <Button
               variant="ghost"
               size="sm"
               onClick={openCoverModal}
@@ -347,7 +355,9 @@ function PlaylistPageInner() {
               <HiPencil className="h-4 w-4" />
               <span className="hidden sm:inline">Capa</span>
             </Button>
-            <Button
+            )}
+            {isOwner && (
+              <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsImportOpen(true)}
@@ -356,7 +366,9 @@ function PlaylistPageInner() {
               <HiPlus className="h-4 w-4" />
               <span className="hidden sm:inline">Importar YT</span>
             </Button>
-            <Button
+            )}
+            {isOwner && (
+              <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsShareOpen(true)}
@@ -365,7 +377,9 @@ function PlaylistPageInner() {
               <HiExternalLink className="h-4 w-4" />
               <span className="hidden sm:inline">Compartilhar</span>
             </Button>
-            <Button
+            )}
+            {isOwner && (
+              <Button
               variant="ghost"
               size="sm"
               onClick={handleDelete}
@@ -374,6 +388,7 @@ function PlaylistPageInner() {
               <HiTrash className="h-4 w-4" />
               <span className="hidden sm:inline">Excluir</span>
             </Button>
+            )}
           </>
         )}
 
@@ -408,11 +423,12 @@ function PlaylistPageInner() {
       </div>
 
       {/* Modals */}
-      {isOwner && (
+      {canContribute && (
         <AddSongModal
           isOpen={isAddSongOpen}
           onClose={() => setIsAddSongOpen(false)}
           playlistId={id}
+          accessCode={!isOwner ? (urlCode || undefined) : undefined}
         />
       )}
       {isOwner && (
