@@ -14,7 +14,30 @@ export async function DELETE(_req: NextRequest, { params }: Params) {
   }
 
   try {
-    await prisma.user.delete({ where: { id: params.id } })
+    // MongoDB: relation cascades are not guaranteed. Manually delete everything related.
+    const userId = params.id
+
+    const playlists = await prisma.playlist.findMany({
+      where: { ownerId: userId },
+      select: { id: true },
+    })
+    const playlistIds = playlists.map((p) => p.id)
+
+    // Best-effort cleanup of relational data
+    if (playlistIds.length) {
+      await prisma.playlistSong.deleteMany({
+        where: { playlistId: { in: playlistIds } },
+      })
+      await prisma.playlist.deleteMany({
+        where: { id: { in: playlistIds } },
+      })
+    }
+
+    await prisma.account.deleteMany({ where: { userId } })
+    await prisma.session.deleteMany({ where: { userId } })
+    await prisma.accessLog.deleteMany({ where: { userId } })
+
+    await prisma.user.delete({ where: { id: userId } })
     return NextResponse.json({ data: { success: true } })
   } catch (error) {
     console.error('[admin/users/:id][DELETE] error:', error)
