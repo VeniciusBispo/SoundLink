@@ -48,9 +48,21 @@ export default function AdminUsersPage() {
   }, [page, q, fetchUsers])
 
   async function handleDelete(id: string) {
-    await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+    if (!res.ok) {
+      // Em caso de erro, apenas fecha o modal e recarrega a lista local
+      setConfirmDelete(null)
+      fetchUsers(page, q)
+      return
+    }
+
     setConfirmDelete(null)
+    // Recarrega a lista para o admin e também força um reload completo da aplicação
+    // para que caches locais (como playlists recentes) sejam atualizados.
     fetchUsers(page, q)
+    if (typeof window !== 'undefined') {
+      window.location.reload()
+    }
   }
 
   async function toggleRole(user: AdminUser) {
