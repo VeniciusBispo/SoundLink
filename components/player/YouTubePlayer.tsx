@@ -19,6 +19,8 @@ export default function YouTubePlayer() {
   const setIsLoading = usePlayerStore((s) => s.setIsLoading)
   const next = usePlayerStore((s) => s.next)
   const volume = usePlayerStore((s) => s.volume)
+  const playbackSpeed = usePlayerStore((s) => s.playbackSpeed)
+  const repeatMode = usePlayerStore((s) => s.repeatMode)
   const setCurrentTime = usePlayerStore((s) => s.setCurrentTime)
   const setDuration = usePlayerStore((s) => s.setDuration)
 
@@ -56,7 +58,13 @@ export default function YouTubePlayer() {
                 setIsLoading(true)
                 break
               case YTState.ENDED:
-                next()
+                if (repeatMode === 'all') {
+                  next()
+                } else {
+                  // If repeatMode is 'none', check if it's the last song.
+                  // But the store's next() already handles stopping if 'none'.
+                  next()
+                }
                 break
               default:
                 break
@@ -79,6 +87,13 @@ export default function YouTubePlayer() {
       playerRef.current?.setVolume(volume)
     }
   }, [volume])
+
+  // Keep playback rate in sync
+  useEffect(() => {
+    if (isReadyRef.current) {
+      playerRef.current?.setPlaybackRate(playbackSpeed)
+    }
+  }, [playbackSpeed])
 
   // Poll current time and duration every 500 ms
   useEffect(() => {

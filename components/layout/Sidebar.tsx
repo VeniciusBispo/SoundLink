@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
 import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
@@ -106,9 +107,21 @@ export default function Sidebar() {
                     : 'hover:bg-white/5'
                 )}
               >
-                <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-spotify-green/40 to-spotify-card flex items-center justify-center">
-                  <HiMusicNote className="h-4 w-4 text-spotify-green" />
-                </div>
+                {playlist.coverImage ? (
+                  <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg shadow-md">
+                    <Image
+                      src={playlist.coverImage}
+                      alt={playlist.name}
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  </div>
+                ) : (
+                  <div className="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-spotify-green/40 to-spotify-card flex items-center justify-center shadow-md">
+                    <HiMusicNote className="h-4 w-4 text-spotify-green" />
+                  </div>
+                )}
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-white">{playlist.name}</p>
                   <p className="truncate text-xs text-spotify-text">

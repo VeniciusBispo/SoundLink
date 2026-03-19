@@ -75,6 +75,7 @@ export interface YTPlayer {
   seekTo(seconds: number, allowSeekAhead?: boolean): void
   getCurrentTime(): number
   getDuration(): number
+  setPlaybackRate(suggestedRate: number): void
   destroy(): void
 }
 

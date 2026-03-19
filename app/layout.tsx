@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     'Crie playlists, adicione músicas do YouTube e ouça em qualquer lugar. Pública, privada e disponível offline.',
   manifest: '/manifest.json',
   icons: {
-    icon: '/icons/icon-192x192.png',
-    apple: '/icons/apple-touch-icon.png',
+    icon: '/icons/icon.svg',
+    apple: '/icons/icon.svg',
   },
 }
 

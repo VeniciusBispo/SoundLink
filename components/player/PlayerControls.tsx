@@ -20,10 +20,20 @@ export default function PlayerControls() {
     next,
     previous,
     toggleShuffle,
+    toggleRepeat,
+    repeatMode,
+    playbackSpeed,
+    setPlaybackSpeed,
     seekBackward,
     seekForward,
-    replayFromStart,
   } = usePlayer()
+
+  const speeds = [1, 1.25, 1.5, 1.75, 2]
+  const nextSpeed = () => {
+    const currentIndex = speeds.indexOf(playbackSpeed)
+    const nextIndex = (currentIndex + 1) % speeds.length
+    setPlaybackSpeed(speeds[nextIndex])
+  }
 
   return (
     <div className="flex items-center gap-3">
@@ -31,21 +41,33 @@ export default function PlayerControls() {
       <button
         onClick={toggleShuffle}
         className={cn(
-          'rounded-full p-1 transition-colors',
+          'rounded-full p-2 transition-all hover:scale-110 active:scale-90',
           isShuffle ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
         )}
         title={isShuffle ? 'Aleatório ativado' : 'Aleatório desativado'}
       >
-        <HiSwitchHorizontal className="h-4 w-4" />
+        <HiSwitchHorizontal className="h-5 w-5" />
       </button>
 
-      {/* Replay from start */}
+      {/* Repeat */}
       <button
-        onClick={replayFromStart}
-        className="text-spotify-text hover:text-white transition-colors"
-        title="Reiniciar música"
+        onClick={toggleRepeat}
+        className={cn(
+          'rounded-full p-2 transition-all hover:scale-110 active:scale-90',
+          repeatMode === 'all' ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
+        )}
+        title={repeatMode === 'all' ? 'Repetir tudo' : 'Não repetir'}
       >
-        <HiRefresh className="h-4 w-4" />
+        <HiRefresh className="h-5 w-5" />
+      </button>
+
+      {/* Playback Speed */}
+      <button
+        onClick={nextSpeed}
+        className="text-[11px] font-extrabold text-spotify-text hover:text-white transition-all hover:scale-110 active:scale-90 w-10 text-center bg-white/5 rounded-md py-1"
+        title="Velocidade de reprodução"
+      >
+        {playbackSpeed}x
       </button>
 
       {/* Seek -10s */}
@@ -74,15 +96,15 @@ export default function PlayerControls() {
         onClick={togglePlay}
         disabled={isLoading}
         className={cn(
-          'flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-all hover:scale-105',
+          'flex h-12 w-12 items-center justify-center rounded-full bg-[#9a9ae6] text-white transition-all hover:scale-110 active:scale-95 shadow-lg shadow-[#9a9ae6]/20',
           isLoading && 'opacity-60 cursor-not-allowed'
         )}
         title={isPlaying ? 'Pausar' : 'Reproduzir'}
       >
         {isPlaying ? (
-          <HiPause className="h-5 w-5" />
+          <HiPause className="h-7 w-7" />
         ) : (
-          <HiPlay className="ml-0.5 h-5 w-5" />
+          <HiPlay className="ml-1 h-7 w-7" />
         )}
       </button>
 

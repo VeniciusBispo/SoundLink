@@ -1,16 +1,19 @@
 'use client'
 
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { HiVolumeUp, HiVolumeOff, HiPlay, HiPause } from 'react-icons/hi'
 import { usePlayer } from '@/hooks/usePlayer'
 import { formatDuration } from '@/lib/utils'
 import PlayerControls from './PlayerControls'
+import WaveformProgress from './WaveformProgress'
 
 const YouTubePlayer = dynamic(() => import('./YouTubePlayer'), { ssr: false })
 
 export default function PlayerBar() {
   const { currentSong, volume, setVolume, currentTime, duration, seek, isPlaying, togglePlay } = usePlayer()
+  const [isHovering, setIsHovering] = useState(false)
 
   const displayDuration = duration > 0 ? duration : (currentSong?.duration ?? 0)
   const progress = displayDuration > 0 ? (currentTime / displayDuration) * 100 : 0
@@ -19,28 +22,38 @@ export default function PlayerBar() {
     <>
       <YouTubePlayer />
 
-      <div className="flex flex-shrink-0 flex-col border-t border-white/10 bg-[#181818]">
-        {/* Progress bar */}
-        <div className="flex items-center gap-2 px-3 pt-2">
-          <span className="w-9 text-right text-[11px] text-spotify-text tabular-nums select-none">
-            {formatDuration(Math.floor(currentTime))}
-          </span>
-          <input
-            type="range"
-            min={0}
-            max={displayDuration > 0 ? Math.floor(displayDuration) : 100}
-            value={Math.floor(currentTime)}
-            onChange={(e) => seek(Number(e.target.value))}
-            disabled={!currentSong}
-            className="seek-bar flex-1 cursor-pointer disabled:cursor-default"
-            style={{
-              background: `linear-gradient(to right, #1DB954 ${progress}%, #4d4d4d ${progress}%)`,
-            }}
-            aria-label="Progresso"
-          />
-          <span className="w-9 text-[11px] text-spotify-text tabular-nums select-none">
-            {formatDuration(Math.floor(displayDuration))}
-          </span>
+      <div className="flex flex-shrink-0 flex-col border-t border-white/5 bg-black/40 backdrop-blur-md pb-safe">
+        {/* Progress bar container */}
+        <div className="relative group px-6 pt-2 pb-3">
+          <div className="flex items-center justify-between mb-2 opacity-60 group-hover:opacity-100 transition-opacity">
+            <span className="text-[11px] text-white/70 font-semibold tabular-nums">
+              {formatDuration(Math.floor(currentTime))}
+            </span>
+            <span className="text-[11px] text-white/40 font-semibold tabular-nums">
+              {formatDuration(Math.floor(displayDuration))}
+            </span>
+          </div>
+
+          <div className="relative h-10 flex items-center">
+            {/* Waveform Visualization */}
+            <div className="absolute inset-0 pointer-events-none">
+              <WaveformProgress progress={progress} isHovering={isHovering} />
+            </div>
+
+            {/* Hidden Interactive Range Input */}
+            <input
+              type="range"
+              min={0}
+              max={displayDuration > 0 ? Math.floor(displayDuration) : 100}
+              value={Math.floor(currentTime)}
+              onChange={(e) => seek(Number(e.target.value))}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              disabled={!currentSong}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-default z-10"
+              aria-label="Progresso"
+            />
+          </div>
         </div>
 
         {/* ── Mobile layout: single compact row ── */}

@@ -15,6 +15,8 @@ interface PlayerStore {
   player: YTPlayer | null
   currentTime: number
   duration: number
+  repeatMode: 'none' | 'all'
+  playbackSpeed: number
 
   // Actions
   setPlayer: (player: YTPlayer) => void
@@ -23,6 +25,7 @@ interface PlayerStore {
   next: () => void
   previous: () => void
   toggleShuffle: () => void
+  toggleRepeat: () => void
   setVolume: (volume: number) => void
   setIsPlaying: (playing: boolean) => void
   setIsLoading: (loading: boolean) => void
@@ -33,6 +36,7 @@ interface PlayerStore {
   seekBackward: (n?: number) => void
   seekForward: (n?: number) => void
   replayFromStart: () => void
+  setPlaybackSpeed: (speed: number) => void
 }
 
 export const usePlayerStore = create<PlayerStore>()(
@@ -48,6 +52,8 @@ export const usePlayerStore = create<PlayerStore>()(
       player: null,
       currentTime: 0,
       duration: 0,
+      repeatMode: 'all',
+      playbackSpeed: 1,
 
       setPlayer: (player) => set({ player }),
 
@@ -81,12 +87,26 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       next: () => {
-        const { queue, currentIndex, isShuffle, player } = get()
+        const { queue, currentIndex, isShuffle, player, repeatMode } = get()
         if (!queue.length) return
 
-        const nextIndex = isShuffle
-          ? Math.floor(Math.random() * queue.length)
-          : (currentIndex + 1) % queue.length
+        let nextIndex: number
+
+        if (isShuffle) {
+          nextIndex = Math.floor(Math.random() * queue.length)
+        } else {
+          nextIndex = currentIndex + 1
+          if (nextIndex >= queue.length) {
+            if (repeatMode === 'all') {
+              nextIndex = 0
+            } else {
+              // End of queue, stop playing
+              set({ isPlaying: false })
+              player?.pauseVideo()
+              return
+            }
+          }
+        }
 
         const nextSong = queue[nextIndex]
         set({ currentSong: nextSong, currentIndex: nextIndex, isLoading: true, currentTime: 0, duration: 0 })
@@ -104,6 +124,11 @@ export const usePlayerStore = create<PlayerStore>()(
       },
 
       toggleShuffle: () => set((state) => ({ isShuffle: !state.isShuffle })),
+
+      toggleRepeat: () =>
+        set((state) => ({
+          repeatMode: state.repeatMode === 'none' ? 'all' : 'none',
+        })),
 
       setVolume: (volume) => {
         const { player } = get()
@@ -146,6 +171,12 @@ export const usePlayerStore = create<PlayerStore>()(
         player.seekTo(0, true)
         player.playVideo()
         set({ currentTime: 0, isPlaying: true })
+      },
+
+      setPlaybackSpeed: (playbackSpeed) => {
+        const { player } = get()
+        set({ playbackSpeed })
+        player?.setPlaybackRate(playbackSpeed)
       },
     }),
     { name: 'PlayerStore' }
