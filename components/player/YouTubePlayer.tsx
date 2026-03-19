@@ -58,11 +58,10 @@ export default function YouTubePlayer() {
                 setIsLoading(true)
                 break
               case YTState.ENDED:
-                if (repeatMode === 'all') {
-                  next()
+                if (repeatMode === 'one') {
+                  const { replayFromStart } = usePlayerStore.getState()
+                  replayFromStart()
                 } else {
-                  // If repeatMode is 'none', check if it's the last song.
-                  // But the store's next() already handles stopping if 'none'.
                   next()
                 }
                 break

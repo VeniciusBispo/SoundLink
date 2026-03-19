@@ -15,7 +15,7 @@ interface PlayerStore {
   player: YTPlayer | null
   currentTime: number
   duration: number
-  repeatMode: 'none' | 'all'
+  repeatMode: 'none' | 'all' | 'one'
   playbackSpeed: number
 
   // Actions
@@ -127,7 +127,8 @@ export const usePlayerStore = create<PlayerStore>()(
 
       toggleRepeat: () =>
         set((state) => ({
-          repeatMode: state.repeatMode === 'none' ? 'all' : 'none',
+          repeatMode:
+            state.repeatMode === 'none' ? 'all' : state.repeatMode === 'all' ? 'one' : 'none',
         })),
 
       setVolume: (volume) => {

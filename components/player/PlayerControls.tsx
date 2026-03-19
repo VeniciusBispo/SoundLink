@@ -53,12 +53,23 @@ export default function PlayerControls() {
       <button
         onClick={toggleRepeat}
         className={cn(
-          'rounded-full p-2 transition-all hover:scale-110 active:scale-90',
-          repeatMode === 'all' ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
+          'relative rounded-full p-2 transition-all hover:scale-110 active:scale-90',
+          repeatMode !== 'none' ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
         )}
-        title={repeatMode === 'all' ? 'Repetir tudo' : 'Não repetir'}
+        title={
+          repeatMode === 'all'
+            ? 'Repetir tudo'
+            : repeatMode === 'one'
+            ? 'Repetir uma'
+            : 'Não repetir'
+        }
       >
         <HiRefresh className="h-5 w-5" />
+        {repeatMode === 'one' && (
+          <span className="absolute bottom-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-spotify-green text-[8px] font-bold text-black ring-1 ring-black">
+            1
+          </span>
+        )}
       </button>
 
       {/* Playback Speed */}
