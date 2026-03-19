@@ -57,14 +57,15 @@ export default function YouTubePlayer() {
               case YTState.BUFFERING:
                 setIsLoading(true)
                 break
-              case YTState.ENDED:
-                if (repeatMode === 'one') {
-                  const { replayFromStart } = usePlayerStore.getState()
+              case YTState.ENDED: {
+                const { repeatMode: latestRepeatMode, replayFromStart, next: nextSong } = usePlayerStore.getState()
+                if (latestRepeatMode === 'one') {
                   replayFromStart()
                 } else {
-                  next()
+                  nextSong()
                 }
                 break
+              }
               default:
                 break
             }
