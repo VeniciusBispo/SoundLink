@@ -10,8 +10,6 @@ import PlayerControls from './PlayerControls'
 import WaveformProgress from './WaveformProgress'
 import FullScreenPlayer from './FullScreenPlayer'
 
-const YouTubePlayer = dynamic(() => import('./YouTubePlayer'), { ssr: false })
-
 export default function PlayerBar() {
   const { currentSong, volume, setVolume, currentTime, duration, seek, isPlaying, togglePlay } = usePlayer()
   const [isHovering, setIsHovering] = useState(false)
@@ -22,7 +20,6 @@ export default function PlayerBar() {
 
   return (
     <>
-      <YouTubePlayer />
       <FullScreenPlayer isOpen={isFullScreen} onClose={() => setIsFullScreen(false)} />
 
       {currentSong && (

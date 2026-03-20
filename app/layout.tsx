@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import Providers from './providers'
+import PlayerProvider from '@/components/player/PlayerProvider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -36,7 +37,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          <PlayerProvider>{children}</PlayerProvider>
+        </Providers>
       </body>
     </html>
   )

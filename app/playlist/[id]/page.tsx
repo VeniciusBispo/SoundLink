@@ -22,6 +22,7 @@ import AddSongModal from '@/components/playlist/AddSongModal'
 import ImportPlaylistModal from '@/components/playlist/ImportPlaylistModal'
 import ShareModal from '@/components/playlist/ShareModal'
 import DeleteConfirmModal from '@/components/playlist/DeleteConfirmModal'
+import OfflineDownloadButton from '@/components/playlist/OfflineDownloadButton'
 import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 import {
@@ -402,25 +403,11 @@ function PlaylistPageInner() {
           </>
         )}
 
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleSaveOffline}
-          isLoading={isSaving}
-          className={`flex items-center gap-1.5 ${isOfflineSaved ? 'text-spotify-green' : ''}`}
-        >
-          {isOfflineSaved ? (
-            <>
-              <HiCheck className="h-4 w-4" />
-              <span className="hidden sm:inline">Salvo offline</span>
-            </>
-          ) : (
-            <>
-              <HiDownload className="h-4 w-4" />
-              <span className="hidden sm:inline">Salvar offline</span>
-            </>
-          )}
-        </Button>
+        <OfflineDownloadButton 
+          isOfflineSaved={isOfflineSaved}
+          isSaving={isSaving}
+          onToggleSave={handleSaveOffline}
+        />
       </div>
 
       {/* Song list */}
