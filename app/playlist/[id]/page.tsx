@@ -67,6 +67,7 @@ function PlaylistPageInner() {
   const [isCoverOpen, setIsCoverOpen] = useState(false)
   const [coverDraft, setCoverDraft] = useState('')
   const [nameDraft, setNameDraft] = useState('')
+  const [isPublicDraft, setIsPublicDraft] = useState(false)
   const [isSavingCover, setIsSavingCover] = useState(false)
   const [coverError, setCoverError] = useState('')
 
@@ -150,6 +151,7 @@ function PlaylistPageInner() {
     setCoverError('')
     setCoverDraft(currentPlaylist?.coverImage ?? '')
     setNameDraft(currentPlaylist?.name ?? '')
+    setIsPublicDraft(currentPlaylist?.isPublic ?? false)
     setIsCoverOpen(true)
   }
 
@@ -167,8 +169,13 @@ function PlaylistPageInner() {
       const updated = await updatePlaylistApi(id, {
         name: nextName,
         coverImage: nextCover ? nextCover : null,
+        isPublic: isPublicDraft,
       })
-      updatePlaylist(id, { name: updated.name, coverImage: updated.coverImage ?? null })
+      updatePlaylist(id, { 
+        name: updated.name, 
+        coverImage: updated.coverImage ?? null,
+        isPublic: updated.isPublic 
+      })
       setIsCoverOpen(false)
     } catch (err) {
       setCoverError((err as Error).message)
@@ -486,6 +493,23 @@ function PlaylistPageInner() {
               {coverError}
             </div>
           )}
+          {/* Campo de Privacidade */}
+          <div className="flex items-center justify-between rounded-md bg-spotify-hover px-4 py-3 mt-1">
+            <div>
+              <p className="text-sm font-medium text-white">Playlist Pública</p>
+              <p className="text-xs text-spotify-text">Permite que outras pessoas encontrem esta playlist</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsPublicDraft(!isPublicDraft)}
+              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isPublicDraft ? 'bg-spotify-green' : 'bg-white/20'}`}
+              aria-pressed={isPublicDraft}
+            >
+              <span
+                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${isPublicDraft ? 'translate-x-5' : 'translate-x-0'}`}
+              />
+            </button>
+          </div>
           <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
