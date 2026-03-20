@@ -79,7 +79,7 @@ function PlaylistPageInner() {
   const { isOffline: isOfflineSaved, isSaving, save: saveOffline, remove: removeOffline } =
     useOfflinePlaylist(id)
   const { playPlaylist } = usePlayer()
-  const { push: pushRecent } = useRecentPlaylists()
+  const { push: pushRecent, updateMetadata: updateRecentMetadata } = useRecentPlaylists()
 
   const urlCode = searchParams.get('code') ?? ''
 
@@ -176,6 +176,7 @@ function PlaylistPageInner() {
         coverImage: updated.coverImage ?? null,
         isPublic: updated.isPublic 
       })
+      updateRecentMetadata(id, { name: updated.name, coverImage: updated.coverImage ?? null })
       setIsCoverOpen(false)
     } catch (err) {
       setCoverError((err as Error).message)
