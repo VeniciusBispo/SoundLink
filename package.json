@@ -14,6 +14,7 @@
     "@prisma/client": "^5.7.0",
     "@types/nodemailer": "^6.4.14",
     "bcryptjs": "^2.4.3",
+    "framer-motion": "^12.38.0",
     "idb": "^8.0.0",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",

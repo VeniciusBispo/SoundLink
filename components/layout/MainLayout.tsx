@@ -5,6 +5,7 @@ import MobileNav from './MobileNav'
 import Header from './Header'
 import PlayerBar from '@/components/player/PlayerBar'
 import CreatePlaylistModal from '@/components/playlist/CreatePlaylistModal'
+import AdFooter from '@/components/ads/AdFooter'
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -33,9 +34,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
       {/* Player fixed at bottom */}
       <PlayerBar />
 
-      {/* Footer fixo abaixo do player */}
-      {/** O Footer ficará sempre visível abaixo do player **/}
-      {require('./BottomFooter').default()}
+      {/* Footer de anúncio fixo acima da navegação mobile */}
+      <AdFooter />
 
       {/* Mobile bottom nav — visible only on mobile */}
       <MobileNav />

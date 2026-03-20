@@ -1,114 +1,94 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiUser, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
+import { HiHome, HiSearch, HiCollection, HiPlus, HiUser, HiViewList } from 'react-icons/hi'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
-import FeedbackModal from '@/components/ui/FeedbackModal'
+import { motion } from 'framer-motion'
 
 export default function MobileNav() {
   const pathname = usePathname()
   const { data: session } = useSession()
   const openCreatePlaylistModal = useUIStore((s) => s.openCreatePlaylistModal)
-  const [feedbackOpen, setFeedbackOpen] = useState(false)
+
+  const navItems = [
+    { href: '/', icon: HiHome, label: 'Início', active: pathname === '/' },
+    { href: '/explore', icon: HiSearch, label: 'Buscar', active: pathname === '/explore' },
+    { href: '/songs', icon: HiCollection, label: 'Biblioteca', active: pathname === '/songs' },
+  ]
 
   return (
-    <nav className="md:hidden flex-shrink-0 border-t border-white/10 bg-[#0a0a0a] safe-area-bottom">
-      <div className="flex items-center overflow-x-auto scrollbar-hide px-1 py-2">
-      <Link
-        href="/"
-        className={cn(
-          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
-          pathname === '/' ? 'text-white' : 'text-spotify-text'
+    <nav className="md:hidden flex-shrink-0 bg-gradient-to-t from-black via-black/95 to-black/80 backdrop-blur-lg border-t border-white/5 safe-area-bottom pb-2">
+      <div className="flex items-center justify-around px-2 py-3">
+        {navItems.map((item) => {
+          const Icon = item.icon
+          const isActive = item.active
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'flex flex-col items-center justify-center gap-1 w-16 transition-colors',
+                isActive ? 'text-white' : 'text-spotify-text hover:text-white'
+              )}
+            >
+              <div className="relative flex items-center justify-center h-8 w-8">
+                {isActive && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute inset-0 bg-white/10 rounded-full"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <Icon className="h-6 w-6 relative z-10" />
+              </div>
+              <span className="text-[10px] font-medium tracking-wide">
+                {item.label}
+              </span>
+            </Link>
+          )
+        })}
+
+        {/* Action Button: Create Playlist or Go to Private */}
+        {session && (
+          <button
+            onClick={openCreatePlaylistModal}
+            className="flex flex-col items-center justify-center gap-1 w-16 text-spotify-text hover:text-white transition-colors"
+          >
+            <div className="relative flex items-center justify-center h-8 w-8">
+              <HiPlus className="h-6 w-6 relative z-10" />
+            </div>
+            <span className="text-[10px] font-medium tracking-wide">Criar</span>
+          </button>
         )}
-      >
-        <HiHome className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Início</span>
-      </Link>
 
-      <Link
-        href="/explore"
-        className={cn(
-          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
-          pathname === '/explore' ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiSearch className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Explorar</span>
-      </Link>
-
-      <Link
-        href="/songs"
-        className={cn(
-          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
-          pathname === '/songs' ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiCollection className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Músicas</span>
-      </Link>
-
-      <Link
-        href="/access"
-        className={cn(
-          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
-          pathname === '/access' ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiLockOpen className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Privada</span>
-      </Link>
-
-      {session && (
-        <button
-          onClick={openCreatePlaylistModal}
-          className="flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 text-spotify-text"
-        >
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-spotify-green">
-            <HiPlus className="h-4 w-4 text-black" />
-          </div>
-          <span className="text-[10px] font-medium">Nova</span>
-        </button>
-      )}
-
-      <button
-        onClick={() => setFeedbackOpen(true)}
-        className="flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 text-spotify-text hover:text-white transition-colors"
-      >
-        <HiChat className="h-6 w-6" />
-        <span className="text-[10px] font-medium">Sugestões</span>
-      </button>
-
-      {session?.user?.role === 'ADMIN' && (
+        {/* Profile or Login */}
         <Link
-          href="/admin"
+          href={session ? '/profile' : '/login'}
           className={cn(
-            'flex flex-shrink-0 flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors',
-            pathname.startsWith('/admin') ? 'text-spotify-green' : 'text-spotify-text'
+            'flex flex-col items-center justify-center gap-1 w-16 transition-colors',
+            (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-spotify-text hover:text-white'
           )}
         >
-          <HiCollection className="h-6 w-6" />
-          <span className="text-[10px] font-medium">Admin</span>
+          <div className="relative flex items-center justify-center h-8 w-8">
+            {(pathname === '/profile' || pathname === '/login') && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute inset-0 bg-white/10 rounded-full"
+                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+              />
+            )}
+            <HiUser className="h-6 w-6 relative z-10" />
+          </div>
+          <span className="text-[10px] font-medium tracking-wide">
+            {session ? 'Perfil' : 'Entrar'}
+          </span>
         </Link>
-      )}
-
-      <Link
-        href={session ? '/profile' : '/login'}
-        className={cn(
-          'flex min-h-[44px] flex-shrink-0 touch-manipulation flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors',
-          (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-spotify-text'
-        )}
-      >
-        <HiUser className="h-6 w-6" />
-        <span className="text-[10px] font-medium">{session ? 'Perfil' : 'Entrar'}</span>
-      </Link>
       </div>
-
-      <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
     </nav>
   )
 }
-

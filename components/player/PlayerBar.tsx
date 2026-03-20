@@ -8,12 +8,14 @@ import { usePlayer } from '@/hooks/usePlayer'
 import { formatDuration } from '@/lib/utils'
 import PlayerControls from './PlayerControls'
 import WaveformProgress from './WaveformProgress'
+import FullScreenPlayer from './FullScreenPlayer'
 
 const YouTubePlayer = dynamic(() => import('./YouTubePlayer'), { ssr: false })
 
 export default function PlayerBar() {
   const { currentSong, volume, setVolume, currentTime, duration, seek, isPlaying, togglePlay } = usePlayer()
   const [isHovering, setIsHovering] = useState(false)
+  const [isFullScreen, setIsFullScreen] = useState(false)
 
   const displayDuration = duration > 0 ? duration : (currentSong?.duration ?? 0)
   const progress = displayDuration > 0 ? (currentTime / displayDuration) * 100 : 0
@@ -21,26 +23,27 @@ export default function PlayerBar() {
   return (
     <>
       <YouTubePlayer />
+      <FullScreenPlayer isOpen={isFullScreen} onClose={() => setIsFullScreen(false)} />
 
-      <div className="flex flex-shrink-0 flex-col border-t border-white/5 bg-black/40 backdrop-blur-md pb-safe">
-        {/* Progress bar container */}
-        <div className="relative group px-6 pt-2 pb-3">
-          <div className="flex items-center justify-between mb-2 opacity-60 group-hover:opacity-100 transition-opacity">
-            <span className="text-[11px] text-white/70 font-semibold tabular-nums">
-              {formatDuration(Math.floor(currentTime))}
-            </span>
-            <span className="text-[11px] text-white/40 font-semibold tabular-nums">
-              {formatDuration(Math.floor(displayDuration))}
-            </span>
-          </div>
+      {currentSong && (
+      <div className="flex flex-shrink-0 flex-col border-t border-white/5 bg-[#121212]/95 backdrop-blur-md safe-area-bottom z-40 relative">
+        
+        {/* Mobile Progress Line */}
+        <div className="md:hidden absolute top-0 left-0 right-0 h-[2px] bg-white/10 z-50">
+           {currentSong && (
+             <div 
+               className="h-full bg-white transition-all duration-200 ease-linear rounded-r-full"
+               style={{ width: `${progress}%` }}
+             />
+           )}
+        </div>
 
-          <div className="relative h-10 flex items-center">
-            {/* Waveform Visualization */}
+        {/* Desktop Progress bar */}
+        <div className="hidden md:block relative group px-6 pt-2 pb-1">
+          <div className="relative h-6 flex items-center">
             <div className="absolute inset-0 pointer-events-none">
               <WaveformProgress progress={progress} isHovering={isHovering} />
             </div>
-
-            {/* Hidden Interactive Range Input */}
             <input
               type="range"
               min={0}
@@ -56,45 +59,56 @@ export default function PlayerBar() {
           </div>
         </div>
 
-        {/* ── Mobile layout: single compact row ── */}
-        <div className="flex md:hidden h-14 items-center gap-3 px-3 pb-1">
+        {/* ── Mobile layout: compact mini player ── */}
+        <div 
+          className="flex md:hidden h-[60px] items-center justify-between px-3 cursor-pointer relative"
+          onClick={() => {
+            if (currentSong) setIsFullScreen(true)
+          }}
+        >
           {currentSong ? (
             <>
-              <div className="relative h-9 w-9 flex-shrink-0 overflow-hidden rounded-md shadow-lg">
-                <Image src={currentSong.thumbnail} alt={currentSong.title} fill className="object-cover" sizes="36px" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-white leading-tight">{currentSong.title}</p>
-                <p className="truncate text-xs text-spotify-text">{currentSong.channel}</p>
+              <div className="flex items-center gap-3 overflow-hidden flex-1">
+                <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded shadow-sm">
+                  <Image src={currentSong.thumbnail} alt={currentSong.title} fill className="object-cover" sizes="40px" />
+                </div>
+                <div className="min-w-0 pr-2 pb-0.5">
+                  <p className="truncate text-sm font-semibold text-white leading-tight mb-0.5">{currentSong.title}</p>
+                  <p className="truncate text-[12px] text-spotify-text leading-none">{currentSong.channel}</p>
+                </div>
               </div>
               <button
-                onClick={togglePlay}
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white text-black"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  togglePlay()
+                }}
+                className="flex h-12 w-12 flex-shrink-0 items-center justify-center text-white p-2 mr-1"
+                aria-label={isPlaying ? 'Pausar' : 'Tocar'}
               >
-                {isPlaying ? <HiPause className="h-5 w-5" /> : <HiPlay className="ml-0.5 h-5 w-5" />}
+                {isPlaying ? <HiPause className="h-7 w-7" /> : <HiPlay className="h-7 w-7 ml-0.5" />}
               </button>
             </>
           ) : (
-            <p className="text-sm text-spotify-text px-1">Nenhuma música</p>
+            <p className="text-sm font-medium text-spotify-text px-2">Nenhuma música tocando</p>
           )}
         </div>
 
-        {/* ── Desktop layout: full 3-column row ── */}
-        <div className="hidden md:flex h-[60px] items-center justify-between gap-4 px-4 pb-2">
+        {/* ── Desktop layout ── */}
+        <div className="hidden md:flex h-[72px] items-center justify-between gap-4 px-4 pb-2">
           {/* Left: song info */}
-          <div className="flex w-[28%] min-w-0 items-center gap-3">
+          <div className="flex w-[30%] min-w-0 items-center gap-3">
             {currentSong ? (
               <>
-                <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-md shadow">
-                  <Image src={currentSong.thumbnail} alt={currentSong.title} fill className="object-cover" sizes="40px" />
+                <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded shadow">
+                  <Image src={currentSong.thumbnail} alt={currentSong.title} fill className="object-cover" sizes="56px" />
                 </div>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-white">{currentSong.title}</p>
-                  <p className="truncate text-xs text-spotify-text">{currentSong.channel}</p>
+                <div className="min-w-0 flex flex-col justify-center">
+                  <p className="truncate text-[14px] hover:underline cursor-pointer font-bold text-white mb-0.5">{currentSong.title}</p>
+                  <p className="truncate text-[12px] hover:underline cursor-pointer text-spotify-text">{currentSong.channel}</p>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-spotify-text">Nenhuma música</p>
+              <p className="text-sm text-spotify-text font-medium">Nenhuma música tocando</p>
             )}
           </div>
 
@@ -103,23 +117,27 @@ export default function PlayerBar() {
             <PlayerControls />
           </div>
 
-          {/* Right: volume */}
-          <div className="flex w-[28%] items-center justify-end gap-2">
+          {/* Right: volume & duration */}
+          <div className="flex w-[30%] items-center justify-end gap-3 pr-2">
+             <div className="text-[12px] text-spotify-text/80 font-medium tabular-nums mr-2 tracking-wide">
+                {formatDuration(Math.floor(currentTime))} / {formatDuration(Math.floor(displayDuration))}
+             </div>
             <button
               onClick={() => setVolume(volume === 0 ? 80 : 0)}
-              className="text-spotify-text hover:text-white transition-colors"
+              className="text-spotify-text hover:text-white transition-colors p-1"
             >
-              {volume === 0 ? <HiVolumeOff className="h-5 w-5" /> : <HiVolumeUp className="h-5 w-5" />}
+              {volume === 0 ? <HiVolumeOff className="h-[20px] w-[20px]" /> : <HiVolumeUp className="h-[20px] w-[20px]" />}
             </button>
             <input
               type="range" min={0} max={100} value={volume}
               onChange={(e) => setVolume(Number(e.target.value))}
-              className="h-1 w-24 cursor-pointer accent-spotify-green"
+              className="h-1 w-24 cursor-pointer accent-white hover:accent-spotify-green transition-colors bg-white/20 rounded-full"
               aria-label="Volume"
             />
           </div>
         </div>
       </div>
+      )}
     </>
   )
 }
