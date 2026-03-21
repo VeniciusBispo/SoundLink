@@ -6,6 +6,7 @@ import { HiX, HiMusicNote, HiCheck } from 'react-icons/hi'
 import Button from '@/components/ui/Button'
 import { usePlaylistStore } from '@/store/playlistStore'
 import { formatDuration } from '@/lib/utils'
+import YouTubeLinkHelper from '@/components/ui/YouTubeLinkHelper'
 
 interface VideoItem {
   videoId: string
@@ -151,7 +152,7 @@ export default function ImportPlaylistModal({
         role="dialog"
         aria-modal="true"
         aria-label="Importar playlist do YouTube"
-        className="relative flex w-full max-w-lg flex-col rounded-xl bg-spotify-card shadow-2xl"
+        className="relative flex w-full max-w-2xl flex-col rounded-xl bg-spotify-card shadow-2xl"
         style={{ maxHeight: '90vh' }}
       >
         {/* Header */}
@@ -188,6 +189,7 @@ export default function ImportPlaylistModal({
             </Button>
           </div>
           {fetchError && <p className="mt-2 text-xs text-red-400">{fetchError}</p>}
+          <YouTubeLinkHelper mode="playlist" />
         </div>
 
         {/* Results */}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { HiVolumeUp, HiVolumeOff, HiPlay, HiPause } from 'react-icons/hi'
@@ -9,11 +9,28 @@ import { formatDuration } from '@/lib/utils'
 import PlayerControls from './PlayerControls'
 import WaveformProgress from './WaveformProgress'
 import FullScreenPlayer from './FullScreenPlayer'
+import { usePlaylistStore } from '@/store/playlistStore'
+import { useContinueWatchingStore } from '@/store/continueWatchingStore'
 
 export default function PlayerBar() {
   const { currentSong, volume, setVolume, currentTime, duration, seek, isPlaying, togglePlay } = usePlayer()
+  const currentPlaylist = usePlaylistStore((s) => s.currentPlaylist)
+  const updateContinueWatching = useContinueWatchingStore((s) => s.updateContinueWatching)
+  
   const [isHovering, setIsHovering] = useState(false)
   const [isFullScreen, setIsFullScreen] = useState(false)
+  
+  const lastUpdateRef = useRef(0)
+
+  useEffect(() => {
+    if (!currentSong || !isPlaying) return
+    const now = Date.now()
+    // Atualiza o estado a cada 5 segundos de reprodução
+    if (now - lastUpdateRef.current >= 5000) {
+      updateContinueWatching(currentSong, currentPlaylist, currentTime)
+      lastUpdateRef.current = now
+    }
+  }, [currentTime, currentSong, currentPlaylist, isPlaying, updateContinueWatching])
 
   const displayDuration = duration > 0 ? duration : (currentSong?.duration ?? 0)
   const progress = displayDuration > 0 ? (currentTime / displayDuration) * 100 : 0

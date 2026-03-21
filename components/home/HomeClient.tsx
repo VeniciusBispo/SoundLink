@@ -9,6 +9,10 @@ import { useRecentPlaylists } from '@/hooks/useRecentPlaylists'
 import type { Playlist } from '@/types'
 import PlaylistCard from '@/components/playlist/PlaylistCard'
 import { useUIStore } from '@/store/uiStore'
+import ContinueWatchingSection from './ContinueWatchingSection'
+import useSWR from 'swr'
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 // ── Horizontal scrollable carousel ──────────────────────────────────────────
 
@@ -166,39 +170,41 @@ interface HomeClientProps {
 
 export default function HomeClient({
   greeting,
-  myPlaylists,
-  recentPublic,
-  topByCount,
+  myPlaylists: initialMyPlaylists,
+  recentPublic: initialRecentPublic,
+  topByCount: initialTopByCount,
 }: HomeClientProps) {
-  const { recent } = useRecentPlaylists()
   const openCreateModal = useUIStore((s) => s.openCreatePlaylistModal)
 
+  const { data } = useSWR('/api/playlists/home', fetcher, {
+    fallbackData: { 
+      myPlaylists: initialMyPlaylists, 
+      recentPublic: initialRecentPublic, 
+      topByCount: initialTopByCount 
+    },
+    refreshInterval: 15000
+  })
+
+  const myPlaylists = data?.myPlaylists || initialMyPlaylists
+  const recentPublic = data?.recentPublic || initialRecentPublic
+  const topByCount = data?.topByCount || initialTopByCount
+
   const hasMyPlaylists = myPlaylists.length > 0
-  const hasRecent = recent.length > 0
 
   return (
     <div className="py-4 md:py-6 space-y-10">
       {/* Greeting */}
       <h1 className="text-2xl font-extrabold text-white md:text-3xl">{greeting} 👋</h1>
 
-      {/* ── Continuar ouvindo ── */}
-      {hasRecent && (
-        <section>
-          <SectionHeader title="Continuar ouvindo" />
-          <Carousel>
-            {recent.map((item) => (
-              <RecentCard key={item.id} item={item} />
-            ))}
-          </Carousel>
-        </section>
-      )}
+      {/* ── Continuar Assistindo ── */}
+      <ContinueWatchingSection />
 
       {/* ── Suas playlists ── */}
       {hasMyPlaylists ? (
         <section>
           <SectionHeader title="Suas playlists" href="/library" />
           <Carousel>
-            {myPlaylists.map((pl) => (
+            {myPlaylists.map((pl: Playlist) => (
               <div key={pl.id} className="flex-shrink-0" style={{ width: 180, scrollSnapAlign: 'start' }}>
                 <PlaylistCard playlist={pl} />
               </div>
@@ -214,7 +220,7 @@ export default function HomeClient({
         <section>
           <SectionHeader title="Playlists em alta 🔥" href="/explore" />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-            {topByCount.map((pl) => (
+            {topByCount.map((pl: Playlist) => (
               <PlaylistCard key={pl.id} playlist={pl} />
             ))}
           </div>
@@ -226,7 +232,7 @@ export default function HomeClient({
         <section>
           <SectionHeader title="Adicionadas recentemente" href="/explore" />
           <Carousel>
-            {recentPublic.map((pl) => (
+            {recentPublic.map((pl: Playlist) => (
               <div key={pl.id} className="flex-shrink-0" style={{ width: 180, scrollSnapAlign: 'start' }}>
                 <PlaylistCard playlist={pl} />
               </div>
@@ -275,6 +281,14 @@ const GAMES = [
     description: 'Descubra músicas parecidas com as que você já curte.',
     gradient: 'from-green-600/30 to-teal-900/10',
     badge: 'Em breve',
+  },
+  {
+    id: 'piano',
+    emoji: '🎹',
+    title: 'Piano',
+    description: 'Toque um piano virtual e divirta-se criando melodias.',
+    gradient: 'from-pink-600/30 to-rose-900/10',
+    badge: 'Novo',
   },
 ]
 

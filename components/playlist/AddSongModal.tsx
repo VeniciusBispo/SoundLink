@@ -9,6 +9,7 @@ import { useYouTube } from '@/hooks/useYouTube'
 import { addSongToPlaylist } from '@/services/playlistService'
 import { usePlaylistStore } from '@/store/playlistStore'
 import { formatDuration } from '@/lib/utils'
+import YouTubeLinkHelper from '@/components/ui/YouTubeLinkHelper'
 
 interface AddSongModalProps {
   isOpen: boolean
@@ -65,7 +66,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Adicionar Música">
+    <Modal isOpen={isOpen} onClose={handleClose} title="Adicionar Música" maxWidth="2xl">
       <div className="flex flex-col gap-4">
         {/* URL input */}
         <div className="flex gap-2">
@@ -81,6 +82,8 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
             Buscar
           </Button>
         </div>
+
+        <YouTubeLinkHelper mode="song" />
 
         {/* Error */}
         {(error || saveError) && (

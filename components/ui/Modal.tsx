@@ -8,9 +8,10 @@ interface ModalProps {
   onClose: () => void
   title?: string
   children: React.ReactNode
+  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl'
 }
 
-export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md' }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
 
   // Close on Escape key
@@ -37,7 +38,7 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
-        className="relative w-full max-w-md rounded-xl bg-spotify-card p-6 shadow-2xl"
+        className={`relative w-full max-w-${maxWidth} rounded-xl bg-spotify-card p-6 shadow-2xl`}
       >
         {/* Header */}
         <div className="mb-5 flex items-start justify-between">
