@@ -1,8 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Script from 'next/script'
-import { HiX } from 'react-icons/hi'
 
 interface AdZoneProps {
   zoneKey: string
@@ -14,7 +12,6 @@ interface AdZoneProps {
 export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', className }: AdZoneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
-  const [injected, setInjected] = useState(false)
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
@@ -27,33 +24,42 @@ export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', clas
   const activeFormat = (isMobile && mobileZoneKey) ? '320x50' : format
 
   useEffect(() => {
-    if (!activeKey || injected) return
+    if (!activeKey || !containerRef.current) return
     
-    // Set atOptions globally for the script
-    if (typeof window !== 'undefined') {
-      (window as any).atOptions = {
+    // Se já tiver scripts injetados, não duplica
+    if (containerRef.current.querySelector('script')) return
+
+    const container = containerRef.current
+    
+    // Configurações isoladas por bloco
+    const atOptions = {
         key: activeKey,
         format: 'iframe',
-        height: activeFormat === '728x90' ? 90 : activeFormat === '468x60' ? 60 : activeFormat === '320x50' ? 50 : activeFormat === '300x250' ? 250 : 600,
-        width: activeFormat === '728x90' ? 728 : activeFormat === '468x60' ? 468 : activeFormat === '320x50' ? 320 : activeFormat === '300x250' ? 300 : 160,
+        height: activeFormat === '728x90' ? 90 : activeFormat === '468x60' ? 60 : activeFormat === '320x50' ? 50 : activeFormat === '300x250' ? 250 : activeFormat === '160x600' ? 600 : 90,
+        width: activeFormat === '728x90' ? 728 : activeFormat === '468x60' ? 468 : activeFormat === '320x50' ? 320 : activeFormat === '300x250' ? 300 : activeFormat === '160x600' ? 160 : 728,
         params: {},
-      }
-      setInjected(true)
     }
-  }, [activeKey, activeFormat, injected])
+
+    // Criar script de opções locais (para evitar conflitos entre múltiplos banners)
+    const scriptOptions = document.createElement('script')
+    scriptOptions.type = 'text/javascript'
+    scriptOptions.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`
+
+    const scriptInvoke = document.createElement('script')
+    scriptInvoke.type = 'text/javascript'
+    scriptInvoke.src = `https://www.highperformanceformat.com/${activeKey}/invoke.js`
+    scriptInvoke.async = true
+    
+    container.appendChild(scriptOptions)
+    container.appendChild(scriptInvoke)
+
+    return () => { }
+  }, [activeKey, activeFormat])
 
   return (
     <div className={`flex flex-col items-center justify-center py-2 px-1 overflow-hidden min-h-[60px] w-full ${className}`}>
       <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-white/20">Publicidade</p>
       
-      {activeKey && injected && (
-        <Script
-          id={`ad-script-${activeKey}`}
-          strategy="afterInteractive"
-          src={`https://www.highperformanceformat.com/${activeKey}/invoke.js`}
-        />
-      )}
-
       <div className="relative w-full flex justify-center items-center overflow-hidden">
         <div 
           ref={containerRef} 
