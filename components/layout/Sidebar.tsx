@@ -159,12 +159,18 @@ export default function Sidebar() {
       <FeedbackModal isOpen={feedbackOpen} onClose={() => setFeedbackOpen(false)} />
 
       {/* Footer links */}
-      <div className="mt-auto pt-4 border-t border-white/10">
+      <div className="mt-auto flex flex-col pt-4 border-t border-white/10">
         <Link
           href="/privacy"
           className="block px-3 py-1.5 text-xs text-spotify-text/50 hover:text-spotify-text transition-colors"
         >
           Política de Privacidade
+        </Link>
+        <Link
+          href="/terms"
+          className="block px-3 py-1.5 text-xs text-spotify-text/50 hover:text-spotify-text transition-colors"
+        >
+          Termos de Uso
         </Link>
       </div>
     </aside>
