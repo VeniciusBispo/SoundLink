@@ -30,6 +30,7 @@ model User {
   emailVerified DateTime?
   accounts      Account[]
   sessions      Session[]
+  scores        GameScore[]
 }
 
 model Playlist {
@@ -136,4 +137,19 @@ model AccessLog {
 
   @@index([createdAt])
   @@index([path])
+}
+
+model GameScore {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  gameId    String   // e.g., "piano"
+  songId    String   // e.g., "twinkle"
+  userId    String?  @db.ObjectId
+  username  String   // Store username for easier display in leaderboards
+  score     Int
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([gameId, songId, score])
+  @@index([userId])
 }
