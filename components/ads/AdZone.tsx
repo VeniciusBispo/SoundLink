@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import Script from 'next/script'
 import { HiX } from 'react-icons/hi'
 
 interface AdZoneProps {
@@ -13,6 +14,7 @@ interface AdZoneProps {
 export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', className }: AdZoneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [injected, setInjected] = useState(false)
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
@@ -25,44 +27,37 @@ export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', clas
   const activeFormat = (isMobile && mobileZoneKey) ? '320x50' : format
 
   useEffect(() => {
-    // Se não tiver chave ou se já houver conteúdo injetado, não faz nada
-    if (!activeKey || !containerRef.current || containerRef.current.innerHTML.includes('iframe') || containerRef.current.innerHTML.includes('script')) return
-
-    const container = containerRef.current
+    if (!activeKey || injected) return
     
-    // Injeção direta sem atrasos artificiais
-    const atOptions = {
+    // Set atOptions globally for the script
+    if (typeof window !== 'undefined') {
+      (window as any).atOptions = {
         key: activeKey,
         format: 'iframe',
         height: activeFormat === '728x90' ? 90 : activeFormat === '468x60' ? 60 : activeFormat === '320x50' ? 50 : activeFormat === '300x250' ? 250 : 600,
         width: activeFormat === '728x90' ? 728 : activeFormat === '468x60' ? 468 : activeFormat === '320x50' ? 320 : activeFormat === '300x250' ? 300 : 160,
         params: {},
+      }
+      setInjected(true)
     }
-
-    const scriptOptions = document.createElement('script')
-    scriptOptions.type = 'text/javascript'
-    scriptOptions.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`
-    
-    const scriptInvoke = document.createElement('script')
-    scriptInvoke.type = 'text/javascript'
-    scriptInvoke.src = `https://www.highperformanceformat.com/${activeKey}/invoke.js`
-    
-    // Anexar scripts diretamente
-    container.appendChild(scriptOptions)
-    container.appendChild(scriptInvoke)
-
-    // NOTA: Removido o cleanup agressivo que limpava o InnerHTML, pois isso pode deletar o anúncio
-    // se o React fizer uma re-renderização rápida de reconciliação.
-  }, [zoneKey, mobileZoneKey, format, activeKey, activeFormat])
+  }, [activeKey, activeFormat, injected])
 
   return (
     <div className={`flex flex-col items-center justify-center py-2 px-1 overflow-hidden min-h-[60px] w-full ${className}`}>
       <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-white/20">Publicidade</p>
       
+      {activeKey && injected && (
+        <Script
+          id={`ad-script-${activeKey}`}
+          strategy="afterInteractive"
+          src={`https://www.highperformanceformat.com/${activeKey}/invoke.js`}
+        />
+      )}
+
       <div className="relative w-full flex justify-center items-center overflow-hidden">
         <div 
           ref={containerRef} 
-          id={`ad-container-${zoneKey}`}
+          id={`ad-container-${activeKey}`}
           className="bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-white/5 italic text-[10px] transition-all duration-700"
           style={{ 
             width: typeof window !== 'undefined' && window.innerWidth < 768 && mobileZoneKey ? '320px' : activeFormat === '728x90' ? '728px' : activeFormat === '468x60' ? '468px' : activeFormat === '160x600' ? '160px' : '300px',
