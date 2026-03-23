@@ -4,42 +4,38 @@ import { useEffect, useRef } from 'react'
 
 interface AdZoneProps {
   zoneKey: string
-  format?: '728x90' | '160x600' | '300x250'
+  mobileZoneKey?: string
+  format?: '728x90' | '160x600' | '300x250' | '320x50'
   className?: string
 }
 
-/**
- * AdZone Component
- * Handles the safe injection of Adsterra/PropellerAds scripts in a Next.js environment.
- * IMPORTANT: Replace placeholder zoneKey with your real ID from the dashboard.
- */
-export default function AdZone({ zoneKey, format = '728x90', className }: AdZoneProps) {
+export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', className }: AdZoneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Prevent execution if no key is provided or if already loaded
-    if (!zoneKey || !containerRef.current || containerRef.current.innerHTML !== '') return
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+    const activeKey = (isMobile && mobileZoneKey) ? mobileZoneKey : zoneKey
+    const activeFormat = (isMobile && mobileZoneKey) ? '320x50' : format
+
+    if (!activeKey || !containerRef.current || containerRef.current.innerHTML !== '') return
 
     const container = containerRef.current
     
-    // Config for Adsterra (standard iframe banner)
     const atOptions = {
-      key: zoneKey,
+      key: activeKey,
       format: 'iframe',
-      height: format === '728x90' ? 90 : format === '300x250' ? 250 : 600,
-      width: format === '728x90' ? 728 : format === '300x250' ? 300 : 160,
+      height: activeFormat === '728x90' ? 90 : activeFormat === '320x50' ? 50 : activeFormat === '300x250' ? 250 : 600,
+      width: activeFormat === '728x90' ? 728 : activeFormat === '320x50' ? 320 : activeFormat === '300x250' ? 300 : 160,
       params: {},
     }
 
-    // script 1: options
     const scriptOptions = document.createElement('script')
     scriptOptions.type = 'text/javascript'
     scriptOptions.innerHTML = `atOptions = ${JSON.stringify(atOptions)};`
     
-    // script 2: invoker
     const scriptInvoke = document.createElement('script')
     scriptInvoke.type = 'text/javascript'
-    scriptInvoke.src = `https://www.highperformanceformat.com/${zoneKey}/invoke.js`
+    scriptInvoke.src = `https://www.highperformanceformat.com/${activeKey}/invoke.js`
     scriptInvoke.async = true
 
     container.appendChild(scriptOptions)
@@ -48,23 +44,27 @@ export default function AdZone({ zoneKey, format = '728x90', className }: AdZone
     return () => {
       if (container) container.innerHTML = ''
     }
-  }, [zoneKey, format])
+  }, [zoneKey, mobileZoneKey, format])
 
   return (
-    <div className={`flex flex-col items-center justify-center py-4 px-2 overflow-hidden min-h-[100px] ${className}`}>
-      <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-white/20">Publicidade</p>
-      <div 
-        ref={containerRef} 
-        id={`ad-container-${zoneKey}`}
-        className="mx-auto bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-white/10 italic text-xs"
-        style={{ 
-          width: format === '728x90' ? '728px' : format === '300x250' ? '300px' : '160px',
-          height: format === '728x90' ? '90px' : format === '300x250' ? '250px' : '600px',
-          maxWidth: '100%'
-        }}
-      >
-        {/* Ad will be injected here */}
-        {!zoneKey && <span>Configurar Zone ID</span>}
+    <div className={`flex flex-col items-center justify-center py-2 px-1 overflow-hidden min-h-[60px] w-full ${className}`}>
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-white/20">Publicidade</p>
+      
+      <div className="relative w-full flex justify-center items-center overflow-hidden">
+        <div 
+          ref={containerRef} 
+          id={`ad-container-${zoneKey}`}
+          className="bg-white/5 rounded-lg border border-white/5 flex items-center justify-center text-white/10 italic text-xs transition-transform origin-center"
+          style={{ 
+            width: typeof window !== 'undefined' && window.innerWidth < 768 && mobileZoneKey ? '320px' : format === '728x90' ? '728px' : '300px',
+            height: typeof window !== 'undefined' && window.innerWidth < 768 && mobileZoneKey ? '50px' : format === '728x90' ? '90px' : '250px',
+            transform: typeof window !== 'undefined' && window.innerWidth < 768 && !mobileZoneKey && format === '728x90' 
+              ? `scale(${(window.innerWidth - 20) / 728})` 
+              : 'none',
+          }}
+        >
+          {!zoneKey && <span>Configurar Zone ID</span>}
+        </div>
       </div>
     </div>
   )
