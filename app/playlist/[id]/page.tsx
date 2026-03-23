@@ -9,8 +9,6 @@ import {
   HiPlay,
   HiTrash,
   HiPlus,
-  HiDownload,
-  HiCheck,
   HiLockClosed,
   HiGlobe,
   HiExternalLink,
@@ -22,7 +20,6 @@ import AddSongModal from '@/components/playlist/AddSongModal'
 import ImportPlaylistModal from '@/components/playlist/ImportPlaylistModal'
 import ShareModal from '@/components/playlist/ShareModal'
 import DeleteConfirmModal from '@/components/playlist/DeleteConfirmModal'
-import OfflineDownloadButton from '@/components/playlist/OfflineDownloadButton'
 import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 import {
@@ -31,9 +28,7 @@ import {
   removeSongFromPlaylist,
   updatePlaylist as updatePlaylistApi,
 } from '@/services/playlistService'
-import { getOfflinePlaylist } from '@/services/offlineService'
 import { usePlaylistStore } from '@/store/playlistStore'
-import { useOfflinePlaylist } from '@/hooks/useOffline'
 import { usePlayer } from '@/hooks/usePlayer'
 import { useRecentPlaylists } from '@/hooks/useRecentPlaylists'
 import { formatTotalDuration } from '@/lib/utils'
@@ -45,9 +40,6 @@ function isLikelyImageSrc(v: string) {
   return /^data:image\//.test(v) || /^https?:\/\//.test(v) || v.startsWith('/')
 }
 
-// ─────────────────────────────────────────────────────
-// Inner component (needs useSearchParams → Suspense wrapper)
-// ─────────────────────────────────────────────────────
 function PlaylistPageInner() {
   const { id } = useParams<{ id: string }>()
   const router = useRouter()
@@ -76,8 +68,6 @@ function PlaylistPageInner() {
   const updatePlaylist = usePlaylistStore((s) => s.updatePlaylist)
   const removeSongFromStore = usePlaylistStore((s) => s.removeSongFromCurrentPlaylist)
 
-  const { isOffline: isOfflineSaved, isSaving, save: saveOffline, remove: removeOffline } =
-    useOfflinePlaylist(id)
   const { playPlaylist } = usePlayer()
   const { push: pushRecent, updateMetadata: updateRecentMetadata } = useRecentPlaylists()
 
@@ -105,11 +95,7 @@ function PlaylistPageInner() {
       } catch (err: unknown) {
         if (cancelled) return
         const msg = (err as Error).message
-        // Always try offline cache first before showing an error
-        const offline = await getOfflinePlaylist(id)
-        if (offline) {
-          setCurrentPlaylist(offline)
-        } else if (msg === 'Forbidden') {
+        if (msg === 'Forbidden') {
           setIsForbidden(true)
         } else {
           setError(msg)
@@ -124,8 +110,7 @@ function PlaylistPageInner() {
       cancelled = true
       setCurrentPlaylist(null)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, urlCode])
+  }, [id, urlCode, setCurrentPlaylist, pushRecent])
 
   const handleCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -206,15 +191,6 @@ function PlaylistPageInner() {
     }
   }
 
-  const handleSaveOffline = async () => {
-    if (isOfflineSaved) {
-      await removeOffline()
-    } else {
-      await saveOffline(currentPlaylist as Playlist, songs)
-    }
-  }
-
-  // ── Loading ──────────────────────────────────────────
   if (isLoading) {
     return (
       <MainLayout>
@@ -225,7 +201,6 @@ function PlaylistPageInner() {
     )
   }
 
-  // ── Private playlist — needs code ────────────────────
   if (isForbidden && !currentPlaylist) {
     return (
       <MainLayout>
@@ -256,7 +231,6 @@ function PlaylistPageInner() {
     )
   }
 
-  // ── Error / not found ────────────────────────────────
   if (error || !currentPlaylist) {
     return (
       <MainLayout>
@@ -284,7 +258,6 @@ function PlaylistPageInner() {
 
   return (
     <MainLayout>
-      {/* Hero */}
       <div className="flex flex-col gap-4 bg-gradient-to-b from-purple-900/50 to-transparent px-4 py-6 md:flex-row md:items-end md:gap-6 md:px-6 md:py-8">
         <div className="mx-auto h-36 w-36 flex-shrink-0 overflow-hidden rounded-lg shadow-2xl md:mx-0 md:h-48 md:w-48">
           {currentPlaylist.coverImage && isLikelyImageSrc(currentPlaylist.coverImage) ? (
@@ -342,83 +315,80 @@ function PlaylistPageInner() {
         </div>
       </div>
 
-      {/* Action bar */}
-      <div className="flex flex-wrap items-center gap-2 px-4 py-3 md:gap-3 md:px-6 md:py-4">
+      <div className="flex flex-wrap items-center gap-4 px-4 py-4 md:gap-6 md:px-6 md:py-6">
         {songs.length > 0 && (
           <button
             onClick={() => playPlaylist(songs)}
-            className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-spotify-green text-black shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-spotify-green text-black shadow-lg shadow-spotify-green/20 transition-all hover:scale-105 hover:bg-[#1fdf64] active:scale-95"
+            title="Reproduzir playlist"
           >
-            <HiPlay className="ml-1 h-6 w-6" />
+            <HiPlay className="ml-1 h-8 w-8" />
           </button>
         )}
 
         {canContribute && (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex items-center gap-5 md:gap-6">
+            <button
               onClick={() => setIsAddSongOpen(true)}
-              className="flex items-center gap-1.5"
+              className="group flex flex-col items-center gap-1.5 text-white/50 transition-all hover:text-white"
             >
-              <HiPlus className="h-4 w-4" />
-              <span className="hidden sm:inline">Adicionar</span>
-            </Button>
-            {isOwner && (
-              <Button
-              variant="ghost"
-              size="sm"
-              onClick={openCoverModal}
-              className="flex items-center gap-1.5"
-            >
-              <HiPencil className="h-4 w-4" />
-              <span className="hidden sm:inline">Capa</span>
-            </Button>
-            )}
-            {isOwner && (
-              <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsImportOpen(true)}
-              className="flex items-center gap-1.5"
-            >
-              <HiPlus className="h-4 w-4" />
-              <span className="hidden sm:inline">Importar YT</span>
-            </Button>
-            )}
-            {isOwner && (
-              <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsShareOpen(true)}
-              className="flex items-center gap-1.5"
-            >
-              <HiExternalLink className="h-4 w-4" />
-              <span className="hidden sm:inline">Compartilhar</span>
-            </Button>
-            )}
-            {isOwner && (
-              <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDelete}
-              className="flex items-center gap-1.5 text-red-400 hover:text-red-300"
-            >
-              <HiTrash className="h-4 w-4" />
-              <span className="hidden sm:inline">Excluir</span>
-            </Button>
-            )}
-          </>
-        )}
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-transparent transition-all group-hover:border-white group-hover:bg-white/10 group-active:scale-90">
+                <HiPlus className="h-5 w-5" />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest">Adicionar</span>
+            </button>
 
-        <OfflineDownloadButton 
-          isOfflineSaved={isOfflineSaved}
-          isSaving={isSaving}
-          onToggleSave={handleSaveOffline}
-        />
+            {isOwner && (
+              <button
+                onClick={openCoverModal}
+                className="group flex flex-col items-center gap-1.5 text-white/50 transition-all hover:text-white"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-transparent transition-all group-hover:border-white group-hover:bg-white/10 group-active:scale-90">
+                  <HiPencil className="h-5 w-5" />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest">Editar</span>
+              </button>
+            )}
+
+            {isOwner && (
+              <button
+                onClick={() => setIsImportOpen(true)}
+                className="group flex flex-col items-center gap-1.5 text-white/50 transition-all hover:text-white"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-transparent transition-all group-hover:border-white group-hover:bg-white/10 group-active:scale-90">
+                  <HiPlus className="h-5 w-5" />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest">Importar YT</span>
+              </button>
+            )}
+
+            {isOwner && (
+              <button
+                onClick={() => setIsShareOpen(true)}
+                className="group flex flex-col items-center gap-1.5 text-white/50 transition-all hover:text-white"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-transparent transition-all group-hover:border-white group-hover:bg-white/10 group-active:scale-90">
+                  <HiGlobe className="h-5 w-5" />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest">Público</span>
+              </button>
+            )}
+
+            {isOwner && (
+              <button
+                onClick={handleDelete}
+                className="group flex flex-col items-center gap-1.5 text-red-500/50 transition-all hover:text-red-400"
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-red-500/20 bg-transparent transition-all group-hover:border-red-500 group-hover:bg-red-500/10 group-active:scale-90">
+                  <HiTrash className="h-5 w-5" />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-widest">Excluir</span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Song list */}
       <div className="px-4 pb-24 md:pb-8 md:px-6">
         <SongList
           songs={currentPlaylist.songs ?? []}
@@ -427,7 +397,6 @@ function PlaylistPageInner() {
         />
       </div>
 
-      {/* Modals */}
       {canContribute && (
         <AddSongModal
           isOpen={isAddSongOpen}
@@ -470,7 +439,6 @@ function PlaylistPageInner() {
 
       <Modal isOpen={isCoverOpen} onClose={() => setIsCoverOpen(false)} title="Editar Playlist">
         <form onSubmit={handleSaveCover} className="flex flex-col gap-4">
-          {/* Campo para nome */}
           <div>
             <label htmlFor="edit-name" className="mb-1.5 block text-sm font-medium text-white">
               Nome da playlist
@@ -484,7 +452,6 @@ function PlaylistPageInner() {
               className="w-full rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
             />
           </div>
-          {/* Campo para capa */}
           <div>
             <label className="mb-1.5 block text-sm font-medium text-white">Capa da playlist</label>
             <PlaylistCoverPicker value={coverDraft} onChange={setCoverDraft} />
@@ -494,7 +461,6 @@ function PlaylistPageInner() {
               {coverError}
             </div>
           )}
-          {/* Campo de Privacidade */}
           <div className="flex items-center justify-between rounded-md bg-spotify-hover px-4 py-3 mt-1">
             <div>
               <p className="text-sm font-medium text-white">Playlist Pública</p>
@@ -503,7 +469,7 @@ function PlaylistPageInner() {
             <button
               type="button"
               onClick={() => setIsPublicDraft(!isPublicDraft)}
-              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${isPublicDraft ? 'bg-spotify-green' : 'bg-white/20'}`}
+              className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-spotify-green ${isPublicDraft ? 'bg-spotify-green' : 'bg-white/20'}`}
               aria-pressed={isPublicDraft}
             >
               <span

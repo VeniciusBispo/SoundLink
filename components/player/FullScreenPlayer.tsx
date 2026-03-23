@@ -7,14 +7,15 @@ import {
   HiChevronDown, 
   HiPlay, 
   HiPause, 
-  HiDotsHorizontal, 
   HiFastForward, 
   HiRewind, 
   HiVolumeUp,
-  HiVolumeOff
+  HiVolumeOff,
+  HiSwitchHorizontal,
+  HiRefresh
 } from 'react-icons/hi'
 import { usePlayer } from '@/hooks/usePlayer'
-import { formatDuration } from '@/lib/utils'
+import { formatDuration, cn } from '@/lib/utils'
 
 interface FullScreenPlayerProps {
   isOpen: boolean
@@ -30,7 +31,15 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
     duration, 
     seek,
     volume,
-    setVolume
+    setVolume,
+    next,
+    previous,
+    isShuffle,
+    toggleShuffle,
+    repeatMode,
+    toggleRepeat,
+    playbackSpeed,
+    setPlaybackSpeed
   } = usePlayer()
 
   const [isHoveringVol, setIsHoveringVol] = useState(false)
@@ -73,9 +82,7 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
               <div className="text-center">
                 <p className="text-xs font-semibold text-white/70 uppercase tracking-widest">Tocando da Playlist</p>
               </div>
-              <button className="p-2 -mr-2 text-white hover:bg-white/10 rounded-full transition-colors">
-                <HiDotsHorizontal className="h-6 w-6" />
-              </button>
+              <div className="w-11" /> {/* Spacer for balance */}
             </header>
 
             {/* ARTWORK */}
@@ -141,39 +148,85 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
               </div>
 
               {/* Main Controls */}
-              <div className="flex items-center justify-between px-2">
-                <button 
-                  onClick={() => setVolume(volume === 0 ? 80 : 0)}
-                  className="text-white/60 hover:text-white transition-colors"
-                >
-                  {volume === 0 ? <HiVolumeOff className="h-6 w-6" /> : <HiVolumeUp className="h-6 w-6" />}
-                </button>
-
-                <div className="flex items-center gap-6 md:gap-8">
+              <div className="flex flex-col gap-8">
+                <div className="flex items-center justify-between px-2">
+                  {/* Shuffle */}
                   <button 
-                    onClick={() => seek(Math.max(0, currentTime - 10))}
-                    className="text-white hover:scale-105 active:scale-95 transition-transform"
+                    onClick={toggleShuffle}
+                    className={cn(
+                      "transition-all active:scale-90",
+                      isShuffle ? "text-spotify-green" : "text-white/60 hover:text-white"
+                    )}
                   >
-                    <HiRewind className="h-9 w-9" />
+                    <HiSwitchHorizontal className="h-6 w-6" />
                   </button>
-                  
-                  <motion.button 
-                    whileTap={{ scale: 0.9 }}
-                    onClick={togglePlay}
-                    className="flex items-center justify-center h-16 w-16 bg-white text-black rounded-full hover:scale-105 transition-transform"
-                  >
-                    {isPlaying ? <HiPause className="h-8 w-8" /> : <HiPlay className="h-8 w-8 ml-1" />}
-                  </motion.button>
-                  
+
+                  <div className="flex items-center gap-6 md:gap-10">
+                    {/* Previous Track */}
+                    <button 
+                      onClick={previous}
+                      className="text-white hover:scale-110 active:scale-90 transition-transform"
+                    >
+                      <HiRewind className="h-9 w-9" />
+                    </button>
+                    
+                    {/* Play / Pause */}
+                    <motion.button 
+                      whileTap={{ scale: 0.9 }}
+                      onClick={togglePlay}
+                      className="flex items-center justify-center h-20 w-20 bg-white text-black rounded-full hover:scale-105 transition-all shadow-xl shadow-white/10"
+                    >
+                      {isPlaying ? <HiPause className="h-10 w-10" /> : <HiPlay className="h-10 w-10 ml-1" />}
+                    </motion.button>
+                    
+                    {/* Next Track */}
+                    <button 
+                      onClick={next}
+                      className="text-white hover:scale-110 active:scale-90 transition-transform"
+                    >
+                      <HiFastForward className="h-9 w-9" />
+                    </button>
+                  </div>
+
+                  {/* Repeat */}
                   <button 
-                    onClick={() => seek(Math.min(displayDuration, currentTime + 10))}
-                    className="text-white hover:scale-105 active:scale-95 transition-transform"
+                    onClick={toggleRepeat}
+                    className={cn(
+                      "relative transition-all active:scale-90",
+                      repeatMode !== 'none' ? "text-spotify-green" : "text-white/60 hover:text-white"
+                    )}
                   >
-                    <HiFastForward className="h-9 w-9" />
+                    <HiRefresh className="h-6 w-6" />
+                    {repeatMode === 'one' && (
+                      <span className="absolute -bottom-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-spotify-green text-[8px] font-bold text-black ring-1 ring-black">
+                        1
+                      </span>
+                    )}
                   </button>
                 </div>
 
-                <div className="w-6" /> {/* Placeholder for balance */}
+                {/* Bottom Bar: Volume & Speed */}
+                <div className="flex items-center justify-between px-2">
+                   <button 
+                    onClick={() => setVolume(volume === 0 ? 80 : 0)}
+                    className="text-white/60 hover:text-white transition-colors"
+                  >
+                    {volume === 0 ? <HiVolumeOff className="h-6 w-6" /> : <HiVolumeUp className="h-6 w-6" />}
+                  </button>
+
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => {
+                        const speeds = [1, 1.25, 1.5, 1.75, 2]
+                        const nextIdx = (speeds.indexOf(playbackSpeed) + 1) % speeds.length
+                        setPlaybackSpeed(speeds[nextIdx])
+                      }}
+                      className="bg-white/10 hover:bg-white/20 text-white text-[11px] font-bold px-3 py-1 rounded-full transition-colors active:scale-95"
+                    >
+                      {playbackSpeed}x
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

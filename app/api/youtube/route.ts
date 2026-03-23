@@ -1,13 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { extractYouTubeId } from '@/lib/utils'
 import { prisma } from '@/lib/prisma'
-
-// ISO 8601 duration to seconds (e.g. PT4M13S → 253)
-function parseDuration(iso: string): number {
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/)
-  if (!match) return 0
-  return (Number(match[1] ?? 0) * 3600) + (Number(match[2] ?? 0) * 60) + Number(match[3] ?? 0)
-}
+import YouTube from 'youtube-sr'
 
 // GET /api/youtube?url=<youtubeUrl>  OR  /api/youtube?videoId=<id>
 export async function GET(req: NextRequest) {
@@ -21,88 +15,115 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'URL ou videoId inválido ou ausente' }, { status: 400 })
   }
 
-  const apiKey = process.env.YOUTUBE_API_KEY
-
-  // If YouTube Data API returned a valid duration, persist to DB
-  if (apiKey && apiKey !== 'your-youtube-api-key') {
-    const endpoint = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${encodeURIComponent(videoId)}&key=${encodeURIComponent(apiKey)}`
-    const ytRes = await fetch(endpoint, { next: { revalidate: 3600 } })
-    if (ytRes.ok) {
-      const ytData = await ytRes.json()
-      const item = ytData.items?.[0]
-      if (item) {
-        const thumbnails = item.snippet.thumbnails
-        const thumbnail =
-          thumbnails.maxres?.url ??
-          thumbnails.high?.url ??
-          thumbnails.medium?.url ??
-          thumbnails.default?.url ??
-          ''
-        const dur = parseDuration(item.contentDetails.duration as string)
-        if (dur > 0) {
-          await prisma.song.updateMany({
-            where: { youtubeVideoId: videoId, duration: 0 },
-            data: { duration: dur },
-          }).catch((error) => {
-            console.warn('[youtube][GET] failed to persist duration:', error)
-          })
-        }
-        return NextResponse.json({
-          videoId,
-          title: item.snippet.title as string,
-          channel: item.snippet.channelTitle as string,
-          thumbnail,
-          duration: dur,
-        })
-      }
-    }
-  }
-
-  // Fallback: oEmbed gives title/channel/thumbnail; fetch watch page for duration
-  const [oEmbedRes, watchPageRes] = await Promise.all([
-    fetch(
-      `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`,
-      { next: { revalidate: 3600 } }
-    ),
-    fetch(
-      `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`,
-      {
-        headers: { 'Accept-Language': 'en-US,en;q=0.9', 'User-Agent': 'Mozilla/5.0' },
-        next: { revalidate: 3600 },
-      }
-    ),
-  ])
-
-  if (!oEmbedRes.ok) {
-      return NextResponse.json({ error: 'Vídeo não encontrado ou indisponível' }, { status: 404 })
-  }
-
-  const oe = await oEmbedRes.json()
-
-  // Extract duration (seconds) from the embedded JSON in the watch page
-  let duration = 0
-  if (watchPageRes.ok) {
-    const html = await watchPageRes.text()
-    // "lengthSeconds":"225" appears in the ytInitialPlayerResponse JSON blob
-    const match = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/)
-    if (match) duration = parseInt(match[1], 10)
-  }
-
-  // Persist resolved duration to DB so next view loads correctly
-  if (duration > 0) {
-    await prisma.song.updateMany({
-      where: { youtubeVideoId: videoId, duration: 0 },
-      data: { duration },
-    }).catch((error) => {
-      console.warn('[youtube][GET] failed to persist duration (fallback):', error)
+  // 1. Check Database first (Zero Quota, Instant)
+  try {
+    const cachedSong = await prisma.song.findUnique({
+      where: { youtubeVideoId: videoId }
     })
+    if (cachedSong && cachedSong.duration > 0) {
+      return NextResponse.json({
+        videoId: cachedSong.youtubeVideoId,
+        title: cachedSong.title,
+        channel: cachedSong.channel,
+        thumbnail: cachedSong.thumbnail,
+        duration: cachedSong.duration,
+      })
+    }
+  } catch (dbError) {
+    console.warn('[youtube][DB] cache check failed:', dbError)
   }
 
-  return NextResponse.json({
-    videoId,
-    title: oe.title as string,
-    channel: oe.author_name as string,
-    thumbnail: oe.thumbnail_url as string,
-    duration,
-  })
+  // 2. Fetch using Scraper (Zero Quota)
+  try {
+    const video = await YouTube.getVideo(`https://www.youtube.com/watch?v=${videoId}`)
+    if (video) {
+        const result = {
+            videoId: video.id as string,
+            title: video.title as string,
+            channel: video.channel?.name || 'Unknown Channel',
+            thumbnail: video.thumbnail?.url || '',
+            duration: Math.floor((video.duration || 0) / 1000)
+        }
+
+        // Persist to DB for future requests
+        if (result.duration > 0) {
+          await prisma.song.upsert({
+            where: { youtubeVideoId: videoId },
+            update: { 
+                title: result.title,
+                duration: result.duration,
+                thumbnail: result.thumbnail,
+                channel: result.channel
+            },
+            create: {
+                youtubeVideoId: videoId,
+                title: result.title,
+                duration: result.duration,
+                thumbnail: result.thumbnail,
+                channel: result.channel
+            }
+          }).catch(err => console.warn('[youtube][upsert] failed:', err))
+        }
+
+        return NextResponse.json(result)
+    }
+  } catch (srError) {
+    console.warn('[youtube][sr] fetch failed, falling back to oEmbed:', srError)
+  }
+
+  // 3. Fallback: oEmbed + Watch page scraping (Zero Quota)
+  try {
+    const [oEmbedRes, watchPageRes] = await Promise.all([
+      fetch(
+        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}&format=json`,
+        { next: { revalidate: 3600 } }
+      ),
+      fetch(
+        `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`,
+        {
+          headers: { 'Accept-Language': 'en-US,en;q=0.9', 'User-Agent': 'Mozilla/5.0' },
+          next: { revalidate: 3600 },
+        }
+      ),
+    ])
+
+    if (oEmbedRes.ok) {
+      const oe = await oEmbedRes.json()
+      let duration = 0
+      if (watchPageRes.ok) {
+        const html = await watchPageRes.text()
+        const match = html.match(/"lengthSeconds"\s*:\s*"(\d+)"/)
+        if (match) duration = parseInt(match[1], 10)
+      }
+
+      const result = {
+        videoId,
+        title: oe.title as string,
+        channel: oe.author_name as string,
+        thumbnail: oe.thumbnail_url as string,
+        duration,
+      }
+
+      // Persist fallback result
+      if (duration > 0) {
+        await prisma.song.upsert({
+          where: { youtubeVideoId: videoId },
+          update: { duration },
+          create: {
+            youtubeVideoId: videoId,
+            title: result.title,
+            duration: result.duration,
+            thumbnail: result.thumbnail,
+            channel: result.channel
+          }
+        }).catch(() => {})
+      }
+
+      return NextResponse.json(result)
+    }
+  } catch (fallbackError) {
+    console.error('[youtube][fallback] error:', fallbackError)
+  }
+
+  return NextResponse.json({ error: 'Vídeo não encontrado ou indisponível' }, { status: 404 })
 }
