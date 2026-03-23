@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession } from 'next-auth/react'
-import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection, HiLockOpen } from 'react-icons/hi'
+import { HiHome, HiSearch, HiMusicNote, HiPlus, HiChat, HiCollection, HiLockOpen, HiStar } from 'react-icons/hi'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { cn } from '@/lib/utils'
@@ -15,6 +15,7 @@ import FeedbackModal from '@/components/ui/FeedbackModal'
 const navItems = [
   { href: '/', label: 'Início', icon: HiHome },
   { href: '/explore', label: 'Explorar', icon: HiSearch },
+  { href: '/games/piano', label: 'Minijogos', icon: HiStar },
   { href: '/songs', label: 'Memória Musical', icon: HiCollection },
   { href: '/access', label: 'Playlist privada', icon: HiLockOpen },
 ]
