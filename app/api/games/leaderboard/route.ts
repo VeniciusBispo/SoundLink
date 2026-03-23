@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import prismadb from '@/lib/prismadb'
+import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     }
 
     // Global Top 10
-    const globalTop = await prismadb.gameScore.findMany({
+    const globalTop = await prisma.gameScore.findMany({
       where: { gameId, songId },
       orderBy: { score: 'desc' },
       take: 10,
@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     // User Personal Best
     let personalBest = null
     if (session?.user?.id) {
-      personalBest = await prismadb.gameScore.findFirst({
+      personalBest = await prisma.gameScore.findFirst({
         where: { gameId, songId, userId: session.user.id },
         orderBy: { score: 'desc' },
         select: { score: true }

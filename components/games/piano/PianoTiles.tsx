@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { PIANO_SONGS, Song, Note } from '@/lib/games/piano/songs'
 import { cn } from '@/lib/utils'
-import { HiPlay, HiRefresh, HiArrowLeft, HiTrophy, HiUser } from 'react-icons/hi'
+import { HiPlay, HiRefresh, HiArrowLeft, HiStar, HiUser } from 'react-icons/hi'
 
 // Frequencies for the tiles
 const TILE_NOTES = [261.63, 293.66, 329.63, 349.23] // C4, D4, E4, F4
@@ -249,7 +249,7 @@ export default function PianoTiles() {
             <div className="p-6 rounded-3xl bg-white/5 border border-white/10 space-y-6">
                 <div>
                    <h3 className="text-sm font-bold text-spotify-text uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <HiTrophy className="text-yellow-500" /> Ranking Geral 
+                      <HiStar className="text-yellow-500" /> Ranking Geral 
                    </h3>
                    {isLoadingRank ? (
                       <div className="h-40 flex items-center justify-center">
