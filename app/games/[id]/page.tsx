@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useParams } from 'next/navigation'
-import PianoGame from '@/components/games/piano/PianoGame'
+import PianoContainer from '@/components/games/piano/PianoContainer'
 import { HiPuzzle, HiArrowLeft } from 'react-icons/hi'
 import Link from 'next/link'
 
@@ -12,7 +12,7 @@ export default function GamePage() {
 
   // Logic to render specific game or placeholder
   if (id === 'piano') {
-    return <PianoGame />
+    return <PianoContainer />
   }
 
   // Placeholder for unimplemented games
