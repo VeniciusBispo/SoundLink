@@ -1,46 +1,175 @@
 'use client'
 
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { usePianoStore } from '@/store/pianoStore'
+import { cn } from '@/lib/utils'
+
+// Mapping frequencies for notes starting from C4 (Middle C)
+const NOTES: Record<string, number> = {
+  'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63,
+  'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00,
+  'A#4': 466.16, 'B4': 493.88, 'C5': 523.25
+}
+
+const KEY_MAP: Record<string, string> = {
+  'a': 'C4', 'w': 'C#4', 's': 'D4', 'e': 'D#4', 'd': 'E4', 'f': 'F4',
+  't': 'F#4', 'g': 'G4', 'y': 'G#4', 'h': 'A4', 'u': 'A#4', 'j': 'B4', 'k': 'C5'
+}
 
 export default function PianoGame() {
-  const { isPlaying } = usePianoStore()
+  const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set())
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const oscillatorsRef = useRef<Record<string, { osc: OscillatorNode, gain: GainNode }>>({})
 
-  const whiteKeys = Array.from({ length: 14 }) 
-  
+  const playNote = useCallback((note: string) => {
+    if (!NOTES[note]) return
+
+    // Initialize AudioContext on first interaction
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+    }
+
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume()
+    }
+
+    // Stop existing note if already playing to avoid overlap issues
+    stopNote(note)
+
+    const osc = audioCtxRef.current.createOscillator()
+    const gain = audioCtxRef.current.createGain()
+
+    osc.type = 'triangle' 
+    osc.frequency.setValueAtTime(NOTES[note], audioCtxRef.current.currentTime)
+
+    gain.gain.setValueAtTime(0.3, audioCtxRef.current.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 1.5)
+
+    osc.connect(gain)
+    gain.connect(audioCtxRef.current.destination)
+
+    osc.start()
+    
+    oscillatorsRef.current[note] = { osc, gain }
+    setActiveNotes(prev => new Set(prev).add(note))
+  }, [])
+
+  const stopNote = useCallback((note: string) => {
+    const oscillatorPair = oscillatorsRef.current[note]
+    if (oscillatorPair) {
+      const { osc, gain } = oscillatorPair
+      if (audioCtxRef.current) {
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtxRef.current.currentTime + 0.1)
+        setTimeout(() => {
+          try {
+            osc.stop()
+            osc.disconnect()
+            gain.disconnect()
+          } catch (e) {}
+        }, 100)
+      }
+      delete oscillatorsRef.current[note]
+      setActiveNotes(prev => {
+        const next = new Set(prev)
+        next.delete(note)
+        return next
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return
+      const note = KEY_MAP[e.key.toLowerCase()]
+      if (note) playNote(note)
+    }
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const note = KEY_MAP[e.key.toLowerCase()]
+      if (note) stopNote(note)
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [playNote, stopNote])
+
+  const whiteKeys = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5']
+  const blackKeys = [
+    { note: 'C#4', left: '9%' },
+    { note: 'D#4', left: '21.5%' },
+    { note: 'F#4', left: '46.5%' },
+    { note: 'G#4', left: '59%' },
+    { note: 'A#4', left: '71.5%' },
+  ]
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-8 relative overflow-hidden">
-      <div className="absolute top-4 right-4 rounded-full bg-spotify-green/20 px-3 py-1 text-sm font-bold text-spotify-green tracking-wide">
-        EM DESENVOLVIMENTO
+    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-4 sm:p-8 relative overflow-hidden select-none">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Piano Mágico 🎹</h2>
+        <p className="text-sm text-spotify-text">Use o mouse ou as teclas <span className="text-spotify-green font-mono">A S D F G H J K</span></p>
       </div>
       
-      <div className="relative mt-8 flex h-56 sm:h-64 w-full max-w-4xl rounded-t-lg bg-[#222] p-2 shadow-2xl">
-        <div className="flex w-full gap-1 p-1 bg-black rounded-b overflow-hidden relative">
+      <div className="relative flex h-72 w-full max-w-4xl rounded-xl bg-[#080808] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-8 border-[#333]">
+        <div className="flex w-full gap-[2px] h-full relative">
           
-          <div className="flex w-full h-full gap-[2px]">
-            {whiteKeys.map((_, i) => (
-              <div 
-                key={`white-${i}`} 
-                className="flex-1 bg-white hover:bg-gray-200 cursor-pointer rounded-b shadow-[inset_0_-2px_4px_rgba(0,0,0,0.2)] active:bg-gray-300 transition-colors"
-                aria-label={`Tecla branca ${i + 1}`}
-              />
-            ))}
-          </div>
+          {/* White Keys */}
+          {whiteKeys.map((note) => (
+            <div 
+              key={note} 
+              onMouseDown={() => playNote(note)}
+              onMouseUp={() => stopNote(note)}
+              onMouseLeave={() => stopNote(note)}
+              className={cn(
+                "flex-1 bg-[#fcfcfc] hover:bg-gray-200 cursor-pointer rounded-b-lg shadow-md transition-all duration-75 relative",
+                activeNotes.has(note) ? "bg-spotify-green translate-y-2 shadow-inner" : "shadow-[0_4px_0_#ccc]"
+              )}
+            >
+              <div className="absolute bottom-4 left-0 right-0 text-center">
+                <span className="text-[10px] font-bold text-black/20 uppercase font-mono">{note}</span>
+              </div>
+            </div>
+          ))}
 
-          <div className="absolute top-1 left-1 right-1 h-3/5 pointer-events-none flex" style={{ paddingLeft: '3.5%' }}>
-             <div className="w-[5%] bg-black mx-[1%] shadow-lg rounded-b pointer-events-auto cursor-pointer hover:bg-gray-800" />
-             <div className="w-[5%] bg-black mx-[1%] shadow-lg rounded-b pointer-events-auto cursor-pointer hover:bg-gray-800" />
-             <div className="w-[7%] invisible mx-[1%]" />
-             <div className="w-[5%] bg-black mx-[1%] shadow-lg rounded-b pointer-events-auto cursor-pointer hover:bg-gray-800" />
-             <div className="w-[5%] bg-black mx-[1%] shadow-lg rounded-b pointer-events-auto cursor-pointer hover:bg-gray-800" />
-             <div className="w-[5%] bg-black mx-[1%] shadow-lg rounded-b pointer-events-auto cursor-pointer hover:bg-gray-800" />
-          </div>
+          {/* Black Keys */}
+          {blackKeys.map(({ note, left }) => (
+            <div 
+              key={note}
+              onMouseDown={() => playNote(note)}
+              onMouseUp={() => stopNote(note)}
+              onMouseLeave={() => stopNote(note)}
+              style={{ left, width: '7%', height: '60%' }}
+              className={cn(
+                "absolute top-0 z-10 bg-[#1a1a1a] hover:bg-gray-800 cursor-pointer rounded-b-md shadow-2xl transition-all duration-75",
+                activeNotes.has(note) ? "bg-spotify-green/80 translate-y-2 shadow-inner" : "shadow-[0_4px_0_#000]"
+              )}
+            >
+               <div className="absolute bottom-3 left-0 right-0 text-center">
+                <span className="text-[8px] font-bold text-white/20 uppercase font-mono">{note.replace('#', '')}#</span>
+              </div>
+            </div>
+          ))}
 
         </div>
       </div>
       
-      <p className="mt-8 text-center text-spotify-text max-w-lg leading-relaxed">
-        A estrutura do jogo de piano já está preparada. Em breve você poderá conectar um teclado MIDI, jogar o modo "seguir a nota" ou apenas praticar livremente com seus amigos!
-      </p>
+      <div className="mt-12 flex flex-wrap justify-center gap-8 text-xs text-spotify-text bg-black/20 px-6 py-3 rounded-full border border-white/5">
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-spotify-green animate-pulse" />
+          <span>Áudio Estéreo</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-blue-500" />
+          <span>Suporte a Teclado</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="h-2 w-2 rounded-full bg-yellow-500" />
+          <span>Polifonia</span>
+        </div>
+      </div>
     </div>
   )
 }

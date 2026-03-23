@@ -313,9 +313,10 @@ function MiniGamesSection() {
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {GAMES.map((game) => (
-          <div
+          <Link
             key={game.id}
-            className={`relative flex flex-col gap-3 overflow-hidden rounded-2xl bg-gradient-to-br ${game.gradient} border border-white/5 p-5 transition-all duration-200 hover:scale-[1.02] hover:border-white/10 cursor-pointer`}
+            href={`/games/${game.id}`}
+            className={`relative flex flex-col gap-3 overflow-hidden rounded-2xl bg-gradient-to-br ${game.gradient} border border-white/5 p-5 transition-all duration-200 hover:scale-[1.02] hover:border-white/10`}
           >
             <span className="text-3xl">{game.emoji}</span>
             <div>
@@ -329,7 +330,7 @@ function MiniGamesSection() {
             </div>
             {/* Decorative blur circle */}
             <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5 blur-xl" />
-          </div>
+          </Link>
         ))}
       </div>
     </section>
