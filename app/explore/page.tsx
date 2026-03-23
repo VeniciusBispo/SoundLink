@@ -67,14 +67,15 @@ export default function ExplorePage() {
           <PlaylistGrid playlists={filtered} />
         )}
 
-        {/* Adsterra — below grid */}
+        {/* Adsterra — below grid (Desktop Only to avoid mobile duplication) */}
         {!isLoading && (
-          <AdZone 
-            zoneKey="dc57c85466356ba2785c2f13c18849a1" 
-            mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
-            format="468x60" 
-            className="mt-8 opacity-60" 
-          />
+          <div className="hidden md:block">
+            <AdZone 
+              zoneKey="dc57c85466356ba2785c2f13c18849a1" 
+              format="468x60" 
+              className="mt-8 opacity-60" 
+            />
+          </div>
         )}
 
         {/* Pagination */}
