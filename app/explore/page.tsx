@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import PlaylistGrid from '@/components/playlist/PlaylistGrid'
-import AdBanner from '@/components/ads/AdBanner'
+import AdZone from '@/components/ads/AdZone'
 import type { Playlist } from '@/types'
 import { getPublicPlaylists } from '@/services/playlistService'
 
@@ -45,8 +45,13 @@ export default function ExplorePage() {
         </h1>
         <p className="mb-6 text-sm text-spotify-text">{total} playlists públicas</p>
 
-        {/* Ad — top of explore */}
-        <AdBanner slot="SLOT_EXPLORE_TOP" format="horizontal" className="mb-6 rounded-xl" />
+        {/* Adsterra — top of explore */}
+        <AdZone 
+          zoneKey="861d749601dfaf98fb0e62a9bee365bc" 
+          mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
+          format="728x90" 
+          className="mb-6 opacity-60" 
+        />
 
         {isLoading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
@@ -62,9 +67,14 @@ export default function ExplorePage() {
           <PlaylistGrid playlists={filtered} />
         )}
 
-        {/* Ad — below grid */}
+        {/* Adsterra — below grid */}
         {!isLoading && (
-          <AdBanner slot="SLOT_EXPLORE_BOTTOM" format="horizontal" className="mt-8 rounded-xl" />
+          <AdZone 
+            zoneKey="861d749601dfaf98fb0e62a9bee365bc" 
+            mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
+            format="728x90" 
+            className="mt-8 opacity-60" 
+          />
         )}
 
         {/* Pagination */}
