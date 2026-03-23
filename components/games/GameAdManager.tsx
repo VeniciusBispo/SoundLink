@@ -18,7 +18,7 @@ export default function GameAdManager() {
     // Anúncio ao entrar no jogo (1 segundo após carregar)
     const entryTimer = setTimeout(() => {
       setShowTimedAd(true)
-    }, 1000)
+    }, 300)
 
     // Timer para anúncio a cada 5 minutos (300.000 ms)
     const interval = setInterval(() => {

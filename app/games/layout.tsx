@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import GameAdManager from '@/components/games/GameAdManager'
+import AdZone from '@/components/ads/AdZone'
 import { HiMusicNote, HiDuplicate, HiStar, HiX } from 'react-icons/hi'
 import { cn } from '@/lib/utils'
 
@@ -48,11 +49,12 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
             </div>
 
             {/* Banner Vertical lateral no desktop */}
-            <div className="hidden lg:block flex-1 rounded-2xl bg-white/5 border border-white/5 overflow-hidden min-h-[400px]">
-               <div className="flex items-center justify-center h-full italic text-xs text-white/10">
-                  {/* Espaço para Banner 160x600 opcional */}
-                  Publicidade Lateral
-               </div>
+            <div className="hidden lg:block flex-1 rounded-2xl bg-white/3 overflow-hidden min-h-[400px]">
+               <AdZone 
+                 zoneKey="b8e4f1648a731efc7793b82785c2f13c" 
+                 format="160x600" 
+                 className="h-full"
+               />
             </div>
           </div>
 

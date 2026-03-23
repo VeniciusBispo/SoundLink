@@ -8,6 +8,8 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
+import Script from 'next/script'
+
 export const metadata: Metadata = {
   title: 'SoundLink – Sua Música, Do Seu Jeito',
   description:
@@ -29,14 +31,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="pt-BR" className="dark">
       <head>
-        {/* Google AdSense */}
+        {/* Preconectar aos domínios de anúncios para acelerar o carregamento */}
+        <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.highperformanceformat.com" />
+        <link rel="dns-prefetch" href="https://www.highperformancegate.com" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+      </head>
+      <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
+        {/* Google AdSense - Usando script padrão para evitar erro data-nscript e garantir compatibilidade total */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793"
           crossOrigin="anonymous"
         />
-      </head>
-      <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
         <Providers session={session}>
           <PlayerProvider>{children}</PlayerProvider>
         </Providers>
