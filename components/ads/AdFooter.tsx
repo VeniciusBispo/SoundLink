@@ -1,23 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import AdZone from './AdZone'
 
 export default function AdFooter() {
-  const [hasAd, setHasAd] = useState(false)
+  // ATENÇÃO: Substitua pelo seu Zone ID do Adsterra ou PropellerAds
+  const ADSTERRA_ZONE_KEY = '' 
 
-  useEffect(() => {
-    // Simulating ad availability or AdSense loaded callback
-    // If you integrate AdSense, you can listen to events to toggle this.
-    // For now, it stays hidden to eliminate empty space.
-    setHasAd(false) 
-  }, [])
-
-  if (!hasAd) return null
+  if (!ADSTERRA_ZONE_KEY) return null
 
   return (
-    <div className="flex flex-shrink-0 items-center justify-center w-full h-[60px] bg-black border-t border-white/5 z-30">
-      {/* Container for future ad scripts */}
-      <span className="text-xs text-white/30">Ad Advertisement</span>
+    <div className="flex flex-shrink-0 items-center justify-center w-full bg-black border-t border-white/5 z-30">
+      <AdZone zoneKey={ADSTERRA_ZONE_KEY} format="728x90" className="py-1" />
     </div>
   )
 }

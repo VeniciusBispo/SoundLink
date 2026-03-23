@@ -10,6 +10,7 @@ import type { Playlist } from '@/types'
 import PlaylistCard from '@/components/playlist/PlaylistCard'
 import { useUIStore } from '@/store/uiStore'
 import ContinueWatchingSection from './ContinueWatchingSection'
+import AdZone from '@/components/ads/AdZone'
 import useSWR from 'swr'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -214,6 +215,9 @@ export default function HomeClient({
       ) : (
         <EmptyStateCTA onCreateOpen={openCreateModal} />
       )}
+
+      {/* Publicidade Home ── Substitua 'YOUR_ZONE_KEY' pela sua Key */}
+      <AdZone zoneKey="" format="728x90" className="opacity-60" />
 
       {/* ── Playlists em alta (mais músicas) ── */}
       {topByCount.length > 0 && (
