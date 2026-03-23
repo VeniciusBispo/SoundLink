@@ -39,7 +39,7 @@ export default function AdZone({ zoneKey, format = '728x90', className }: AdZone
     // script 2: invoker
     const scriptInvoke = document.createElement('script')
     scriptInvoke.type = 'text/javascript'
-    scriptInvoke.src = `//www.topcreativeformat.com/${zoneKey}/invoke.js`
+    scriptInvoke.src = `https://www.highperformanceformat.com/${zoneKey}/invoke.js`
     scriptInvoke.async = true
 
     container.appendChild(scriptOptions)

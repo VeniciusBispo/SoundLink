@@ -217,7 +217,7 @@ export default function HomeClient({
       )}
 
       {/* Publicidade Home ── Substitua 'YOUR_ZONE_KEY' pela sua Key */}
-      <AdZone zoneKey="" format="728x90" className="opacity-60" />
+      <AdZone zoneKey="861d749601dfaf98fb0e62a9bee365bc" format="728x90" className="opacity-60" />
 
       {/* ── Playlists em alta (mais músicas) ── */}
       {topByCount.length > 0 && (

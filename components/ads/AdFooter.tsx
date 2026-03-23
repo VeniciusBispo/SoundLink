@@ -4,7 +4,7 @@ import AdZone from './AdZone'
 
 export default function AdFooter() {
   // ATENÇÃO: Substitua pelo seu Zone ID do Adsterra ou PropellerAds
-  const ADSTERRA_ZONE_KEY = '' 
+  const ADSTERRA_ZONE_KEY = '861d749601dfaf98fb0e62a9bee365bc' 
 
   if (!ADSTERRA_ZONE_KEY) return null
 
