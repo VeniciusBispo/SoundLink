@@ -70,9 +70,9 @@ export default function ExplorePage() {
         {/* Adsterra — below grid */}
         {!isLoading && (
           <AdZone 
-            zoneKey="861d749601dfaf98fb0e62a9bee365bc" 
+            zoneKey="dc57c85466356ba2785c2f13c18849a1" 
             mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
-            format="728x90" 
+            format="468x60" 
             className="mt-8 opacity-60" 
           />
         )}
