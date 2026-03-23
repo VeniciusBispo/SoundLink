@@ -9,6 +9,7 @@ export interface Song {
   artist: string;
   bpm: number;
   duration: number;
+  difficulty: number; // 1 (Easy) to 5 (Hard)
   notes: Note[];
 }
 
@@ -19,6 +20,7 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Classic',
     bpm: 100,
     duration: 15,
+    difficulty: 1,
     notes: [
       { time: 0.0, lane: 0 }, { time: 0.5, lane: 0 }, { time: 1.0, lane: 2 }, { time: 1.5, lane: 2 },
       { time: 2.0, lane: 3 }, { time: 2.5, lane: 3 }, { time: 3.0, lane: 2 },
@@ -34,6 +36,7 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Christmas',
     bpm: 120,
     duration: 18,
+    difficulty: 2,
     notes: [
       { time: 0.0, lane: 1 }, { time: 0.4, lane: 1 }, { time: 0.8, lane: 1 },
       { time: 1.2, lane: 1 }, { time: 1.6, lane: 1 }, { time: 2.0, lane: 1 },
@@ -48,6 +51,7 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Beethoven',
     bpm: 110,
     duration: 20,
+    difficulty: 3,
     notes: [
       { time: 0.0, lane: 2 }, { time: 0.5, lane: 2 }, { time: 1.0, lane: 3 }, { time: 1.5, lane: 3 },
       { time: 2.0, lane: 3 }, { time: 2.5, lane: 2 }, { time: 3.0, lane: 1 }, { time: 3.5, lane: 0 },
@@ -63,6 +67,7 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Beethoven',
     bpm: 125,
     duration: 15,
+    difficulty: 4,
     notes: [
       { time: 0.0, lane: 3 }, { time: 0.3, lane: 2 }, { time: 0.6, lane: 3 }, { time: 0.9, lane: 2 },
       { time: 1.2, lane: 3 }, { time: 1.5, lane: 0 }, { time: 1.8, lane: 2 }, { time: 2.1, lane: 1 },
@@ -77,6 +82,7 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Tchaikovsky',
     bpm: 90,
     duration: 25,
+    difficulty: 3,
     notes: [
       { time: 0.0, lane: 0 }, { time: 1.0, lane: 1 }, { time: 1.5, lane: 2 }, { time: 2.0, lane: 3 },
       { time: 3.0, lane: 2 }, { time: 3.5, lane: 1 }, { time: 4.0, lane: 0 },
@@ -89,10 +95,12 @@ export const PIANO_SONGS: Song[] = [
     artist: 'Pachelbel',
     bpm: 80,
     duration: 30,
+    difficulty: 5,
     notes: [
       { time: 0.0, lane: 2 }, { time: 0.8, lane: 1 }, { time: 1.6, lane: 0 }, { time: 2.4, lane: 3 },
       { time: 3.2, lane: 2 }, { time: 4.0, lane: 1 }, { time: 4.8, lane: 0 }, { time: 5.6, lane: 3 },
       { time: 7.0, lane: 0 }, { time: 7.2, lane: 1 }, { time: 7.4, lane: 2 }, { time: 7.6, lane: 3 },
+      { time: 8.0, lane: 2 }, { time: 8.2, lane: 1 }, { time: 8.4, lane: 0 }, { time: 8.6, lane: 3 },
     ]
   }
 ];
