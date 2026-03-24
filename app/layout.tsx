@@ -33,9 +33,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head>
         {/* Preconectar aos domínios de anúncios para acelerar o carregamento */}
         <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.highperformanceformat.com" />
         <link rel="dns-prefetch" href="https://www.highperformancegate.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="dns-prefetch" href="https://adservice.google.com" />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
         {/* Google AdSense - Usando script padrão para evitar erro data-nscript e garantir compatibilidade total */}

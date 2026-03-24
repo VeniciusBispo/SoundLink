@@ -15,10 +15,10 @@ export default function GameAdManager() {
   const [lastAdTime, setLastAdTime] = useState(Date.now())
 
   useEffect(() => {
-    // Anúncio ao entrar no jogo (1 segundo após carregar)
+    // Anúncio ao entrar no jogo (Imediato)
     const entryTimer = setTimeout(() => {
       setShowTimedAd(true)
-    }, 300)
+    }, 0)
 
     // Timer para anúncio a cada 5 minutos (300.000 ms)
     const interval = setInterval(() => {

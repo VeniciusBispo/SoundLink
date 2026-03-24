@@ -17,6 +17,10 @@ const withPWA = require('next-pwa')({
       },
     },
     {
+      urlPattern: /^https:\/\/(pagead2\.googlesyndication\.com|www\.highperformanceformat\.com|www\.highperformancegate\.com|googleads\.g\.doubleclick\.net)\/.*/i,
+      handler: 'NetworkOnly',
+    },
+    {
       urlPattern: /^https?.*/,
       handler: 'NetworkFirst',
       options: {

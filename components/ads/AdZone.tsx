@@ -52,9 +52,12 @@ export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', clas
             <span className="text-white/5 italic text-[10px]">Configurar Zone ID</span>
           ) : (
             <>
-              {/* Fallback Loading Pulse */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <div className="w-4 h-4 rounded-full border border-white/10 border-t-white/40 animate-spin" />
+              {/* Fallback Loading Pulse - Enhanced for immediate presence */}
+              <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white/60 animate-spin" />
+                  <span className="text-[10px] text-white/20 font-medium">Carregando...</span>
+                </div>
               </div>
               
               {/* Isolated Ad Sandbox */}
