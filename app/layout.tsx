@@ -31,19 +31,30 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="pt-BR" className="dark">
       <head>
-        {/* Preconectar aos domínios de anúncios para acelerar o carregamento */}
+        {/* Preconectar e Precarregar domínios de anúncios para performance extrema */}
         <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        
         <link rel="dns-prefetch" href="https://www.highperformanceformat.com" />
         <link rel="dns-prefetch" href="https://www.highperformancegate.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://adservice.google.com" />
+
+        {/* Priority Hint para AdSense discovery antecipado */}
+        <link 
+          rel="preload" 
+          href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793" 
+          as="script"
+          //@ts-ignore
+          fetchpriority="high"
+        />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
-        {/* Google AdSense - Usando script padrão para evitar erro data-nscript e garantir compatibilidade total */}
-        <script
-          async
+        {/* Google AdSense - Carregamento otimizado */}
+        <Script
+          id="adsense-init"
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793"
           crossOrigin="anonymous"
         />

@@ -44,7 +44,14 @@ export default function AdBanner({ slot, format = 'auto', className = '' }: AdBa
   }
 
   return (
-    <div className={`overflow-hidden ${className}`}>
+    <div 
+      className={`overflow-hidden rounded-xl bg-white/[0.02] border border-white/[0.05] flex items-center justify-center ${className}`}
+      style={{
+        minHeight: format === 'rectangle' ? '250px' : format === 'vertical' ? '600px' : '90px',
+        width: format === 'rectangle' ? '300px' : format === 'vertical' ? '160px' : '100%',
+        aspectRatio: format === 'rectangle' ? '300 / 250' : format === 'vertical' ? '160 / 600' : 'auto',
+      }}
+    >
       <ins
         className="adsbygoogle"
         style={styleMap[format]}

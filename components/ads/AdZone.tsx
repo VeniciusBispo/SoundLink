@@ -12,79 +12,115 @@ interface AdZoneProps {
 export default function AdZone({ zoneKey, mobileZoneKey, format = '728x90', className }: AdZoneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 768)
     const handleResize = () => setIsMobile(window.innerWidth < 768)
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+
+    // Senior Intersection Observer: Load ad slightly before it enters viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '400px' } // Pre-load with 400px margin
+    )
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current)
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      observer.disconnect()
+    }
   }, [])
 
   const activeKey = (isMobile && mobileZoneKey) ? mobileZoneKey : zoneKey
   const activeFormat = (isMobile && mobileZoneKey) ? '320x50' : format
 
+  const dimensions = {
+    '728x90': { w: 728, h: 90 },
+    '468x60': { w: 468, h: 60 },
+    '320x50': { w: 320, h: 50 },
+    '300x250': { w: 300, h: 250 },
+    '160x600': { w: 160, h: 600 },
+  }[activeFormat] || { w: 728, h: 90 }
+
   const atOptions = activeKey ? {
     key: activeKey,
     format: 'iframe',
-    height: activeFormat === '728x90' ? 90 : activeFormat === '468x60' ? 60 : activeFormat === '320x50' ? 50 : activeFormat === '300x250' ? 250 : activeFormat === '160x600' ? 600 : 90,
-    width: activeFormat === '728x90' ? 728 : activeFormat === '468x60' ? 468 : activeFormat === '320x50' ? 320 : activeFormat === '300x250' ? 300 : activeFormat === '160x600' ? 160 : 728,
+    height: dimensions.h,
+    width: dimensions.w,
     params: {},
   } : null;
 
   return (
-    <div className={`flex flex-col items-center justify-center py-2 px-1 overflow-hidden min-h-[60px] w-full ${className}`}>
-      <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-white/20">Publicidade</p>
+    <div 
+      ref={containerRef}
+      className={`flex flex-col items-center justify-center py-4 px-1 w-full overflow-hidden ${className}`}
+    >
+      <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white/10">Publicidade</p>
       
-      <div className="relative w-full flex justify-center items-center overflow-hidden">
-        <div 
-          ref={containerRef} 
-          id={`ad-container-${activeKey}`}
-          className="bg-white/5 rounded-lg border border-white/5 flex items-center justify-center transition-all duration-700 overflow-hidden"
-          style={{ 
-            width: typeof window !== 'undefined' && window.innerWidth < 768 && mobileZoneKey ? '320px' : atOptions?.width || '300px',
-            height: typeof window !== 'undefined' && window.innerWidth < 768 && mobileZoneKey ? '50px' : atOptions?.height || '250px',
-            transform: typeof window !== 'undefined' && window.innerWidth < 768 && !mobileZoneKey && activeFormat === '728x90' 
-              ? `scale(${(window.innerWidth - 20) / 728})` 
-              : 'none',
-          }}
-        >
-          {!zoneKey ? (
-            <span className="text-white/5 italic text-[10px]">Configurar Zone ID</span>
-          ) : (
-            <>
-              {/* Fallback Loading Pulse - Enhanced for immediate presence */}
-              <div className="absolute inset-0 flex items-center justify-center bg-white/5 animate-pulse">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white/60 animate-spin" />
-                  <span className="text-[10px] text-white/20 font-medium">Carregando...</span>
-                </div>
+      <div 
+        className="relative bg-white/[0.02] rounded-xl border border-white/[0.05] overflow-hidden transition-all duration-500 shadow-2xl"
+        style={{ 
+          width: isMobile ? 'min(100%, 320px)' : `${dimensions.w}px`,
+          height: isMobile ? '50px' : `${dimensions.h}px`,
+          aspectRatio: isMobile ? '320 / 50' : `${dimensions.w} / ${dimensions.h}`,
+        }}
+      >
+        {!zoneKey ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-red-500/5">
+            <span className="text-red-500/40 text-[10px] uppercase font-bold tracking-tighter">Missing Zone ID</span>
+          </div>
+        ) : (
+          <>
+            {/* Senior Glassmorphism Skeleton */}
+            <div className={`absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-1000 ${isVisible ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+              <div className="w-full h-full bg-gradient-to-r from-transparent via-white/[0.03] to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                <div className="w-10 h-10 rounded-full border-t-2 border-green-500/40 animate-spin" />
+                <span className="text-[10px] text-white/30 font-medium tracking-widest uppercase">Otimizando anúncio...</span>
               </div>
-              
-              {/* Isolated Ad Sandbox */}
+            </div>
+            
+            {/* Senior Dynamic Ad Injection */}
+            {isVisible && (
               <iframe
                 title={`Ad ${activeKey}`}
                 srcDoc={`
                   <!DOCTYPE html>
                   <html>
                     <head>
-                      <style>body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; background: transparent; }</style>
+                      <style>
+                        body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; overflow: hidden; background: transparent; }
+                      </style>
                     </head>
                     <body>
                       <script type="text/javascript">
                         atOptions = ${JSON.stringify(atOptions)};
-                        document.write('<scr' + 'ipt type="text/javascript" src="https://www.highperformanceformat.com/${activeKey}/invoke.js"></scr' + 'ipt>');
+                        const script = document.createElement('script');
+                        script.type = 'text/javascript';
+                        script.src = 'https://www.highperformanceformat.com/${activeKey}/invoke.js';
+                        document.body.appendChild(script);
                       </script>
                     </body>
                   </html>
                 `}
-                className="w-full h-full border-none relative z-10"
+                className="w-full h-full border-none relative z-10 opacity-0 transition-opacity duration-700"
+                onLoad={(e) => (e.currentTarget.style.opacity = '1')}
                 scrolling="no"
                 frameBorder="0"
                 allowTransparency={true}
               />
-            </>
-          )}
-        </div>
+            )}
+          </>
+        )}
       </div>
     </div>
   )

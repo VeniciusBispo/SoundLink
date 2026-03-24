@@ -46,8 +46,8 @@ export default function GameAdManager() {
 
       {/* Modal de anúncio recorrente (5 min) */}
       {showTimedAd && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-lg rounded-2xl bg-spotify-dark p-6 border border-white/10 shadow-2xl animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-500">
+          <div className="relative w-full max-w-lg rounded-3xl bg-spotify-dark/80 backdrop-blur-xl p-8 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in zoom-in-95 ease-out duration-300">
             <button 
               onClick={() => setShowTimedAd(false)}
               className="absolute -top-2 -right-2 rounded-full bg-white p-1.5 text-black hover:scale-110 transition-transform shadow-lg"
