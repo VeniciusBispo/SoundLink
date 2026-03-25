@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import GameAdManager from '@/components/games/GameAdManager'
-import AdZone from '@/components/ads/AdZone'
-import { HiMusicNote, HiDuplicate, HiStar, HiX } from 'react-icons/hi'
+import { HiMusicNote, HiDuplicate, HiStar } from 'react-icons/hi'
 import { cn } from '@/lib/utils'
 
 const games = [
@@ -48,14 +47,6 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
               </div>
             </div>
 
-            {/* Banner Vertical lateral no desktop */}
-            <div className="hidden lg:block flex-1 rounded-2xl bg-white/3 overflow-hidden min-h-[400px]">
-               <AdZone 
-                 slotId="" // Adicione seu ID de bloco do AdSense aqui
-                 format="160x600" 
-                 className="h-full"
-               />
-            </div>
           </div>
 
           {/* Game Canvas / Content */}
