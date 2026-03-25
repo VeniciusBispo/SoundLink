@@ -40,7 +40,7 @@ export default function PianoTiles() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
   const [isLoadingRank, setIsLoadingRank] = useState(false)
   
-  const [laneFlashes, setLaneFlashes] = useState<boolean[]>([false, false, false, false])
+  const [laneFlashes, setLaneFlashes] = useState<{lane: number, type: 'hit' | 'miss'} | null>(null)
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
   
   const startTimeRef = useRef<number>(0)
@@ -90,7 +90,7 @@ export default function PianoTiles() {
     }
   }
 
-  const playNote = useCallback((index: number) => {
+  const playNote = useCallback((index: number, type: 'hit' | 'miss' = 'hit') => {
     if (!audioCtxRef.current) {
         audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
     }
@@ -98,10 +98,19 @@ export default function PianoTiles() {
 
     const osc = audioCtxRef.current.createOscillator()
     const gain = audioCtxRef.current.createGain()
-    osc.type = 'triangle'
-    osc.frequency.setValueAtTime(TILE_NOTES[index], audioCtxRef.current.currentTime)
-    gain.gain.setValueAtTime(0.2, audioCtxRef.current.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 0.4)
+    
+    if (type === 'miss') {
+      osc.type = 'sawtooth'
+      osc.frequency.setValueAtTime(110, audioCtxRef.current.currentTime) // Low buzz
+      gain.gain.setValueAtTime(0.1, audioCtxRef.current.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 0.2)
+    } else {
+      osc.type = 'triangle'
+      osc.frequency.setValueAtTime(TILE_NOTES[index], audioCtxRef.current.currentTime)
+      gain.gain.setValueAtTime(0.2, audioCtxRef.current.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 0.4)
+    }
+    
     osc.connect(gain)
     gain.connect(audioCtxRef.current.destination)
     osc.start()
@@ -123,16 +132,7 @@ export default function PianoTiles() {
   const handleHit = useCallback((lane: number) => {
     if (!isPlaying || gameOver || isVictory || countdown !== null || startTimeRef.current === 0) return
 
-    setLaneFlashes(prev => {
-        const next = [...prev]
-        next[lane] = true
-        return next
-    })
-    setTimeout(() => setLaneFlashes(prev => {
-        const next = [...prev]
-        next[lane] = false
-        return next
-    }), 100)
+
 
     setTiles(prev => {
       const now = (performance.now() - startTimeRef.current) / 1000
@@ -156,10 +156,21 @@ export default function PianoTiles() {
         const points = Math.floor(basePoints * (1 + currentPhase * 0.5))
         scoreRef.current += points
         setScore(scoreRef.current)
-        playNote(lane)
+        playNote(lane, 'hit')
         triggerFeedback(hitType.toUpperCase() + '!', hitType)
+        setLaneFlashes({ lane, type: 'hit' })
+        setTimeout(() => setLaneFlashes(null), 100)
 
         return prev.map((t, idx) => idx === hitIdx ? { ...t, hit: true } : t)
+      } else {
+        // Penalty for ghost click
+        const penalty = Math.min(scoreRef.current, 50)
+        scoreRef.current -= penalty
+        setScore(scoreRef.current)
+        playNote(lane, 'miss')
+        triggerFeedback('MISS!', 'miss')
+        setLaneFlashes({ lane, type: 'miss' })
+        setTimeout(() => setLaneFlashes(null), 150)
       }
       return prev
     })
@@ -477,12 +488,15 @@ export default function PianoTiles() {
             onPointerDown={() => handleHit(lane)}
           >
             <AnimatePresence mode="popLayout">
-                {laneFlashes[lane] && (
+                {laneFlashes?.lane === lane && (
                     <motion.div 
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.15 }}
+                        animate={{ opacity: laneFlashes.type === 'miss' ? 0.3 : 0.15 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-white"
+                        className={cn(
+                           "absolute inset-0",
+                           laneFlashes.type === 'miss' ? "bg-red-500" : "bg-white"
+                        )}
                     />
                 )}
             </AnimatePresence>
@@ -520,7 +534,7 @@ export default function PianoTiles() {
                     exit={{ opacity: 0, y: -40 }}
                     className={cn(
                         "text-3xl font-black italic tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]",
-                        f.type === 'perfect' ? "text-yellow-400" : f.type === 'great' ? "text-blue-400" : "text-white"
+                        f.type === 'perfect' ? "text-yellow-400" : f.type === 'great' ? "text-blue-400" : (f.type === 'miss' ? "text-red-500 scale-125" : "text-white")
                     )}
                 >
                     {f.text}
@@ -567,7 +581,10 @@ export default function PianoTiles() {
                 key={score}
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
-                className="text-8xl font-black text-white tracking-tighter tabular-nums leading-none"
+                className={cn(
+                  "text-8xl font-black tracking-tighter tabular-nums leading-none transition-colors",
+                  score < 0 ? "text-red-500" : "text-white"
+                )}
             >
                 {score}
             </motion.p>
