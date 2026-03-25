@@ -45,10 +45,9 @@ export default function ExplorePage() {
         </h1>
         <p className="mb-6 text-sm text-spotify-text">{total} playlists públicas</p>
 
-        {/* Adsterra — top of explore */}
+        {/* Publicidade — Topo da exploração */}
         <AdZone 
-          zoneKey="861d749601dfaf98fb0e62a9bee365bc" 
-          mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
+          slotId="" // Adicione seu ID de bloco do AdSense aqui
           format="728x90" 
           className="mb-6 opacity-60" 
         />
@@ -67,11 +66,11 @@ export default function ExplorePage() {
           <PlaylistGrid playlists={filtered} />
         )}
 
-        {/* Adsterra — below grid (Desktop Only to avoid mobile duplication) */}
+        {/* Publicidade — Abaixo da grade (Apenas Desktop) */}
         {!isLoading && (
           <div className="hidden md:block">
             <AdZone 
-              zoneKey="dc57c85466356ba2785c2f13c18849a1" 
+              slotId="" // Adicione seu ID de bloco do AdSense aqui
               format="468x60" 
               className="mt-8 opacity-60" 
             />

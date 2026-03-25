@@ -37,8 +37,7 @@ export default function GameAdManager() {
       {/* Banner fixo no topo do jogo (Sempre visível) */}
       <div className="mb-4 w-full">
         <AdZone 
-          zoneKey="861d749601dfaf98fb0e62a9bee365bc" 
-          mobileZoneKey="5acb4ba8ffe25a92c59c05d76b637e2f"
+          slotId="" // Adicione seu ID de bloco do AdSense aqui (ex: "1234567890")
           format="728x90" 
           className="opacity-100" 
         />
@@ -63,7 +62,7 @@ export default function GameAdManager() {
             <div className="flex items-center justify-center min-h-[250px] bg-black/20 rounded-xl border border-white/5">
               {/* Usando o formato 300x250 (Retângulo) para o modal */}
               <AdZone 
-                zoneKey="dc57c85466356ba2785c2f13c18849a1" 
+                slotId="" // Adicione seu ID de bloco do AdSense aqui
                 format="300x250" 
               />
             </div>

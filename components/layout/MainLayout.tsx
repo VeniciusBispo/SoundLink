@@ -5,7 +5,7 @@ import MobileNav from './MobileNav'
 import Header from './Header'
 import PlayerBar from '@/components/player/PlayerBar'
 import CreatePlaylistModal from '@/components/playlist/CreatePlaylistModal'
-import SocialBar from '@/components/ads/SocialBar'
+
 
 interface MainLayoutProps {
   children: React.ReactNode
@@ -34,8 +34,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
       {/* Player fixed at bottom */}
       <PlayerBar />
 
-      {/* Social Bar (Floating Ads) */}
-      <SocialBar />
+
 
       {/* Mobile bottom nav — visible only on mobile */}
       <MobileNav />

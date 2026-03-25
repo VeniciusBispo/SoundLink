@@ -32,12 +32,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="pt-BR" className="dark">
       <head>
         {/* Preconectar e Precarregar domínios de anúncios para performance extrema */}
-        <link rel="preconnect" href="https://www.highperformanceformat.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
         
-        <link rel="dns-prefetch" href="https://www.highperformanceformat.com" />
-        <link rel="dns-prefetch" href="https://www.highperformancegate.com" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://adservice.google.com" />
 
