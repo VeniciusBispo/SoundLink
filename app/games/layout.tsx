@@ -51,7 +51,7 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
             {/* Banner Vertical lateral no desktop */}
             <div className="hidden lg:block flex-1 rounded-2xl bg-white/3 overflow-hidden min-h-[400px]">
                <AdZone 
-                 zoneKey="b8e4f1648a731efc7793b82785c2f13c" 
+                 slotId="" // Adicione seu ID de bloco do AdSense aqui
                  format="160x600" 
                  className="h-full"
                />
