@@ -5,13 +5,15 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import GameAdManager from '@/components/games/GameAdManager'
-import { HiMusicNote, HiDuplicate, HiStar } from 'react-icons/hi'
+import { HiMusicNote, HiDuplicate, HiStar, HiPencilAlt, HiUsers, HiRss } from 'react-icons/hi'
 import { cn } from '@/lib/utils'
 
 const games = [
-  { id: 'piano', label: 'Piano Mágico', icon: HiMusicNote, href: '/games/piano' },
-  { id: 'memory', label: 'Jogo da Memória', icon: HiDuplicate, href: '/games/memory' },
-  { id: 'snake', label: 'Cobrinha', icon: HiStar, href: '/games/snake' },
+  { id: 'blind-test', label: 'Blind Test', icon: HiMusicNote, href: '/games/blind-test', badge: 'Em breve' },
+  { id: 'lyrics-quiz', label: 'Complete a Letra', icon: HiPencilAlt, href: '/games/lyrics-quiz', badge: 'Em breve' },
+  { id: 'playlist-battle', label: 'Batalha de Playlists', icon: HiUsers, href: '/games/playlist-battle', badge: 'Em breve' },
+  { id: 'music-radar', label: 'Radar Musical', icon: HiRss, href: '/games/radar', badge: 'Em breve' },
+  { id: 'piano', label: 'Piano', icon: HiMusicNote, href: '/games/piano', badge: 'Novo' },
 ]
 
 export default function GamesLayout({ children }: { children: React.ReactNode }) {
@@ -34,14 +36,26 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
                     key={game.id}
                     href={game.href}
                     className={cn(
-                      'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all whitespace-nowrap lg:whitespace-normal',
+                      'flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-all whitespace-nowrap lg:whitespace-normal group',
                       pathname === game.href
                         ? 'bg-spotify-green text-black'
                         : 'bg-white/5 text-spotify-text hover:bg-white/10 hover:text-white'
                     )}
                   >
-                    <game.icon className="h-5 w-5 flex-shrink-0" />
-                    <span>{game.label}</span>
+                    <div className="flex items-center gap-3">
+                      <game.icon className="h-5 w-5 flex-shrink-0" />
+                      <span>{game.label}</span>
+                    </div>
+                    {game.badge && (
+                      <span className={cn(
+                        "text-[9px] uppercase tracking-tighter px-1.5 py-0.5 rounded-md font-bold",
+                        pathname === game.href
+                          ? "bg-black/20 text-black"
+                          : (game.badge === 'Novo' ? "bg-spotify-green/20 text-spotify-green" : "bg-white/10 text-white/40")
+                      )}>
+                        {game.badge}
+                      </span>
+                    )}
                   </Link>
                 ))}
               </div>
