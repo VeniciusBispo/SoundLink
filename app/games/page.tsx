@@ -38,8 +38,17 @@ const ALL_GAMES = [
     title: 'Blind Test',
     description: 'Adivinhe a música antes que o tempo acabe.',
     gradient: 'from-purple-600/30 to-purple-900/10',
-    badge: 'Em breve',
-    implemented: false,
+    badge: 'Disponível',
+    implemented: true,
+  },
+  {
+    id: 'complete-lyrics',
+    emoji: '✍️',
+    title: 'Complete a Letra',
+    description: 'Mostre que você conhece as letras dos grandes sucessos.',
+    gradient: 'from-orange-600/30 to-red-900/10',
+    badge: 'Disponível',
+    implemented: true,
   },
 ]
 

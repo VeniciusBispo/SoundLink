@@ -9,8 +9,8 @@ import { HiMusicNote, HiDuplicate, HiStar, HiPencilAlt, HiUsers, HiRss } from 'r
 import { cn } from '@/lib/utils'
 
 const games = [
-  { id: 'blind-test', label: 'Blind Test', icon: HiMusicNote, href: '/games/blind-test', badge: 'Em breve' },
-  { id: 'lyrics-quiz', label: 'Complete a Letra', icon: HiPencilAlt, href: '/games/lyrics-quiz', badge: 'Em breve' },
+  { id: 'blind-test', label: 'Blind Test', icon: HiMusicNote, href: '/games/blind-test', badge: 'Novo' },
+  { id: 'complete-lyrics', label: 'Complete a Letra', icon: HiPencilAlt, href: '/games/complete-lyrics', badge: 'Novo' },
   { id: 'playlist-battle', label: 'Batalha de Playlists', icon: HiUsers, href: '/games/playlist-battle', badge: 'Em breve' },
   { id: 'radar', label: 'Radar Musical', icon: HiRss, href: '/games/radar', badge: 'Novo' },
   { id: 'piano', label: 'Piano', icon: HiMusicNote, href: '/games/piano', badge: 'Novo' },

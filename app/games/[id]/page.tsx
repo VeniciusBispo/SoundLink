@@ -3,6 +3,8 @@
 import React from 'react'
 import { useParams } from 'next/navigation'
 import PianoContainer from '@/components/games/piano/PianoContainer'
+import BlindTestGame from '@/components/games/BlindTestGame'
+import LyricsGame from '@/components/games/LyricsGame'
 import { HiPuzzle, HiArrowLeft } from 'react-icons/hi'
 import Link from 'next/link'
 
@@ -13,6 +15,14 @@ export default function GamePage() {
   // Logic to render specific game or placeholder
   if (id === 'piano') {
     return <PianoContainer />
+  }
+
+  if (id === 'blind-test') {
+    return <BlindTestGame />
+  }
+
+  if (id === 'complete-lyrics') {
+    return <LyricsGame />
   }
 
   // Placeholder for unimplemented games
