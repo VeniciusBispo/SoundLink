@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { compressImage } from '@/lib/image-utils'
 
 type Props = {
   value: string
@@ -33,8 +34,16 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
     if (!file) return
     if (!file.type.startsWith('image/')) return
     const reader = new FileReader()
-    reader.onload = (ev) => {
-      if (typeof ev.target?.result === 'string') onChange(ev.target.result)
+    reader.onload = async (ev) => {
+      if (typeof ev.target?.result === 'string') {
+        try {
+          const compressed = await compressImage(ev.target.result)
+          onChange(compressed)
+        } catch (error) {
+          console.error('Failed to compress playlist cover:', error)
+          onChange(ev.target.result)
+        }
+      }
     }
     reader.readAsDataURL(file)
   }

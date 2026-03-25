@@ -4,8 +4,9 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiCheck, HiX, HiStar, HiRefresh, HiMusicNote, HiChevronRight } from 'react-icons/hi'
 import { useGameStore } from '@/store/gameStore'
-import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import GameLeaderboard from './GameLeaderboard'
+import AdZone from '@/components/ads/AdZone'
 
 interface LyricsQuestion {
   id: string
@@ -101,21 +102,36 @@ export default function LyricsGame() {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="flex h-[60vh] flex-col items-center justify-center text-center p-8 bg-white/5 rounded-[40px] border border-white/10"
+        className="flex min-h-[80vh] flex-col items-center justify-center text-center p-8 bg-white/5 rounded-[40px] border border-white/10 overflow-y-auto"
       >
         <HiStar className="h-20 w-20 text-blue-400 mb-6 drop-shadow-[0_0_30px_rgba(96,165,250,0.4)]" />
-        <h2 className="text-4xl font-black text-white mb-2 italic">POETA MUSICAL!</h2>
-        <p className="text-spotify-text text-lg mb-8">Sua pontuação final em Complete a Letra</p>
-        <div className="text-7xl font-black text-spotify-green mb-10 tracking-tighter">
+        <h2 className="text-4xl font-black text-white mb-2 italic uppercase">POETA MUSICAL!</h2>
+        <p className="text-spotify-text text-lg mb-8 uppercase tracking-widest font-bold opacity-40">Sua performance em Complete a Letra</p>
+        <div className="text-7xl font-black text-spotify-green mb-10 tracking-tighter italic">
           {currentScore.toLocaleString()}
         </div>
-        <div className="flex gap-4">
-            <Button variant="primary" onClick={() => window.location.reload()} size="lg" className="px-10">
-                <HiRefresh className="mr-2 h-5 w-5" /> JOGAR NOVAMENTE
-            </Button>
-            <Button variant="ghost" onClick={() => window.history.back()} size="lg">
+        
+        <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <button
+                onClick={() => window.location.reload()}
+                className="flex items-center gap-2 rounded-full bg-spotify-green px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+            >
+                <HiRefresh className="h-6 w-6" /> JOGAR NOVAMENTE
+            </button>
+            <button
+                onClick={() => window.history.back()}
+                className="flex items-center gap-2 rounded-full border-2 border-white/20 px-10 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
+            >
                 VOLTAR
-            </Button>
+            </button>
+        </div>
+
+        {/* Ad Slot */}
+        <AdZone slotId="" format="468x60" className="opacity-80 mb-8" />
+
+        {/* Ranking */}
+        <div className="w-full max-w-2xl">
+          <GameLeaderboard gameId="complete-lyrics" songId="curated-lyrics" onReset={fetchQuestions} />
         </div>
       </motion.div>
     )
@@ -126,6 +142,8 @@ export default function LyricsGame() {
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4">
+      {/* Top Ad */}
+      <AdZone slotId="" format="468x60" className="opacity-40 hover:opacity-100 transition-opacity mb-8" />
       {/* HUD */}
       <div className="flex justify-between items-center mb-12">
         <div className="bg-white/5 rounded-full px-6 py-2 border border-white/10 flex items-center gap-4">

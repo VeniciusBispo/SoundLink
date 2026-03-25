@@ -275,14 +275,6 @@ const GAMES = [
     badge: 'Em breve',
   },
   {
-    id: 'playlist-battle',
-    emoji: '⚔️',
-    title: 'Batalha de Playlists',
-    description: 'Desafie amigos para ver quem tem o melhor gosto musical.',
-    gradient: 'from-orange-600/30 to-red-900/10',
-    badge: 'Em breve',
-  },
-  {
     id: 'radar',
     emoji: '📡',
     title: 'Radar Musical',

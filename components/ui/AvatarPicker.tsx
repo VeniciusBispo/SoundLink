@@ -1,4 +1,5 @@
 import React, { useMemo, useState, ChangeEvent, useRef } from 'react';
+import { compressImage } from '@/lib/image-utils';
 
 // Lista expandida de emojis populares e expressivos
 const EMOJIS = [
@@ -31,21 +32,27 @@ function AvatarPicker({ value, onChange }: AvatarPickerProps) {
     return EMOJIS.filter((e) => e.includes(q));
   }, [emojiQuery]);
 
-  function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = async (ev) => {
         if (typeof ev.target?.result === 'string') {
-          setImageUrl(ev.target.result);
-          setCrop(null);
+          try {
+            const compressed = await compressImage(ev.target.result);
+            setImageUrl(compressed);
+            setCrop(null);
+          } catch (error) {
+            console.error('Failed to compress image:', error);
+            setImageUrl(ev.target.result);
+          }
         }
       };
       reader.readAsDataURL(file);
     }
   }
 
-  function handleCropAndSave() {
+  async function handleCropAndSave() {
     if (!imgRef.current) return;
     const img = imgRef.current;
     const canvas = document.createElement('canvas');
@@ -58,8 +65,15 @@ function AvatarPicker({ value, onChange }: AvatarPickerProps) {
     if (ctx) {
       ctx.drawImage(img, x, y, size, size, 0, 0, 256, 256);
       const dataUrl = canvas.toDataURL('image/png');
-      setImageUrl(dataUrl);
-      onChange(dataUrl);
+      try {
+        const compressed = await compressImage(dataUrl);
+        setImageUrl(compressed);
+        onChange(compressed);
+      } catch (error) {
+        console.error('Failed to compress cropped image:', error);
+        setImageUrl(dataUrl);
+        onChange(dataUrl);
+      }
     }
   }
 

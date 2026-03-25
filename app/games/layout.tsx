@@ -13,7 +13,6 @@ const games = [
   { id: 'complete-lyrics', label: 'Complete a Letra', icon: HiPencilAlt, href: '/games/complete-lyrics', badge: 'Novo' },
   { id: 'memory', label: 'Memória', icon: HiDuplicate, href: '/games/memory', badge: 'Novo' },
   { id: 'snake', label: 'Cobrinha', icon: HiPuzzle, href: '/games/snake', badge: 'Novo' },
-  { id: 'playlist-battle', label: 'Batalha de Playlists', icon: HiUsers, href: '/games/playlist-battle', badge: 'Em breve' },
   { id: 'radar', label: 'Radar Musical', icon: HiRss, href: '/games/radar', badge: 'Novo' },
   { id: 'piano', label: 'Piano', icon: HiMusicNote, href: '/games/piano', badge: 'Novo' },
 ]

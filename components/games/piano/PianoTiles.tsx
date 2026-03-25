@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { PIANO_SONGS, Song, Note } from '@/lib/games/piano/songs'
 import { cn } from '@/lib/utils'
-import { HiPlay, HiRefresh, HiArrowLeft, HiStar, HiUser, HiChevronRight, HiFire, HiBadgeCheck } from 'react-icons/hi'
+import { HiPlay, HiArrowLeft, HiStar, HiUser, HiChevronRight, HiFire, HiBadgeCheck } from 'react-icons/hi'
 import { motion, AnimatePresence } from 'framer-motion'
+import GameLeaderboard from '@/components/games/GameLeaderboard'
+import AdZone from '@/components/ads/AdZone'
 
 const KEYS = ['s', 'd', 'f', 'g']
 const TILE_NOTES = [261.63, 293.66, 329.63, 349.23]
@@ -15,11 +17,6 @@ interface GameTile extends Note {
   id: string;
   hit: boolean;
   missed: boolean;
-}
-
-interface LeaderboardData {
-  global: { username: string; score: number; createdAt: string }[];
-  personalBest: number;
 }
 
 interface Feedback {
@@ -37,8 +34,7 @@ export default function PianoTiles() {
   const [gameOver, setGameOver] = useState(false)
   const [isVictory, setIsVictory] = useState(false)
   const [countdown, setCountdown] = useState<number | null>(null)
-  const [leaderboard, setLeaderboard] = useState<LeaderboardData | null>(null)
-  const [isLoadingRank, setIsLoadingRank] = useState(false)
+  const [leaderboardKey, setLeaderboardKey] = useState(0)
   
   const [laneFlashes, setLaneFlashes] = useState<{lane: number, type: 'hit' | 'miss'} | null>(null)
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([])
@@ -57,21 +53,6 @@ export default function PianoTiles() {
     return selectedSong.notes.length * 30 * multiplier
   }, [selectedSong, currentPhase])
 
-  const fetchLeaderboard = useCallback(async (songId: string) => {
-    setIsLoadingRank(true)
-    try {
-      const res = await fetch(`/api/games/leaderboard?gameId=piano&songId=${songId}`)
-      if (res.ok) {
-        const data = await res.json()
-        setLeaderboard(data)
-      }
-    } catch (e) {
-      console.error(e)
-    } finally {
-      setIsLoadingRank(false)
-    }
-  }, [])
-
   const saveScore = async (finalScore: number) => {
     if (!selectedSong) return
     try {
@@ -84,7 +65,7 @@ export default function PianoTiles() {
           score: finalScore
         })
       })
-      fetchLeaderboard(selectedSong.id)
+      setLeaderboardKey(prev => prev + 1)
     } catch (e) {
       console.error(e)
     }
@@ -101,7 +82,7 @@ export default function PianoTiles() {
     
     if (type === 'miss') {
       osc.type = 'sawtooth'
-      osc.frequency.setValueAtTime(110, audioCtxRef.current.currentTime) // Low buzz
+      osc.frequency.setValueAtTime(110, audioCtxRef.current.currentTime)
       gain.gain.setValueAtTime(0.1, audioCtxRef.current.currentTime)
       gain.gain.exponentialRampToValueAtTime(0.01, audioCtxRef.current.currentTime + 0.2)
     } else {
@@ -132,8 +113,6 @@ export default function PianoTiles() {
   const handleHit = useCallback((lane: number) => {
     if (!isPlaying || gameOver || isVictory || countdown !== null || startTimeRef.current === 0) return
 
-
-
     setTiles(prev => {
       const now = (performance.now() - startTimeRef.current) / 1000
       const currentFactor = PHASE_SPEEDS[currentPhase]
@@ -163,7 +142,6 @@ export default function PianoTiles() {
 
         return prev.map((t, idx) => idx === hitIdx ? { ...t, hit: true } : t)
       } else {
-        // Penalty for ghost click
         const penalty = Math.min(scoreRef.current, 50)
         scoreRef.current -= penalty
         setScore(scoreRef.current)
@@ -256,7 +234,7 @@ export default function PianoTiles() {
     scoreRef.current = 0
     setCountdown(3)
     setFeedbacks([])
-    fetchLeaderboard(song.id)
+    setLeaderboardKey(prev => prev + 1)
   }
 
   const handleNextLevel = () => {
@@ -295,8 +273,6 @@ export default function PianoTiles() {
     return 85 - (tileTime + START_DELAY - now) * currentSpeed 
   }
 
-  // --- RENDERING ---
-
   const currentNow = startTimeRef.current === 0 ? 0 : (performance.now() - startTimeRef.current) / 1000
   const songTitle = selectedSong?.title || ''
   const songDifficulty = selectedSong?.difficulty || 1
@@ -306,173 +282,92 @@ export default function PianoTiles() {
     const isPerfectClear = isVictory && score === maxPossibleScore
 
     return (
-      <div className="flex flex-col lg:flex-row gap-8 items-start justify-center h-full text-white p-6 overflow-y-auto bg-black">
+      <div className="flex flex-col items-center gap-12 text-white p-6 overflow-y-auto bg-black min-h-full">
+        <AdZone slotId="" className="w-full max-w-5xl" />
         
-        <div className="w-full lg:w-1/2 max-w-xl">
-          <div className="mb-8 p-6 bg-gradient-to-br from-spotify-green/20 to-transparent rounded-[32px] border border-white/5 relative overflow-hidden group">
-             <div className="absolute -top-10 -right-10 w-40 h-40 bg-spotify-green/10 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
-             <h2 className="text-4xl font-black mb-1">Piano <span className="text-spotify-green">Pro</span></h2>
-             <p className="text-spotify-text text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
-          </div>
-
-          <div className="grid grid-cols-1 gap-4">
-            {PIANO_SONGS.map(song => (
-              <button
-                key={song.id}
-                onClick={() => handleStartRequest(song)}
-                className={cn(
-                  "flex items-center justify-between p-5 rounded-3xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group",
-                  selectedSong?.id === song.id 
-                    ? "bg-spotify-green/15 border-spotify-green/50 shadow-[0_15px_40px_-15px_rgba(30,215,96,0.3)]" 
-                    : "bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-white/20"
-                )}
-              >
-                <div className="text-left">
-                  <p className="text-lg font-black group-hover:text-spotify-green transition-colors">{song.title}</p>
-                  <div className="flex items-center gap-3 mt-1.5">
-                    <p className="text-[10px] text-spotify-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
-                    <div className="flex gap-1 items-center bg-black/40 px-2 py-0.5 rounded-full border border-white/5">
-                       {Array.from({ length: 5 }).map((_, i) => (
-                          <div key={i} className={cn("h-1.5 w-1.5 rounded-full", i < song.difficulty ? "bg-spotify-green shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
-                       ))}
-                       <span className="text-[9px] font-black text-white/40 ml-1">{song.difficulty}</span>
-                    </div>
-                  </div>
+        <div className="flex flex-col lg:flex-row gap-8 items-start justify-center w-full max-w-7xl">
+            <div className="w-full lg:w-1/2">
+                <div className="mb-8 p-6 bg-gradient-to-br from-spotify-green/20 to-transparent rounded-[32px] border border-white/5 relative overflow-hidden group">
+                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-spotify-green/10 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
+                    <h2 className="text-4xl font-black mb-1">Piano <span className="text-spotify-green">Pro</span></h2>
+                    <p className="text-spotify-text text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
                 </div>
-                <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-spotify-green group-hover:text-black transition-all">
-                    <HiPlay className="h-6 w-6" />
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
 
-        <div className="w-full lg:w-1/3 max-sm">
-            {(gameOver || isVictory) && (
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    className={cn(
-                        "mb-8 p-10 rounded-[40px] text-center shadow-2xl relative overflow-hidden border",
-                        isVictory ? "bg-gradient-to-b from-spotify-green/20 to-transparent border-spotify-green/30" : "bg-gradient-to-b from-red-500/20 to-transparent border-red-500/30"
-                    )}
-                >
-                    {isVictory && (
-                        <div className="absolute top-0 left-0 right-0 h-40 bg-spotify-green/10 blur-[50px] -z-10" />
-                    )}
-                    
-                    <p className={cn(
-                        "font-black text-xs uppercase tracking-[0.3em] mb-3",
-                        isVictory ? "text-spotify-green" : "text-red-500"
-                    )}>
-                        {isVictory ? `Concluído: ${PHASE_NAMES[currentPhase]}` : "Sessão Encerrada"}
-                    </p>
-                    
-                    <h2 className="text-2xl font-black mb-1">
-                        {isVictory ? (currentPhase === 3 ? "LENDÁRIO!" : "Parabéns, Maestro!") : "Quase lá!"}
-                    </h2>
-
-                    {isPerfectClear && (
-                        <motion.div 
-                            initial={{ scale: 0, rotate: -20 }} 
-                            animate={{ scale: 1, rotate: 0 }}
-                            className="mt-2 bg-yellow-500 text-black px-4 py-1.5 rounded-full flex items-center justify-center gap-2 mx-auto w-fit shadow-[0_10px_20px_rgba(234,179,8,0.3)]"
-                        >
-                            <HiBadgeCheck className="h-5 w-5" />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Perfect Clear</span>
-                        </motion.div>
-                    )}
-                    
-                    <div className="my-8 relative">
-                        <p className="text-7xl font-black drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-none">{score}</p>
-                        <p className="text-[10px] font-black opacity-30 mt-3 uppercase tracking-[0.3em]">
-                            Máximo da Fase: {maxPossibleScore}
-                        </p>
-                    </div>
-                    
-                    <div className="space-y-3">
-                        {isVictory && hasNextOption && (
-                            <button 
-                                onClick={handleNextLevel}
-                                className="w-full py-5 bg-spotify-green text-black rounded-2xl font-black text-sm hover:translate-y-[-2px] transition-all active:scale-95 shadow-[0_10px_30px_rgba(30,215,96,0.3)] flex items-center justify-center gap-2"
-                            >
-                                {currentPhase < 3 ? `PRÓXIMA FASE: ${PHASE_NAMES[currentPhase+1]}` : "PRÓXIMA MÚSICA"} <HiChevronRight className="h-5 w-5" />
-                            </button>
+                <div className="grid grid-cols-1 gap-4">
+                    {PIANO_SONGS.map(song => (
+                    <button
+                        key={song.id}
+                        onClick={() => handleStartRequest(song)}
+                        className={cn(
+                        "flex items-center justify-between p-5 rounded-3xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group",
+                        selectedSong?.id === song.id 
+                            ? "bg-spotify-green/15 border-spotify-green/50 shadow-[0_15px_40px_-15px_rgba(30,215,96,0.3)]" 
+                            : "bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-white/20"
                         )}
-                        <button 
-                            onClick={() => selectedSong && handleStartRequest(selectedSong, currentPhase)}
-                            className="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-sm hover:bg-white/20 transition-all active:scale-95"
-                        >
-                            RECOMEÇAR FASE
-                        </button>
-                    </div>
-                </motion.div>
-            )}
-
-            <div className="rounded-[40px] bg-white/[0.03] border border-white/5 overflow-hidden shadow-2xl backdrop-blur-xl">
-                <div className="p-8 border-b border-white/5 flex items-center justify-between">
-                   <h3 className="text-xs font-black text-white/50 uppercase tracking-[0.2em] flex items-center gap-2">
-                      <HiStar className="text-yellow-500 h-4 w-4" /> Melhores do Mundo
-                   </h3>
-                </div>
-                <div className="p-8 space-y-5 min-h-[350px]">
-                   {isLoadingRank ? (
-                      <div className="h-40 flex items-center justify-center">
-                         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-spotify-green" />
-                      </div>
-                   ) : leaderboard ? (
-                      <div className="space-y-4">
-                        {leaderboard.global.length > 0 ? leaderboard.global.map((entry, i) => (
-                           <motion.div 
-                             initial={{ opacity: 0, x: -10 }}
-                             animate={{ opacity: 1, x: 0 }}
-                             transition={{ delay: i * 0.1 }}
-                             key={i} 
-                             className="flex items-center justify-between group py-1"
-                           >
-                             <div className="flex items-center gap-4">
-                                <span className={cn(
-                                    "w-8 h-8 flex items-center justify-center rounded-xl text-xs font-black",
-                                    i === 0 ? "bg-yellow-500 text-black" : 
-                                    i === 1 ? "bg-gray-300 text-black" : 
-                                    i === 2 ? "bg-[#CD7F32] text-black" : 
-                                    "bg-white/5 text-white/30"
-                                )}>{i + 1}</span>
-                                <span className="font-bold text-sm group-hover:text-spotify-green transition-colors">{entry.username}</span>
-                             </div>
-                             <span className="font-black text-spotify-green text-sm">{entry.score}</span>
-                           </motion.div>
-                        )) : (
-                           <div className="text-center py-20 opacity-20">
-                              <HiStar className="h-16 w-16 mx-auto mb-4 border-2 border-dashed border-white rounded-full p-3" />
-                              <p className="text-xs font-bold uppercase tracking-widest">Seja o primeiro da lista</p>
-                           </div>
-                        )}
-                      </div>
-                   ) : (
-                      <div className="text-center py-12 opacity-20">
-                         <p className="text-xs font-black tracking-widest">AGUARDANDO...</p>
-                      </div>
-                   )}
-                </div>
-
-                {leaderboard && (
-                    <div className="p-8 bg-gradient-to-r from-spotify-green/10 to-transparent border-t border-white/5">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                                <div className="p-3 bg-black/40 rounded-2xl border border-white/5">
-                                    <HiUser className="text-spotify-green h-5 w-5" />
-                                </div>
-                                <div>
-                                    <p className="text-[10px] font-black text-white/40 uppercase tracking-widest">Seu Melhor</p>
-                                    <p className="text-2xl font-black text-white leading-none">{leaderboard.personalBest}</p>
-                                </div>
+                    >
+                        <div className="text-left">
+                        <p className="text-lg font-black group-hover:text-spotify-green transition-colors">{song.title}</p>
+                        <div className="flex items-center gap-3 mt-1.5">
+                            <p className="text-[10px] text-spotify-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
+                            <div className="flex gap-1 items-center bg-black/40 px-2 py-0.5 rounded-full border border-white/5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <div key={i} className={cn("h-1.5 w-1.5 rounded-full", i < song.difficulty ? "bg-spotify-green shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
+                            ))}
+                            <span className="text-[9px] font-black text-white/40 ml-1">{song.difficulty}</span>
                             </div>
                         </div>
+                        </div>
+                        <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-spotify-green group-hover:text-black transition-all">
+                            <HiPlay className="h-6 w-6" />
+                        </div>
+                    </button>
+                    ))}
+                </div>
+            </div>
+
+            <div className="w-full lg:w-1/2 flex flex-col gap-8">
+                {(gameOver || isVictory) && (
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        className={cn(
+                            "p-10 rounded-[40px] text-center shadow-2xl relative overflow-hidden border",
+                            isVictory ? "bg-gradient-to-b from-spotify-green/20 to-transparent border-spotify-green/30" : "bg-gradient-to-b from-red-500/20 to-transparent border-red-500/30"
+                        )}
+                    >
+                        <p className={cn(
+                            "font-black text-xs uppercase tracking-[0.3em] mb-3",
+                            isVictory ? "text-spotify-green" : "text-red-500"
+                        )}>
+                            {isVictory ? `Concluído: ${PHASE_NAMES[currentPhase]}` : "Sessão Encerrada"}
+                        </p>
+                        <h2 className="text-2xl font-black mb-1">{isVictory ? (isPerfectClear ? "Lendário!" : "Parabéns!") : "Quase lá!"}</h2>
+                        <div className="my-8 relative">
+                            <p className="text-7xl font-black drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-none">{score}</p>
+                            {isPerfectClear && <p className="text-[10px] text-yellow-500 font-bold uppercase tracking-widest mt-2 flex items-center justify-center gap-1"><HiBadgeCheck /> Perfect Clear</p>}
+                        </div>
+                        <div className="space-y-3">
+                            {isVictory && hasNextOption && (
+                                <button onClick={handleNextLevel} className="w-full py-5 bg-spotify-green text-black rounded-2xl font-black text-sm hover:translate-y-[-2px] transition-all shadow-lg flex items-center justify-center gap-2">
+                                    PRÓXIMO <HiChevronRight className="h-5 w-5" />
+                                </button>
+                            )}
+                            <button onClick={() => selectedSong && handleStartRequest(selectedSong, currentPhase)} className="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-sm hover:bg-white/20 transition-all">
+                                RECOMEÇAR
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+
+                {selectedSong && (
+                    <div key={leaderboardKey}>
+                        <GameLeaderboard gameId="piano" songId={selectedSong.id} />
                     </div>
                 )}
             </div>
         </div>
+
+        <AdZone slotId="" className="w-full max-w-5xl" />
       </div>
     )
   }
@@ -588,7 +483,7 @@ export default function PianoTiles() {
             >
                 {score}
             </motion.p>
-            <p className="text-xl font-black text-white/20 tracking-tighter tabular-nums">/ {maxPossibleScore}</p>
+            {selectedSong && <p className="text-xl font-black text-white/20 tracking-tighter tabular-nums">/ {maxPossibleScore}</p>}
           </div>
       </div>
 

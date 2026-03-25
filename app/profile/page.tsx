@@ -240,8 +240,17 @@ export default function ProfilePage() {
                   const file = e.target.files?.[0];
                   if (file) {
                     const reader = new FileReader();
-                    reader.onload = (ev) => {
-                      if (typeof ev.target?.result === 'string') setBanner(ev.target.result);
+                    reader.onload = async (ev) => {
+                      if (typeof ev.target?.result === 'string') {
+                        try {
+                           const { compressImage } = await import('@/lib/image-utils');
+                           const compressed = await compressImage(ev.target.result);
+                           setBanner(compressed);
+                        } catch (err) {
+                           console.error('Failed to compress banner:', err);
+                           setBanner(ev.target.result);
+                        }
+                      }
                     };
                     reader.readAsDataURL(file);
                   }

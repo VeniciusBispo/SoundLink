@@ -1,277 +1,404 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import {
+  PerspectiveCamera,
+  Stars,
+  Grid,
+  Float, // Added
+  Text, // Added
+  ContactShadows // Added
+} from '@react-three/drei'
+import * as THREE from 'three'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiStar, HiRefresh, HiMusicNote, HiArrowUp, HiArrowDown, HiArrowLeft, HiArrowRight } from 'react-icons/hi'
+import { HiPlay, HiPause, HiRefresh, HiStar, HiClock, HiMusicNote, HiVolumeUp, HiUser, HiFire, HiTrash, HiUserGroup } from 'react-icons/hi'
+// Removed HiTrophy
 import { useGameStore } from '@/store/gameStore'
-import Button from '@/components/ui/Button'
+// Button import removed
 import { cn } from '@/lib/utils'
+import GameLeaderboard from './GameLeaderboard' // New
+import AdZone from '@/components/ads/AdZone' // New
 
 type Point = { x: number; y: number }
 
-export default function SnakeGame() {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [score, setScore] = useState(0)
-  const [gameOver, setGameOver] = useState(false)
-  const [loading, setLoading] = useState(false)
+// --- 3D COMPONENTS ---
+
+const GRID_SIZE = 20
+const CELL_SIZE = 1
+
+function SnakeSegment({ position, isHead, index, total }: { position: THREE.Vector3, isHead: boolean, index: number, total: number }) {
+  const meshRef = useRef<THREE.Mesh>(null)
   
-  const { endGame, addPoints, currentScore } = useGameStore()
-
-  // Game state refs (to avoid re-renders)
-  const snakeRef = useRef<Point[]>([{ x: 10, y: 10 }])
-  const foodRef = useRef<Point>({ x: 5, y: 5 })
-  const directionRef = useRef<Point>({ x: 1, y: 0 })
-  const nextDirectionRef = useRef<Point>({ x: 1, y: 0 })
-  const speedRef = useRef(150)
-  const lastTimeRef = useRef(0)
-  const gridCount = 20
-
-  const generateFood = useCallback(() => {
-    let newFood: Point
-    do {
-      newFood = {
-        x: Math.floor(Math.random() * gridCount),
-        y: Math.floor(Math.random() * gridCount)
-      }
-    } while (snakeRef.current.some(p => p.x === newFood.x && p.y === newFood.y))
-    foodRef.current = newFood
+  // Set initial position immediately to avoid jump from origin
+  useEffect(() => {
+    if (meshRef.current) {
+      meshRef.current.position.copy(position)
+    }
   }, [])
 
-  const playNote = () => {
-    try {
-      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const oscillator = audioCtx.createOscillator()
-      const gainNode = audioCtx.createGain()
-
-      oscillator.type = 'sine'
-      oscillator.frequency.setValueAtTime(440 + (score * 20), audioCtx.currentTime) // Note pitch increases with score
-      gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime)
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1)
-
-      oscillator.connect(gainNode)
-      gainNode.connect(audioCtx.destination)
-
-      oscillator.start()
-      oscillator.stop(audioCtx.currentTime + 0.1)
-    } catch (e) {
-      // Silence if audio ctx fails
+  useFrame(() => {
+    if (meshRef.current) {
+      meshRef.current.position.lerp(position, 0.45)
     }
-  }
+  })
 
-  const loop = useCallback((time: number) => {
-    if (gameOver) return
-    
-    if (time - lastTimeRef.current > speedRef.current) {
-      lastTimeRef.current = time
+  // Vibrant neon colors
+  const color = isHead ? '#00FFCC' : '#0066FF'
+  const emissiveColor = isHead ? '#00FF88' : '#0033CC'
+  const emissiveIntensity = isHead ? 4 : 1
+  const scale = (0.95 - (index / total) * 0.5) * (isHead ? 1.2 : 1)
+
+  return (
+    <mesh ref={meshRef} castShadow receiveShadow>
+      <boxGeometry args={[CELL_SIZE * scale, CELL_SIZE * scale, CELL_SIZE * scale]} />
+      <meshStandardMaterial
+        color={color}
+        emissive={emissiveColor}
+        emissiveIntensity={emissiveIntensity}
+        roughness={0.05}
+        metalness={0.9}
+      />
+      {isHead && (
+        <pointLight distance={6} intensity={10} color="#00FF88" position={[0, 1, 0]} />
+      )}
+    </mesh>
+  )
+}
+
+function Food({ position }: { position: Point }) {
+  const meshRef = useRef<THREE.Mesh>(null)
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.position.y = 1 + Math.sin(state.clock.elapsedTime * 5) * 0.3
+      meshRef.current.rotation.y += 0.08
+      meshRef.current.rotation.x += 0.04
+    }
+  })
+
+  const worldX = position.x - GRID_SIZE / 2 + 0.5
+  const worldZ = position.y - GRID_SIZE / 2 + 0.5
+
+  return (
+    <group position={[worldX, 0, worldZ]}>
+      <mesh ref={meshRef}>
+        <sphereGeometry args={[0.4, 32, 32]} />
+        <meshStandardMaterial
+          color="#FF0088"
+          emissive="#FF0088"
+          emissiveIntensity={5}
+        />
+      </mesh>
+      <pointLight distance={8} intensity={15} color="#FF0088" position={[0, 2, 0]} />
+    </group>
+  )
+}
+
+function GameScene({ snake, food, gameOver }: { snake: Point[], food: Point, gameOver: boolean }) {
+  const headPos = useMemo(() => new THREE.Vector3(snake[0].x - GRID_SIZE / 2 + 0.5, 0, snake[0].y - GRID_SIZE / 2 + 0.5), [snake])
+  
+  useFrame((state) => {
+    if (!gameOver) {
+      // Dynamic High-Authority Camera follow
+      const targetCamPos = new THREE.Vector3(headPos.x * 0.4, 18, headPos.z * 0.4 + 14)
+      state.camera.position.lerp(targetCamPos, 0.08)
+      state.camera.lookAt(0, 0, 0)
+    } else {
+      state.camera.position.lerp(new THREE.Vector3(0, 30, 0), 0.02)
+      state.camera.lookAt(0, 0, 0)
+    }
+  })
+
+  return (
+    <>
+      <color attach="background" args={['#010101']} />
+      <fogExp2 attach="fog" args={['#000', 0.04]} />
       
-      directionRef.current = nextDirectionRef.current
-      const head = snakeRef.current[0]
-      const newHead = {
-        x: (head.x + directionRef.current.x + gridCount) % gridCount,
-        y: (head.y + directionRef.current.y + gridCount) % gridCount
-      }
+      <PerspectiveCamera makeDefault position={[0, 18, 14]} fov={38} />
 
-      // Check collision
-      if (snakeRef.current.some(p => p.x === newHead.x && p.y === newHead.y)) {
-        setGameOver(true)
-        endGame('snake')
-        saveFinalScore()
-        return
-      }
+      <ambientLight intensity={0.5} />
+      <spotLight position={[15, 25, 15]} angle={0.2} penumbra={1} intensity={12} castShadow />
+      <directionalLight position={[-15, 20, -10]} intensity={3} color="#0055ff" />
 
-      const newSnake = [newHead, ...snakeRef.current]
+      {/* GRID FLOOR PREMIUM - Offset y slightly to prevent flickering (Z-fighting) */}
+      <group position={[0, -0.6, 0]}>
+        <Grid
+          infiniteGrid
+          fadeDistance={45}
+          sectionSize={1}
+          sectionColor="#00FF88"
+          cellColor="#001105"
+          sectionThickness={3}
+          cellThickness={0.5}
+          cellSize={1}
+          position={[0, 0.01, 0]} 
+        />
+        <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+          <planeGeometry args={[100, 100]} />
+          <meshStandardMaterial 
+            color="#050505" 
+            metalness={1} 
+            roughness={0.1} 
+          />
+        </mesh>
+      </group>
 
-      // Check food
-      if (newHead.x === foodRef.current.x && newHead.y === foodRef.current.y) {
-        setScore(prev => {
-           const newScore = prev + 1
-           addPoints(10)
-           return newScore
-        })
-        playNote()
-        generateFood()
-        speedRef.current = Math.max(80, 150 - (score * 2))
-      } else {
-        newSnake.pop()
-      }
+      {/* SNAKE RENDERING */}
+      {snake.map((p, i) => (
+        <SnakeSegment
+          key={i}
+          position={new THREE.Vector3(p.x - GRID_SIZE / 2 + 0.5, 0, p.y - GRID_SIZE / 2 + 0.5)}
+          isHead={i === 0}
+          index={i}
+          total={snake.length}
+        />
+      ))}
 
-      snakeRef.current = newSnake
-      draw()
-    }
+      {/* FOOD RENDERING */}
+      <Food position={food} />
+      
+      <Stars radius={150} depth={60} count={10000} factor={6} saturation={0} fade speed={2} />
+    </>
+  )
+}
 
-    requestAnimationFrame(loop)
-  }, [gameOver, score, endGame, addPoints, generateFood])
+// --- MAIN GAME COMPONENT ---
 
-  const draw = () => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
+export default function SnakeGame() {
+  const [score, setScore] = useState(0)
+  const [gameOver, setGameOver] = useState(false)
+  const [snake, setSnake] = useState<Point[]>([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }])
+  const [food, setFood] = useState<Point>({ x: 5, y: 5 })
+  const [direction, setDirection] = useState<Point>({ x: 0, y: -1 })
+  const [nextDirection, setNextDirection] = useState<Point>({ x: 0, y: -1 })
+  const [isPaused, setIsPaused] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [status, setStatus] = useState<'playing' | 'paused' | 'game-over'>('playing') // Added status state
 
-    const size = canvas.width / gridCount
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
-    // Clear
-    ctx.fillStyle = '#090909'
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+  const { endGame, addPoints, currentScore } = useGameStore()
 
-    // Grid (subtle)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
-    for (let i = 0; i <= gridCount; i++) {
-       ctx.beginPath(); ctx.moveTo(i * size, 0); ctx.lineTo(i * size, canvas.height); ctx.stroke()
-       ctx.beginPath(); ctx.moveTo(0, i * size); ctx.lineTo(canvas.width, i * size); ctx.stroke()
-    }
+  const speed = Math.max(60, 150 - (score * 5))
 
-    // Food
-    ctx.shadowBlur = 15
-    ctx.shadowColor = '#1DB954'
-    ctx.fillStyle = '#1DB954'
-    ctx.beginPath()
-    ctx.arc(foodRef.current.x * size + size/2, foodRef.current.y * size + size/2, size/3, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.shadowBlur = 0
+  // Audio Ref
+  const audioCtxRef = useRef<AudioContext | null>(null)
 
-    // Snake
-    snakeRef.current.forEach((p, i) => {
-        const opacity = Math.max(0.3, 1 - (i / snakeRef.current.length) * 0.7)
-        ctx.fillStyle = `rgba(30, 215, 96, ${opacity})`
-        
-        // Rounded head or body
-        const radius = i === 0 ? 8 : 4
-        const x = p.x * size + 2
-        const y = p.y * size + 2
-        const w = size - 4
-        const h = size - 4
-        
-        ctx.beginPath()
-        ctx.roundRect(x, y, w, h, radius)
-        ctx.fill()
-        
-        if (i === 0) {
-            // Eyes
-            ctx.fillStyle = 'white'
-            ctx.beginPath()
-            ctx.arc(x + w/4, y + h/3, 2, 0, Math.PI * 2); ctx.fill()
-            ctx.beginPath()
-            ctx.arc(x + 3*w/4, y + h/3, 2, 0, Math.PI * 2); ctx.fill()
-        }
-    })
-  }
-
-  const handleKey = useCallback((e: KeyboardEvent) => {
-    const { key } = e
-    const current = directionRef.current
-    if ((key === 'ArrowUp' || key === 'w') && current.y !== 1) nextDirectionRef.current = { x: 0, y: -1 }
-    if ((key === 'ArrowDown' || key === 's') && current.y !== -1) nextDirectionRef.current = { x: 0, y: 1 }
-    if ((key === 'ArrowLeft' || key === 'a') && current.x !== 1) nextDirectionRef.current = { x: -1, y: 0 }
-    if ((key === 'ArrowRight' || key === 'd') && current.x !== -1) nextDirectionRef.current = { x: 1, y: 0 }
+  const playNote = useCallback((idx: number) => {
+    try {
+      if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const ctx = audioCtxRef.current
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      const freqs = [261.63, 293.66, 329.63, 349.23, 392.00, 440.00, 493.88, 523.25]
+      osc.frequency.setValueAtTime(freqs[idx % freqs.length] * (Math.floor(idx / 8) + 1), ctx.currentTime)
+      osc.type = 'sine'
+      gain.gain.setValueAtTime(0.12, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6)
+      osc.connect(gain); gain.connect(ctx.destination)
+      osc.start(); osc.stop(ctx.currentTime + 0.6)
+    } catch (e) { }
   }, [])
 
   useEffect(() => {
-    window.addEventListener('keydown', handleKey)
-    const frameId = requestAnimationFrame(loop)
-    return () => {
-      window.removeEventListener('keydown', handleKey)
-      cancelAnimationFrame(frameId)
-    }
-  }, [handleKey, loop])
-
-  const saveFinalScore = async () => {
-    try {
-      await fetch('/api/games/score', {
-        method: 'POST',
-        body: JSON.stringify({
-          gameId: 'snake',
-          songId: 'musical-snake-v1',
-          score: currentScore
-        })
-      })
-    } catch (e) {
-      console.error('Failed to save score', e)
-    }
- }
-
-  // Mobile controls swipe handling
-  const touchStartRef = useRef<Point | null>(null)
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY } }
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    if (!touchStartRef.current) return
-    const dx = e.changedTouches[0].clientX - touchStartRef.current.x
-    const dy = e.changedTouches[0].clientY - touchStartRef.current.y
-    const absX = Math.abs(dx); const absY = Math.abs(dy)
-    if (Math.max(absX, absY) > 30) {
-        const current = directionRef.current
-        if (absX > absY) {
-            if (dx > 0 && current.x !== -1) nextDirectionRef.current = { x: 1, y: 0 }
-            else if (dx < 0 && current.x !== 1) nextDirectionRef.current = { x: -1, y: 0 }
-        } else {
-            if (dy > 0 && current.y !== -1) nextDirectionRef.current = { x: 0, y: 1 }
-            else if (dy < 0 && current.y !== 1) nextDirectionRef.current = { x: 0, y: -1 }
+    if (gameOver || isPaused) return
+    const tick = () => {
+      setSnake(prev => {
+        const head = prev[0]
+        const actualDir = nextDirection
+        setDirection(actualDir)
+        const newHead = {
+          x: (head.x + actualDir.x + GRID_SIZE) % GRID_SIZE,
+          y: (head.y + actualDir.y + GRID_SIZE) % GRID_SIZE
         }
+        if (prev.some(p => p.x === newHead.x && p.y === newHead.y)) {
+          setGameOver(true)
+          setStatus('game-over') // Set status to game-over
+          endGame('snake')
+          return prev
+        }
+        const newSnake = [newHead, ...prev]
+        if (newHead.x === food.x && newHead.y === food.y) {
+          setScore(s => s + 1); addPoints(10); playNote(score)
+          let nFood: Point
+          do {
+            nFood = { x: Math.floor(Math.random() * GRID_SIZE), y: Math.floor(Math.random() * GRID_SIZE) }
+          } while (newSnake.some(p => p.x === nFood.x && p.y === nFood.y))
+          setFood(nFood)
+        } else {
+          newSnake.pop()
+        }
+        return newSnake
+      })
     }
-    touchStartRef.current = null
+    const interval = setInterval(tick, speed)
+    return () => clearInterval(interval)
+  }, [gameOver, isPaused, nextDirection, food, speed, score, playNote, addPoints, endGame])
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if ((e.key === 'ArrowUp' || e.key === 'w') && direction.y !== 1) setNextDirection({ x: 0, y: -1 })
+      if ((e.key === 'ArrowDown' || e.key === 's') && direction.y !== -1) setNextDirection({ x: 0, y: 1 })
+      if ((e.key === 'ArrowLeft' || e.key === 'a') && direction.x !== 1) setNextDirection({ x: -1, y: 0 })
+      if ((e.key === 'ArrowRight' || e.key === 'd') && direction.x !== -1) setNextDirection({ x: 1, y: 0 })
+      if (e.key === ' ') {
+        setIsPaused(p => !p)
+        setStatus(prev => (prev === 'playing' ? 'paused' : 'playing')) // Toggle status
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [direction])
+
+  const resetGame = useCallback(() => {
+    setScore(0)
+    setSnake([{ x: 10, y: 10 }, { x: 10, y: 11 }, { x: 10, y: 12 }])
+    setFood({ x: 5, y: 5 })
+    setDirection({ x: 0, y: -1 })
+    setNextDirection({ x: 0, y: -1 })
+    setIsPaused(false)
+    setGameOver(false)
+    setStatus('playing')
+  }, [])
+
+  if (!mounted) {
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center">
+        <div className="text-spotify-green animate-pulse font-black tracking-widest uppercase text-xs">
+          Sincronizando 3D...
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="max-w-xl mx-auto py-8 px-4 flex flex-col items-center">
-      {/* HUD */}
-      <div className="flex justify-between items-center mb-8 w-full px-4">
-        <div className="bg-white/5 rounded-full px-6 py-2 border border-white/10 flex items-center gap-2">
-            <HiStar className="h-5 w-5 text-yellow-500" />
-            <span className="text-xl font-black text-white">{currentScore.toLocaleString()}</span>
+    <div className="w-full h-screen relative bg-black overflow-hidden flex flex-col">
+      {/* HUD OVERLAY PREMIUM */}
+      <div className="absolute top-0 left-0 w-full p-12 z-10 flex justify-between items-start pointer-events-none">
+        <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-3xl p-8 flex items-center gap-8 pointer-events-auto shadow-2xl">
+          <div className="relative">
+            <HiStar className="h-10 w-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
+            <motion.div
+              animate={{ scale: [1, 2], opacity: [0.6, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+              className="absolute inset-0 bg-spotify-green rounded-full blur-2xl"
+            />
+          </div>
+          <div>
+            <div className="text-[12px] font-black tracking-[0.4em] uppercase text-white/30 mb-2">Pontos Musicais</div>
+            <div className="text-5xl font-black text-white leading-none tracking-tighter italic">
+              {currentScore.toLocaleString()}
+            </div>
+          </div>
         </div>
-        <div className="text-spotify-text font-black tracking-widest uppercase text-xs">
-            NOTAS: {score}
-        </div>
-      </div>
 
-      <div 
-        className="relative group rounded-3xl overflow-hidden border-4 border-white/5 shadow-2xl"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <canvas 
-            ref={canvasRef} 
-            width={400} 
-            height={400} 
-            className="w-full h-auto aspect-square bg-black shadow-inner"
-        />
-        
-        <AnimatePresence>
-            {gameOver && (
-                <motion.div 
-                    initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                    animate={{ opacity: 1, backdropFilter: 'blur(8px)' }}
-                    className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center p-8"
-                >
-                    <HiMusicNote className="h-16 w-16 text-spotify-green mb-4 animate-bounce" />
-                    <h2 className="text-4xl font-black text-white mb-2 italic tracking-tighter">GAME OVER</h2>
-                    <p className="text-spotify-text mb-8">A música parou...</p>
-                    <div className="flex gap-4">
-                        <Button variant="primary" onClick={() => window.location.reload()}>
-                            TENTAR DE NOVO
-                        </Button>
-                        <Button variant="ghost" onClick={() => window.history.back()}>
-                            VOLTAR
-                        </Button>
-                    </div>
-                </motion.div>
+        <div className="flex flex-col items-end gap-6 pointer-events-auto">
+          <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl px-8 py-5 flex items-center gap-6 shadow-xl">
+            <HiVolumeUp className="h-8 w-8 text-spotify-green animate-pulse" />
+            <div className="h-2.5 w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
+              <motion.div
+                className="h-full bg-gradient-to-r from-spotify-green to-emerald-400 shadow-[0_0_20px_#00FF88]"
+                animate={{ width: `${Math.min(100, (score / 30) * 100)}%` }}
+              />
+            </div>
+          </div>
+          {/* Pause/Play Button */}
+          <button
+            onClick={() => {
+              setIsPaused(p => !p)
+              setStatus(prev => (prev === 'playing' ? 'paused' : 'playing'))
+            }}
+            className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl px-8 py-5 flex items-center gap-6 shadow-xl transition-colors hover:bg-white/10"
+          >
+            {isPaused ? (
+              <HiPlay className="h-8 w-8 text-spotify-green" />
+            ) : (
+              <HiPause className="h-8 w-8 text-spotify-green" />
             )}
-        </AnimatePresence>
+            <span className="text-white text-lg font-bold tracking-wider uppercase">
+              {isPaused ? 'Continuar' : 'Pausar'}
+            </span>
+          </button>
+        </div>
       </div>
 
-      {/* Mobile Controls Helper */}
-      <div className="mt-8 grid grid-cols-3 gap-2 md:hidden">
-          <div />
-          <Button variant="ghost" onClick={() => nextDirectionRef.current = { x: 0, y: -1 }}><HiArrowUp /></Button>
-          <div />
-          <Button variant="ghost" onClick={() => nextDirectionRef.current = { x: -1, y: 0 }}><HiArrowLeft /></Button>
-          <Button variant="ghost" onClick={() => nextDirectionRef.current = { x: 0, y: 1 }}><HiArrowDown /></Button>
-          <Button variant="ghost" onClick={() => nextDirectionRef.current = { x: 1, y: 0 }}><HiArrowRight /></Button>
+      {/* Top Ad Slot */}
+      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-[468px] hidden md:block opacity-40 hover:opacity-100 transition-opacity">
+        <AdZone slotId="" format="468x60" />
       </div>
 
-      <p className="mt-8 text-white/20 text-[10px] font-bold uppercase tracking-[0.3em] hidden md:block">
-          USE AS SETAS DO TECLADO PARA MOVER
-      </p>
+      {/* 3D CANVAS PORTAL */}
+      <div className="flex-1 cursor-grab active:cursor-grabbing">
+        <Canvas shadows dpr={[1, 2]} gl={{ antialias: true, stencil: false }}>
+          <Suspense fallback={null}>
+            <GameScene snake={snake} food={food} gameOver={gameOver} />
+          </Suspense>
+        </Canvas>
+      </div>
+
+      {/* GAME OVER SCREEN */}
+      <AnimatePresence>
+        {status === 'game-over' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 overflow-y-auto"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              className="flex flex-col items-center gap-6 max-w-4xl w-full py-12"
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-spotify-green/20 rounded-2xl text-spotify-green">
+                  <HiUserGroup className="h-8 w-8" />
+                </div>
+                <h2 className="text-5xl font-black text-white italic tracking-tighter uppercase">Ritmo Final</h2>
+              </div>
+              <div className="text-7xl font-black text-spotify-green mb-8 tracking-tighter italic">
+                {currentScore.toLocaleString()}
+              </div>
+
+              <div className="flex flex-wrap justify-center gap-4 mb-8">
+                <button
+                  onClick={resetGame}
+                  className="flex items-center gap-2 rounded-full bg-spotify-green px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                >
+                  <HiRefresh className="h-6 w-6" /> JOGAR NOVAMENTE
+                </button>
+                <button
+                  onClick={() => window.history.back()}
+                  className="flex items-center gap-2 rounded-full border-2 border-white/20 px-10 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
+                >
+                  VOLTAR
+                </button>
+              </div>
+
+              {/* Ad Slot in Game Over */}
+              <AdZone slotId="" format="468x60" className="opacity-80 mb-8" />
+
+              {/* Ranking Section */}
+              <div className="w-full">
+                <GameLeaderboard gameId="snake" songId="musical-snake-classic" onReset={resetGame} />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 pointer-events-none">
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-[12px] font-black tracking-[0.6em] text-white/20 uppercase italic transition-opacity hover:opacity-100">
+            Comande o som com as setas
+          </p>
+          <div className="h-0.5 w-16 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        </div>
+      </div>
     </div>
   )
 }
+
