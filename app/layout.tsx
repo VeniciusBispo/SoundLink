@@ -48,10 +48,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
-        {/* Google AdSense - Carregamento otimizado */}
-        <Script
-          id="adsense-init"
-          strategy="afterInteractive"
+        {/* Google AdSense - Standard script to avoid data-nscript error */}
+        <script
+          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793"
           crossOrigin="anonymous"
         />

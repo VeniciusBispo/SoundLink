@@ -11,9 +11,11 @@ import Button from '@/components/ui/Button'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { getProfile, updateProfile } from '@/services/authService'
+import { generateStrongPassword } from '@/lib/password'
 import {
   HiUser, HiLockClosed, HiCollection,
   HiCheckCircle, HiExclamationCircle, HiLogout, HiEye, HiEyeOff,
+  HiLightningBolt,
 } from 'react-icons/hi'
 
 interface Profile {
@@ -258,7 +260,23 @@ export default function ProfilePage() {
         {/* ——— SEGURANÇA ——— */}
         {tab === 'seguranca' && (
           <form className="flex flex-col gap-5" onSubmit={handleChangePassword}>
-            <h2 className="text-lg font-bold text-white">Alterar senha</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-bold text-white">Alterar senha</h2>
+              <button
+                type="button"
+                onClick={() => {
+                  const strong = generateStrongPassword()
+                  setNewPassword(strong)
+                  setConfirmPassword(strong)
+                  setShowNew(true)
+                  setShowConfirm(true)
+                }}
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+              >
+                <HiLightningBolt size={12} />
+                Gerar senha forte
+              </button>
+            </div>
             {[{
               label: 'Nova senha', value: newPassword, set: setNewPassword, show: showNew, toggle: () => setShowNew((v) => !v)
             }, {

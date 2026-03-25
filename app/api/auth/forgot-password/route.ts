@@ -6,33 +6,40 @@ import { sendResetEmail } from '@/lib/reset-mail'
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json()
+    const { email, username } = await req.json()
 
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json({ error: 'E-mail obrigatório' }, { status: 400 })
+    if (!email || !username) {
+      return NextResponse.json({ error: 'E-mail e Nome de Usuário são obrigatórios' }, { status: 400 })
     }
 
-    // Busca o usuário
+    // Busca o usuário pelo e-mail
     const user = await prisma.user.findFirst({
       where: { email },
     })
 
-    // Se o usuário existir, gera token e envia e-mail
-    if (user) {
-      const token = randomBytes(32).toString('hex')
-      const expires = new Date(Date.now() + 60 * 60 * 1000) // 1 hora
-
-      // Salva o token no banco reutilizando os campos de verificação
-      await prisma.user.update({
-        where: { id: user.id },
-        data: {
-          verificationToken: token,
-          verificationExpires: expires,
-        },
-      })
-
-      await sendResetEmail(user.email!, token)
+    if (!user) {
+      return NextResponse.json({ error: 'Nenhuma conta encontrada com este e-mail' }, { status: 404 })
     }
+
+    // Verifica se o username bate
+    if (user.username !== username) {
+      return NextResponse.json({ error: 'O nome de usuário não corresponde a este e-mail' }, { status: 400 })
+    }
+
+    // Gera token e envia e-mail
+    const token = randomBytes(32).toString('hex')
+    const expires = new Date(Date.now() + 60 * 60 * 1000) // 1 hora
+
+    // Salva o token no banco reutilizando os campos de verificação
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        verificationToken: token,
+        verificationExpires: expires,
+      },
+    })
+
+    await sendResetEmail(user.email!, token)
 
     // Retorna mensagem genérica por segurança
     return NextResponse.json({

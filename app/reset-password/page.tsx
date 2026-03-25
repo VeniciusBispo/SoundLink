@@ -3,9 +3,10 @@
 import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { HiEye, HiEyeOff, HiCheck } from 'react-icons/hi'
+import { HiEye, HiEyeOff, HiCheck, HiLightningBolt } from 'react-icons/hi'
 import Logo from '@/components/ui/Logo'
 import Button from '@/components/ui/Button'
+import { generateStrongPassword } from '@/lib/password'
 
 function ResetPasswordForm() {
   const router = useRouter()
@@ -100,7 +101,22 @@ function ResetPasswordForm() {
           )}
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-white">Nova Senha</label>
+            <div className="mb-1.5 flex items-center justify-between">
+              <label className="text-sm font-medium text-white">Nova Senha</label>
+              <button
+                type="button"
+                onClick={() => {
+                  const strong = generateStrongPassword()
+                  setPassword(strong)
+                  setConfirmPassword(strong)
+                  setShowPassword(true)
+                }}
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+              >
+                <HiLightningBolt size={12} />
+                Gerar senha forte
+              </button>
+            </div>
             <div className="relative">
               <input
                 type={showPassword ? 'text' : 'password'}

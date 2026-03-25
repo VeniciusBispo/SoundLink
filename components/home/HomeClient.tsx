@@ -283,12 +283,12 @@ const GAMES = [
     badge: 'Em breve',
   },
   {
-    id: 'music-radar',
+    id: 'radar',
     emoji: '📡',
     title: 'Radar Musical',
     description: 'Descubra músicas parecidas com as que você já curte.',
     gradient: 'from-green-600/30 to-teal-900/10',
-    badge: 'Em breve',
+    badge: 'Novo',
   },
   {
     id: 'piano',

@@ -20,6 +20,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  radarUsageCount  Int?       @default(0)
+  lastRadarResetAt DateTime?  @default(now())
+  lastRadarResults String?
+
   playlists     Playlist[]
 
   // Email verification

@@ -51,6 +51,11 @@ export default function YouTubeLinkHelper({ mode }: YouTubeLinkHelperProps) {
                   <p>
                     <strong>Passo 3:</strong> Selecione <strong>Copiar link</strong>.
                   </p>
+                  {!isSong && (
+                    <p className="mt-2 text-[10px] text-yellow-500/80 italic">
+                      Nota: Playlists automáticas (Mix ou Rádio) e playlists privadas não podem ser importadas.
+                    </p>
+                  )}
                 </div>
 
                 {/* GIF Container */}

@@ -7,6 +7,8 @@ import { HiEye, HiEyeOff, HiCheck, HiX } from 'react-icons/hi'
 import Logo from '@/components/ui/Logo'
 import Button from '@/components/ui/Button'
 import { register } from '@/services/authService'
+import { generateStrongPassword } from '@/lib/password'
+import { HiLightningBolt } from 'react-icons/hi'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const USERNAME_RE = /^[a-zA-Z0-9_]+$/
@@ -129,9 +131,25 @@ export default function RegisterPage() {
 
           {/* Password */}
           <div>
-            <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-white">
-              Senha
-            </label>
+            <div className="mb-1.5 flex items-center justify-between">
+              <label htmlFor="password" className="text-sm font-medium text-white">
+                Senha
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const strong = generateStrongPassword()
+                  setPassword(strong)
+                  setConfirmPassword(strong)
+                  setShowPassword(true)
+                  setShowConfirm(true)
+                }}
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+              >
+                <HiLightningBolt size={12} />
+                Gerar senha forte
+              </button>
+            </div>
             <div className="relative">
               <input
                 id="password"
