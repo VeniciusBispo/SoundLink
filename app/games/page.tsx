@@ -20,8 +20,8 @@ const ALL_GAMES = [
     title: 'Jogo da Memória',
     description: 'Teste sua mente combinando artistas e álbuns.',
     gradient: 'from-blue-600/30 to-blue-900/10',
-    badge: 'Em breve',
-    implemented: false,
+    badge: 'Disponível',
+    implemented: true,
   },
   {
     id: 'snake',
@@ -29,8 +29,8 @@ const ALL_GAMES = [
     title: 'Cobrinha Musical',
     description: 'O clássico Snake com uma pegada rítmica.',
     gradient: 'from-green-600/30 to-teal-900/10',
-    badge: 'Em breve',
-    implemented: false,
+    badge: 'Disponível',
+    implemented: true,
   },
   {
     id: 'blind-test',
