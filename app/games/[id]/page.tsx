@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation'
 import PianoContainer from '@/components/games/piano/PianoContainer'
 import BlindTestGame from '@/components/games/BlindTestGame'
 import LyricsGame from '@/components/games/LyricsGame'
-import MemoryGame from '@/components/games/MemoryGame'
 import SnakeGame from '@/components/games/SnakeGame'
 import { HiPuzzle, HiArrowLeft } from 'react-icons/hi'
 import Link from 'next/link'
@@ -27,9 +26,6 @@ export default function GamePage() {
     return <LyricsGame />
   }
 
-  if (id === 'memory') {
-    return <MemoryGame />
-  }
 
   if (id === 'snake') {
     return <SnakeGame />

@@ -14,15 +14,7 @@ const ALL_GAMES = [
     badge: 'Disponível',
     implemented: true,
   },
-  {
-    id: 'memory',
-    emoji: '🧠',
-    title: 'Jogo da Memória',
-    description: 'Teste sua mente combinando artistas e álbuns.',
-    gradient: 'from-blue-600/30 to-blue-900/10',
-    badge: 'Disponível',
-    implemented: true,
-  },
+
   {
     id: 'snake',
     emoji: '🐍',
