@@ -287,10 +287,10 @@ export default function PianoTiles() {
         
         <div className="flex flex-col lg:flex-row gap-8 items-start justify-center w-full max-w-7xl">
             <div className="w-full lg:w-1/2">
-                <div className="mb-8 p-6 bg-gradient-to-br from-spotify-green/20 to-transparent rounded-[32px] border border-white/5 relative overflow-hidden group">
-                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-spotify-green/10 blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
-                    <h2 className="text-4xl font-black mb-1">Piano <span className="text-spotify-green">Pro</span></h2>
-                    <p className="text-spotify-text text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
+                <div className="mb-4 sm:mb-8 p-4 sm:p-6 bg-gradient-to-br from-spotify-green/20 to-transparent rounded-2xl sm:rounded-[32px] border border-white/5 relative overflow-hidden group">
+                    <div className="absolute -top-10 -right-10 w-24 sm:w-40 h-24 sm:h-40 bg-spotify-green/10 blur-[40px] sm:blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
+                    <h2 className="text-2xl sm:text-4xl font-black mb-1">Piano <span className="text-spotify-green">Pro</span></h2>
+                    <p className="text-spotify-text text-[10px] sm:text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
@@ -299,26 +299,26 @@ export default function PianoTiles() {
                         key={song.id}
                         onClick={() => handleStartRequest(song)}
                         className={cn(
-                        "flex items-center justify-between p-5 rounded-3xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group",
+                        "flex items-center justify-between p-4 sm:p-5 rounded-2xl sm:rounded-3xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group",
                         selectedSong?.id === song.id 
                             ? "bg-spotify-green/15 border-spotify-green/50 shadow-[0_15px_40px_-15px_rgba(30,215,96,0.3)]" 
                             : "bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-white/20"
                         )}
                     >
                         <div className="text-left">
-                        <p className="text-lg font-black group-hover:text-spotify-green transition-colors">{song.title}</p>
-                        <div className="flex items-center gap-3 mt-1.5">
-                            <p className="text-[10px] text-spotify-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
-                            <div className="flex gap-1 items-center bg-black/40 px-2 py-0.5 rounded-full border border-white/5">
+                        <p className="text-base sm:text-lg font-black group-hover:text-spotify-green transition-colors">{song.title}</p>
+                        <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5">
+                            <p className="text-[8px] sm:text-[10px] text-spotify-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
+                            <div className="flex gap-0.5 sm:gap-1 items-center bg-black/40 px-1.5 sm:px-2 py-0.5 rounded-full border border-white/5">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <div key={i} className={cn("h-1.5 w-1.5 rounded-full", i < song.difficulty ? "bg-spotify-green shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
+                                <div key={i} className={cn("h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full", i < song.difficulty ? "bg-spotify-green shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
                             ))}
-                            <span className="text-[9px] font-black text-white/40 ml-1">{song.difficulty}</span>
+                            <span className="text-[8px] sm:text-[9px] font-black text-white/40 ml-1">{song.difficulty}</span>
                             </div>
                         </div>
                         </div>
-                        <div className="p-3 bg-white/5 rounded-2xl group-hover:bg-spotify-green group-hover:text-black transition-all">
-                            <HiPlay className="h-6 w-6" />
+                        <div className="p-2 sm:p-3 bg-white/5 rounded-xl sm:rounded-2xl group-hover:bg-spotify-green group-hover:text-black transition-all">
+                            <HiPlay className="h-5 w-5 sm:h-6 sm:h-6" />
                         </div>
                     </button>
                     ))}
@@ -331,28 +331,28 @@ export default function PianoTiles() {
                         initial={{ opacity: 0, scale: 0.9, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         className={cn(
-                            "p-10 rounded-[40px] text-center shadow-2xl relative overflow-hidden border",
+                            "p-6 sm:p-10 rounded-3xl sm:rounded-[40px] text-center shadow-2xl relative overflow-hidden border",
                             isVictory ? "bg-gradient-to-b from-spotify-green/20 to-transparent border-spotify-green/30" : "bg-gradient-to-b from-red-500/20 to-transparent border-red-500/30"
                         )}
                     >
                         <p className={cn(
-                            "font-black text-xs uppercase tracking-[0.3em] mb-3",
+                            "font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-2 sm:mb-3",
                             isVictory ? "text-spotify-green" : "text-red-500"
                         )}>
                             {isVictory ? `Concluído: ${PHASE_NAMES[currentPhase]}` : "Sessão Encerrada"}
                         </p>
-                        <h2 className="text-2xl font-black mb-1">{isVictory ? (isPerfectClear ? "Lendário!" : "Parabéns!") : "Quase lá!"}</h2>
-                        <div className="my-8 relative">
-                            <p className="text-7xl font-black drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-none">{score}</p>
-                            {isPerfectClear && <p className="text-[10px] text-yellow-500 font-bold uppercase tracking-widest mt-2 flex items-center justify-center gap-1"><HiBadgeCheck /> Perfect Clear</p>}
+                        <h2 className="text-xl sm:text-2xl font-black mb-1">{isVictory ? (isPerfectClear ? "Lendário!" : "Parabéns!") : "Quase lá!"}</h2>
+                        <div className="my-4 sm:my-8 relative">
+                            <p className="text-5xl sm:text-7xl font-black drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] leading-none">{score}</p>
+                            {isPerfectClear && <p className="text-[8px] sm:text-[10px] text-yellow-500 font-bold uppercase tracking-widest mt-2 flex items-center justify-center gap-1"><HiBadgeCheck /> Perfect Clear</p>}
                         </div>
                         <div className="space-y-3">
                             {isVictory && hasNextOption && (
-                                <button onClick={handleNextLevel} className="w-full py-5 bg-spotify-green text-black rounded-2xl font-black text-sm hover:translate-y-[-2px] transition-all shadow-lg flex items-center justify-center gap-2">
-                                    PRÓXIMO <HiChevronRight className="h-5 w-5" />
+                                <button onClick={handleNextLevel} className="w-full py-4 sm:py-5 bg-spotify-green text-black rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:translate-y-[-2px] transition-all shadow-lg flex items-center justify-center gap-2">
+                                    PRÓXIMO <HiChevronRight className="h-4 w-4 sm:h-5 sm:h-5" />
                                 </button>
                             )}
-                            <button onClick={() => selectedSong && handleStartRequest(selectedSong, currentPhase)} className="w-full py-5 bg-white/10 text-white rounded-2xl font-black text-sm hover:bg-white/20 transition-all">
+                            <button onClick={() => selectedSong && handleStartRequest(selectedSong, currentPhase)} className="w-full py-4 sm:py-5 bg-white/10 text-white rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:bg-white/20 transition-all">
                                 RECOMEÇAR
                             </button>
                         </div>
@@ -403,23 +403,23 @@ export default function PianoTiles() {
                     <div 
                         key={t.id}
                         className={cn(
-                            "absolute left-[8%] right-[8%] h-40 rounded-[32px] shadow-2xl",
+                            "absolute left-[5%] sm:left-[8%] right-[5%] sm:right-[8%] h-32 sm:h-40 rounded-2xl sm:rounded-[32px] shadow-2xl",
                             "bg-gradient-to-br from-white via-[#f0f0f0] to-[#ddd] border-2 border-white/20",
-                            "after:absolute after:inset-4 after:border after:border-black/5 after:rounded-[24px]"
+                            "after:absolute after:inset-2 sm:after:inset-4 after:border after:border-black/5 after:rounded-xl sm:after:rounded-[24px]"
                         )}
-                        style={{ top: `calc(${top}% - 160px)` }}
+                        style={{ top: `calc(${top}% - 128px)` }}
                     />
                 )
             })}
             <div className="h-[15%] w-full flex items-center justify-center border-t border-white/[0.05] relative bg-white/[0.01]">
-                <span className="text-white/10 font-black text-5xl font-mono">{KEYS[lane]}</span>
+                <span className="text-white/10 font-black text-2xl sm:text-5xl font-mono">{KEYS[lane]}</span>
             </div>
           </div>
         ))}
         <div className="absolute top-[85%] left-0 right-0 h-[2px] bg-spotify-green shadow-[0_0_25px_#1ed760] z-20 pointer-events-none opacity-80" />
       </div>
 
-      <div className="absolute bottom-[35%] left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-30 h-20">
+      <div className="absolute bottom-[35%] left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-30 h-16 sm:h-20">
         <AnimatePresence mode="wait">
             {feedbacks.map(f => (
                 <motion.div
@@ -428,7 +428,7 @@ export default function PianoTiles() {
                     animate={{ opacity: 1, scale: 1.2, y: -20 }}
                     exit={{ opacity: 0, y: -40 }}
                     className={cn(
-                        "text-3xl font-black italic tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]",
+                        "text-xl sm:text-3xl font-black italic tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]",
                         f.type === 'perfect' ? "text-yellow-400" : f.type === 'great' ? "text-blue-400" : (f.type === 'miss' ? "text-red-500 scale-125" : "text-white")
                     )}
                 >
@@ -455,10 +455,10 @@ export default function PianoTiles() {
                 className="text-center"
             >
               <div className="flex flex-col items-center">
-                <span className="text-[3rem] font-black text-spotify-green uppercase tracking-[0.3em] mb-[-4rem] opacity-50 italic">
+                <span className="text-[1.5rem] sm:text-[3rem] font-black text-spotify-green uppercase tracking-[0.3em] mb-[-2rem] sm:mb-[-4rem] opacity-50 italic">
                     {PHASE_NAMES[currentPhase]}
                 </span>
-                <span className="text-[15rem] font-black text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.3)] italic tracking-tighter">
+                <span className="text-[8rem] sm:text-[15rem] font-black text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.3)] italic tracking-tighter">
                     {countdown === 0 ? 'GO!' : countdown}
                 </span>
               </div>
@@ -467,44 +467,47 @@ export default function PianoTiles() {
         )}
       </AnimatePresence>
 
-      <div className="absolute top-16 left-16 flex flex-col pointer-events-none">
-          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em] mb-2 font-mono">
-              SCORE • {PHASE_NAMES[currentPhase]}
-          </p>
-          <div className="flex items-baseline gap-4">
-            <motion.p 
-                key={score}
-                initial={{ scale: 1.1 }}
-                animate={{ scale: 1 }}
-                className={cn(
-                  "text-8xl font-black tracking-tighter tabular-nums leading-none transition-colors",
-                  score < 0 ? "text-red-500" : "text-white"
-                )}
-            >
-                {score}
-            </motion.p>
-            {selectedSong && <p className="text-xl font-black text-white/20 tracking-tighter tabular-nums">/ {maxPossibleScore}</p>}
-          </div>
-      </div>
+      {/* NEW RESPONSIVE HUD */}
+      <div className="absolute top-0 left-0 right-0 p-4 sm:p-12 flex justify-between items-start pointer-events-none z-40">
+        <div className="flex flex-col">
+            <p className="text-[8px] sm:text-[10px] font-black text-white/30 uppercase tracking-[0.3em] sm:tracking-[0.5em] mb-1 sm:mb-2 font-mono">
+                SCORE • {PHASE_NAMES[currentPhase]}
+            </p>
+            <div className="flex items-baseline gap-2 sm:gap-4">
+              <motion.p 
+                  key={score}
+                  initial={{ scale: 1.1 }}
+                  animate={{ scale: 1 }}
+                  className={cn(
+                    "text-4xl sm:text-8xl font-black tracking-tighter tabular-nums leading-none transition-colors",
+                    score < 0 ? "text-red-500" : "text-white"
+                  )}
+              >
+                  {score}
+              </motion.p>
+              {selectedSong && <p className="text-xs sm:text-xl font-black text-white/20 tracking-tighter tabular-nums">/ {maxPossibleScore}</p>}
+            </div>
+        </div>
 
-      <div className="absolute top-16 right-16 text-right pointer-events-none">
-          <div className="flex items-center justify-end gap-2 mb-2">
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.5em]">LEVEL {songDifficulty}</p>
-            {currentPhase > 0 && (
-                <div className="flex gap-0.5">
-                    {Array.from({ length: currentPhase }).map((_, i) => (
-                        <HiFire key={i} className="text-orange-500 h-3 w-3 animate-pulse" />
-                    ))}
-                </div>
-            )}
-          </div>
-          <p className="text-2xl font-black text-white truncate max-w-[300px]">{songTitle}</p>
-          <p className={cn(
-            "text-xs font-black uppercase tracking-widest mt-1 italic",
-            currentPhase === 3 ? "text-red-500 animate-pulse" : "text-spotify-green"
-          )}>
-            {currentPhase === 3 ? "Hardcore Mode" : "Acelerando..."}
-          </p>
+        <div className="text-right flex flex-col items-end">
+            <div className="flex items-center justify-end gap-1.5 sm:gap-2 mb-1 sm:mb-2">
+              <p className="text-[8px] sm:text-[10px] font-black text-white/30 uppercase tracking-[0.3em] sm:tracking-[0.5em]">LEVEL {songDifficulty}</p>
+              {currentPhase > 0 && (
+                  <div className="flex gap-0.5">
+                      {Array.from({ length: currentPhase }).map((_, i) => (
+                          <HiFire key={i} className="text-orange-500 h-2 w-2 sm:h-3 sm:w-3 animate-pulse" />
+                      ))}
+                  </div>
+              )}
+            </div>
+            <p className="text-sm sm:text-2xl font-black text-white truncate max-w-[120px] sm:max-w-[300px]">{songTitle}</p>
+            <p className={cn(
+              "text-[8px] sm:text-xs font-black uppercase tracking-widest mt-0.5 sm:mt-1 italic",
+              currentPhase === 3 ? "text-red-500 animate-pulse" : "text-spotify-green"
+            )}>
+              {currentPhase === 3 ? "Hardcore" : "Acelerando..."}
+            </p>
+        </div>
       </div>
 
       <button 

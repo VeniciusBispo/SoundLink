@@ -107,29 +107,29 @@ export default function PianoGame() {
   ]
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-4 sm:p-8 relative overflow-hidden select-none">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">Piano Mágico 🎹</h2>
-        <p className="text-sm text-spotify-text">Use o mouse ou as teclas <span className="text-spotify-green font-mono">A S D F G H J K</span></p>
+    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-4 sm:p-8 relative overflow-hidden select-none min-h-[400px]">
+      <div className="text-center mb-6 sm:mb-10">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-tight">Piano Mágico 🎹</h2>
+        <p className="text-xs sm:text-sm text-spotify-text px-4">Use o mouse, toque na tela ou as teclas <span className="text-spotify-green font-mono">A S D F G H J K</span></p>
       </div>
       
-      <div className="relative flex h-72 w-full max-w-4xl rounded-xl bg-[#080808] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-8 border-[#333]">
-        <div className="flex w-full gap-[2px] h-full relative">
+      <div className="relative flex h-48 sm:h-72 w-full max-w-4xl rounded-xl bg-[#080808] p-2 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-4 sm:border-t-8 border-[#333]">
+        <div className="flex w-full gap-[1px] sm:gap-[2px] h-full relative">
           
           {/* White Keys */}
           {whiteKeys.map((note) => (
             <div 
               key={note} 
-              onMouseDown={() => playNote(note)}
-              onMouseUp={() => stopNote(note)}
-              onMouseLeave={() => stopNote(note)}
+              onPointerDown={(e) => { e.preventDefault(); playNote(note); }}
+              onPointerUp={() => stopNote(note)}
+              onPointerLeave={() => stopNote(note)}
               className={cn(
                 "flex-1 bg-[#fcfcfc] hover:bg-gray-200 cursor-pointer rounded-b-lg shadow-md transition-all duration-75 relative",
-                activeNotes.has(note) ? "bg-spotify-green translate-y-2 shadow-inner" : "shadow-[0_4px_0_#ccc]"
+                activeNotes.has(note) ? "bg-spotify-green translate-y-1 sm:translate-y-2 shadow-inner" : "shadow-[0_2px_0_#ccc] sm:shadow-[0_4px_0_#ccc]"
               )}
             >
-              <div className="absolute bottom-4 left-0 right-0 text-center">
-                <span className="text-[10px] font-bold text-black/20 uppercase font-mono">{note}</span>
+              <div className="absolute bottom-2 sm:bottom-4 left-0 right-0 text-center pointer-events-none">
+                <span className="text-[8px] sm:text-[10px] font-bold text-black/20 uppercase font-mono">{note}</span>
               </div>
             </div>
           ))}
@@ -138,17 +138,17 @@ export default function PianoGame() {
           {blackKeys.map(({ note, left }) => (
             <div 
               key={note}
-              onMouseDown={() => playNote(note)}
-              onMouseUp={() => stopNote(note)}
-              onMouseLeave={() => stopNote(note)}
+              onPointerDown={(e) => { e.preventDefault(); playNote(note); }}
+              onPointerUp={() => stopNote(note)}
+              onPointerLeave={() => stopNote(note)}
               style={{ left, width: '7%', height: '60%' }}
               className={cn(
                 "absolute top-0 z-10 bg-[#1a1a1a] hover:bg-gray-800 cursor-pointer rounded-b-md shadow-2xl transition-all duration-75",
-                activeNotes.has(note) ? "bg-spotify-green/80 translate-y-2 shadow-inner" : "shadow-[0_4px_0_#000]"
+                activeNotes.has(note) ? "bg-spotify-green/80 translate-y-1 sm:translate-y-2 shadow-inner" : "shadow-[0_2px_0_#000] sm:shadow-[0_4px_0_#000]"
               )}
             >
-               <div className="absolute bottom-3 left-0 right-0 text-center">
-                <span className="text-[8px] font-bold text-white/20 uppercase font-mono">{note.replace('#', '')}#</span>
+               <div className="absolute bottom-1.5 sm:bottom-3 left-0 right-0 text-center pointer-events-none">
+                <span className="text-[6px] sm:text-[8px] font-bold text-white/20 uppercase font-mono">{note.replace('#', '')}#</span>
               </div>
             </div>
           ))}
@@ -156,17 +156,18 @@ export default function PianoGame() {
         </div>
       </div>
       
-      <div className="mt-12 flex flex-wrap justify-center gap-8 text-xs text-spotify-text bg-black/20 px-6 py-3 rounded-full border border-white/5">
+      <div className="mt-8 sm:mt-12 flex flex-wrap justify-center gap-4 sm:gap-8 text-[10px] sm:text-xs text-spotify-text bg-black/20 px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/5 mx-4 text-center">
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-spotify-green animate-pulse" />
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-spotify-green animate-pulse" />
           <span>Áudio Estéreo</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-blue-500" />
-          <span>Suporte a Teclado</span>
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-blue-500" />
+          <span className="hidden sm:inline">Suporte a Teclado</span>
+          <span className="sm:hidden">Teclado</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-yellow-500" />
+          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-yellow-500" />
           <span>Polifonia</span>
         </div>
       </div>

@@ -277,10 +277,10 @@ export default function SnakeGame() {
   return (
     <div className="w-full h-screen relative bg-black overflow-hidden flex flex-col">
       {/* HUD OVERLAY PREMIUM */}
-      <div className="absolute top-0 left-0 w-full p-12 z-10 flex justify-between items-start pointer-events-none">
-        <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-3xl p-8 flex items-center gap-8 pointer-events-auto shadow-2xl">
+      <div className="absolute top-0 left-0 w-full p-4 sm:p-12 z-10 flex justify-between items-start pointer-events-none">
+        <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex items-center gap-4 sm:gap-8 pointer-events-auto shadow-2xl">
           <div className="relative">
-            <HiStar className="h-10 w-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
+            <HiStar className="h-6 w-6 sm:h-10 sm:h-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
             <motion.div
               animate={{ scale: [1, 2], opacity: [0.6, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
@@ -288,17 +288,17 @@ export default function SnakeGame() {
             />
           </div>
           <div>
-            <div className="text-[12px] font-black tracking-[0.4em] uppercase text-white/30 mb-2">Pontos Musicais</div>
-            <div className="text-5xl font-black text-white leading-none tracking-tighter italic">
+            <div className="text-[10px] sm:text-[12px] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase text-white/30 mb-1 sm:mb-2">Pontos Musicais</div>
+            <div className="text-2xl sm:text-5xl font-black text-white leading-none tracking-tighter italic">
               {currentScore.toLocaleString()}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-6 pointer-events-auto">
-          <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl px-8 py-5 flex items-center gap-6 shadow-xl">
-            <HiVolumeUp className="h-8 w-8 text-spotify-green animate-pulse" />
-            <div className="h-2.5 w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
+        <div className="flex flex-col items-end gap-3 sm:gap-6 pointer-events-auto">
+          <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-3 sm:py-5 flex items-center gap-4 sm:gap-6 shadow-xl">
+            <HiVolumeUp className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green animate-pulse" />
+            <div className="h-2 w-24 sm:h-2.5 sm:w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
               <motion.div
                 className="h-full bg-gradient-to-r from-spotify-green to-emerald-400 shadow-[0_0_20px_#00FF88]"
                 animate={{ width: `${Math.min(100, (score / 30) * 100)}%` }}
@@ -311,16 +311,48 @@ export default function SnakeGame() {
               setIsPaused(p => !p)
               setStatus(prev => (prev === 'playing' ? 'paused' : 'playing'))
             }}
-            className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-2xl px-8 py-5 flex items-center gap-6 shadow-xl transition-colors hover:bg-white/10"
+            className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-3 sm:py-5 flex items-center gap-4 sm:gap-6 shadow-xl transition-colors hover:bg-white/10"
           >
             {isPaused ? (
-              <HiPlay className="h-8 w-8 text-spotify-green" />
+              <HiPlay className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green" />
             ) : (
-              <HiPause className="h-8 w-8 text-spotify-green" />
+              <HiPause className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green" />
             )}
-            <span className="text-white text-lg font-bold tracking-wider uppercase">
+            <span className="text-white text-sm sm:text-lg font-bold tracking-wider uppercase">
               {isPaused ? 'Continuar' : 'Pausar'}
             </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Controls */}
+      <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2 md:hidden pointer-events-auto">
+        <div className="flex justify-center">
+          <button 
+            onPointerDown={(e) => { e.preventDefault(); if (direction.y !== 1) setNextDirection({ x: 0, y: -1 }) }}
+            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+          >
+            <HiStar className="h-8 w-8 -rotate-90" />
+          </button>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onPointerDown={(e) => { e.preventDefault(); if (direction.x !== 1) setNextDirection({ x: -1, y: 0 }) }}
+            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+          >
+            <HiStar className="h-8 w-8 rotate-180" />
+          </button>
+          <button 
+            onPointerDown={(e) => { e.preventDefault(); if (direction.y !== -1) setNextDirection({ x: 0, y: 1 }) }}
+            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+          >
+            <HiStar className="h-8 w-8 rotate-90" />
+          </button>
+          <button 
+            onPointerDown={(e) => { e.preventDefault(); if (direction.x !== -1) setNextDirection({ x: 1, y: 0 }) }}
+            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+          >
+            <HiStar className="h-8 w-8" />
           </button>
         </div>
       </div>
@@ -351,38 +383,40 @@ export default function SnakeGame() {
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="flex flex-col items-center gap-6 max-w-4xl w-full py-12"
+              className="flex flex-col items-center gap-4 sm:gap-6 max-w-4xl w-full py-8 sm:py-12 px-4"
             >
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-spotify-green/20 rounded-2xl text-spotify-green">
-                  <HiUserGroup className="h-8 w-8" />
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="p-2 sm:p-3 bg-spotify-green/20 rounded-xl sm:rounded-2xl text-spotify-green">
+                  <HiUserGroup className="h-6 w-6 sm:h-8 sm:h-8" />
                 </div>
-                <h2 className="text-5xl font-black text-white italic tracking-tighter uppercase">Ritmo Final</h2>
+                <h2 className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter uppercase">Ritmo Final</h2>
               </div>
-              <div className="text-7xl font-black text-spotify-green mb-8 tracking-tighter italic">
+              <div className="text-5xl sm:text-7xl font-black text-spotify-green mb-4 sm:mb-8 tracking-tighter italic">
                 {currentScore.toLocaleString()}
               </div>
 
-              <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <button
                   onClick={resetGame}
-                  className="flex items-center gap-2 rounded-full bg-spotify-green px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                  className="flex items-center gap-2 rounded-full bg-spotify-green px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
                 >
-                  <HiRefresh className="h-6 w-6" /> JOGAR NOVAMENTE
+                  <HiRefresh className="h-5 w-5 sm:h-6 sm:h-6" /> JOGAR NOVAMENTE
                 </button>
                 <button
                   onClick={() => window.history.back()}
-                  className="flex items-center gap-2 rounded-full border-2 border-white/20 px-10 py-4 text-lg font-bold text-white transition-colors hover:bg-white/10"
+                  className="flex items-center gap-2 rounded-full border-2 border-white/20 px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold text-white transition-colors hover:bg-white/10"
                 >
                   VOLTAR
                 </button>
               </div>
 
               {/* Ad Slot in Game Over */}
-              <AdZone slotId="" format="468x60" className="opacity-80 mb-8" />
+              <div className="w-full max-w-[468px] hidden sm:block">
+                <AdZone slotId="" format="468x60" className="opacity-80 mb-8" />
+              </div>
 
               {/* Ranking Section */}
-              <div className="w-full">
+              <div className="w-full max-w-2xl">
                 <GameLeaderboard gameId="snake" songId="musical-snake-classic" onReset={resetGame} />
               </div>
             </motion.div>

@@ -89,17 +89,17 @@ export default function BlindTestPlayer({ videoId, startTime, duration, onEnd, i
     createPlayer()
 
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-      if (player) {
-         try {
-           player.destroy()
-         } catch (e) {
-           // Ignore errors during destruction
-         }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
       }
-      // Clean up the container just in case
-      if (containerRef.current) {
-        containerRef.current.innerHTML = ''
+      if (playerRef.current) {
+         try {
+           playerRef.current.destroy()
+           playerRef.current = null
+         } catch (e) {
+           console.error('Error destroying player:', e)
+         }
       }
     }
   }, [isApiReady, videoId, startTime, duration, isPlaying])

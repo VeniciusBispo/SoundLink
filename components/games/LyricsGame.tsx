@@ -28,15 +28,23 @@ export default function LyricsGame() {
 
   const { startGame, endGame, addPoints, nextRound, currentScore, round, totalRounds } = useGameStore()
 
+  const [error, setError] = useState<string | null>(null)
+
   const fetchQuestions = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch('/api/games/lyrics')
+      if (!res.ok) {
+        if (res.status === 401) throw new Error('Unauthorized')
+        throw new Error('Falha ao carregar letras')
+      }
       const data = await res.json()
       setQuestions(data)
       startGame(data.length)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch questions', error)
+      setError(error.message === 'Unauthorized' ? 'Você precisa estar logado para jogar' : error.message)
     } finally {
       setLoading(false)
     }
@@ -97,6 +105,24 @@ export default function LyricsGame() {
     )
   }
 
+  if (error) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-6 p-8 text-center">
+        <HiX className="h-16 w-16 text-red-500 opacity-20" />
+        <div>
+            <h2 className="text-2xl font-black text-white mb-2 uppercase">OPS! ALGO DEU ERRADO</h2>
+            <p className="text-spotify-text font-bold opacity-60 uppercase tracking-widest text-sm">{error}</p>
+        </div>
+        <button 
+            onClick={() => window.location.reload()}
+            className="px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all uppercase text-xs tracking-widest"
+        >
+            Tentar Novamente
+        </button>
+      </div>
+    )
+  }
+
   if (gameOver) {
     return (
       <motion.div 
@@ -137,55 +163,68 @@ export default function LyricsGame() {
     )
   }
 
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
+        <HiMusicNote className="h-12 w-12 text-white/20" />
+        <p className="font-bold text-white/50">NENHUMA LETRA ENCONTRADA...</p>
+      </div>
+    )
+  }
+
   const currentQuestion = questions[currentIndex]
+  if (!currentQuestion) return null
+
   const parts = currentQuestion.text.split('___')
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="max-w-4xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
       {/* Top Ad */}
-      <AdZone slotId="" format="468x60" className="opacity-40 hover:opacity-100 transition-opacity mb-8" />
+      <div className="hidden sm:block">
+        <AdZone slotId="" format="468x60" className="opacity-40 hover:opacity-100 transition-opacity mb-8" />
+      </div>
       {/* HUD */}
-      <div className="flex justify-between items-center mb-12">
-        <div className="bg-white/5 rounded-full px-6 py-2 border border-white/10 flex items-center gap-4">
-            <div className="flex items-center gap-2">
-                <HiStar className="h-5 w-5 text-yellow-500" />
-                <span className="text-xl font-black text-white">{currentScore.toLocaleString()}</span>
+      <div className="flex justify-between items-center mb-6 sm:mb-12 px-2">
+        <div className="bg-white/5 rounded-full px-4 sm:px-6 py-1.5 sm:py-2 border border-white/10 flex items-center gap-3 sm:gap-4 font-mono">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+                <HiStar className="h-4 w-4 sm:h-5 sm:h-5 text-yellow-500" />
+                <span className="text-base sm:text-xl font-black text-white">{currentScore.toLocaleString()}</span>
             </div>
-            <div className="h-4 w-px bg-white/10" />
-            <span className="text-xs font-bold text-white/50 uppercase tracking-widest">
-                RODADA {round}/{totalRounds}
+            <div className="h-3 w-px bg-white/10" />
+            <span className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest whitespace-nowrap">
+                {round}/{totalRounds}
             </span>
         </div>
         
-        <div className="flex items-center gap-2 text-spotify-green">
-            <HiMusicNote className="h-5 w-5" />
-            <span className="text-xs font-black uppercase tracking-widest truncate max-w-[200px]">
+        <div className="flex items-center gap-2 text-spotify-green max-w-[150px] sm:max-w-none">
+            <HiMusicNote className="h-4 w-4 sm:h-5 sm:h-5 flex-shrink-0" />
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest truncate">
                 {currentQuestion.song}
             </span>
         </div>
       </div>
 
-      <div className="relative mb-20">
-        <div className="p-12 md:p-16 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[48px] border border-white/10 shadow-3xl text-center">
-            <h2 className="text-3xl md:text-5xl font-medium text-white italic leading-relaxed tracking-tight">
+      <div className="relative mb-12 sm:mb-20">
+        <div className="p-8 sm:p-16 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[32px] sm:rounded-[48px] border border-white/10 shadow-3xl text-center">
+            <h2 className="text-xl sm:text-4xl md:text-5xl font-medium text-white italic leading-relaxed tracking-tight">
                 "{parts[0]}
                 <span className={cn(
-                    "relative inline-block mx-2 px-4 py-1 rounded-xl transition-all duration-300",
+                    "relative inline-block mx-1 sm:mx-2 px-2 sm:px-4 py-0 sm:py-1 rounded-lg sm:rounded-xl transition-all duration-300",
                     isAnswered 
                         ? (isCorrect ? "bg-spotify-green text-black" : "bg-red-500 text-white")
-                        : "bg-white/10 text-white/20 border-b-4 border-white/5 min-w-[120px]"
+                        : "bg-white/10 text-white/20 border-b-2 sm:border-b-4 border-white/5 min-w-[60px] sm:min-w-[120px]"
                 )}>
                     {isAnswered ? selectedOption : "____"}
                 </span>
                 {parts[1]}"
             </h2>
-            <p className="mt-8 text-spotify-text font-bold uppercase tracking-[0.3em] text-[10px] opacity-40">
+            <p className="mt-4 sm:mt-8 text-spotify-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[8px] sm:text-[10px] opacity-40">
                 {currentQuestion.artist}
             </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 px-2">
         {currentQuestion.options.map((option, i) => {
           const isSelected = selectedOption === option
           const isCorrectOption = option === currentQuestion.gap
@@ -206,13 +245,13 @@ export default function LyricsGame() {
                disabled={isAnswered}
                onClick={() => handleAnswer(option)}
                className={cn(
-                 "flex items-center justify-between p-7 rounded-[32px] border-2 text-left transition-all duration-300",
+                 "flex items-center justify-between p-5 sm:p-7 rounded-2xl sm:rounded-[32px] border-2 text-left transition-all duration-300",
                  stateClass
                )}
             >
-              <span className="text-xl font-bold">{option}</span>
-              {isAnswered && isCorrectOption && <HiCheck className="h-6 w-6 text-spotify-green" />}
-              {isAnswered && isSelected && !isCorrectOption && <HiX className="h-6 w-6 text-red-500" />}
+              <span className="text-base sm:text-xl font-bold">{option}</span>
+              {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-spotify-green" />}
+              {isAnswered && isSelected && !isCorrectOption && <HiX className="h-5 w-5 sm:h-6 sm:h-6 text-red-500" />}
             </motion.button>
           )
         })}
