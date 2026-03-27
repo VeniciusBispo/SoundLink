@@ -38,7 +38,7 @@ export async function generateSystemReport(): Promise<SystemReport> {
   const latencies = (logs as any[]).map(l => l.responseTime as number).filter(Boolean).sort((a: any, b: any) => a - b)
   
   const p95 = latencies.length > 0 ? latencies[Math.floor(latencies.length * 0.95)] : 0
-  const avg = latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0
+  const avg = latencies.length > 0 ? latencies.reduce((a: number, b: number) => a + b, 0) / latencies.length : 0
 
   // Calculation logic
   const perfScore = Math.max(0, 100 - (p95 / 10))

@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
     // Calculate P95
     const latencies = (latencyData as any).map((d: any) => d.responseTime as number).sort((a: any, b: any) => a - b)
     const p95 = latencies.length > 0 ? latencies[Math.floor(latencies.length * 0.95)] : 0
-    const avgLatency = latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0
+    const avgLatency = latencies.length > 0 ? latencies.reduce((a: number, b: number) => a + b, 0) / latencies.length : 0
 
     // SoundLink Score Calculation (Heuristic)
     const perfScore = Math.max(0, 100 - (p95 / 10)) // 100ms = 90 score, 1000ms = 0 score
