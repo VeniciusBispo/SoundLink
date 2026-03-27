@@ -34,25 +34,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {/* Preconectar e Precarregar domínios de anúncios para performance extrema */}
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.youtube.com" crossOrigin="anonymous" />
         
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
         <link rel="dns-prefetch" href="https://adservice.google.com" />
-
-        {/* Priority Hint para AdSense discovery antecipado */}
-        <link 
-          rel="preload" 
-          href="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793" 
-          as="script"
-          //@ts-ignore
-          fetchpriority="high"
-        />
+        <link rel="dns-prefetch" href="https://i.ytimg.com" />
       </head>
       <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
-        {/* Google AdSense - Standard script to avoid data-nscript error */}
-        <script
-          async
+        {/* Google AdSense - Extreme Performance Strategy */}
+        <Script
+          id="adsense-init"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9556522152269793"
           crossOrigin="anonymous"
+          strategy="afterInteractive"
         />
         <Providers session={session}>
           <PlayerProvider>{children}</PlayerProvider>

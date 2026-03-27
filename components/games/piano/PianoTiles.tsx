@@ -376,46 +376,57 @@ export default function PianoTiles() {
     <div className="relative flex-1 flex flex-col items-center justify-end overflow-hidden bg-[#020202] select-none cursor-crosshair">
       <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-spotify-green/5 to-transparent pointer-events-none" />
       <div className="flex w-full h-full max-w-xl mx-auto border-x border-white/[0.08] relative">
-        {[0, 1, 2, 3].map(lane => (
-          <div 
-            key={lane} 
-            className="flex-1 relative h-full flex flex-col justify-end"
-            onPointerDown={() => handleHit(lane)}
-          >
-            <AnimatePresence mode="popLayout">
-                {laneFlashes?.lane === lane && (
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: laneFlashes.type === 'miss' ? 0.3 : 0.15 }}
-                        exit={{ opacity: 0 }}
-                        className={cn(
-                           "absolute inset-0",
-                           laneFlashes.type === 'miss' ? "bg-red-500" : "bg-white"
-                        )}
-                    />
-                )}
-            </AnimatePresence>
-            <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-white/[0.03]" />
-            {tiles.filter(t => t.lane === lane && !t.hit && !t.missed).map(t => {
-                const top = getTilePos(t.time, currentNow)
-                if (top > 120 || top < -100) return null
-                return (
-                    <div 
-                        key={t.id}
-                        className={cn(
-                            "absolute left-[5%] sm:left-[8%] right-[5%] sm:right-[8%] h-32 sm:h-40 rounded-2xl sm:rounded-[32px] shadow-2xl",
-                            "bg-gradient-to-br from-white via-[#f0f0f0] to-[#ddd] border-2 border-white/20",
-                            "after:absolute after:inset-2 sm:after:inset-4 after:border after:border-black/5 after:rounded-xl sm:after:rounded-[24px]"
-                        )}
-                        style={{ top: `calc(${top}% - 128px)` }}
-                    />
-                )
-            })}
-            <div className="h-[15%] w-full flex items-center justify-center border-t border-white/[0.05] relative bg-white/[0.01]">
-                <span className="text-white/10 font-black text-2xl sm:text-5xl font-mono">{KEYS[lane]}</span>
+        {[0, 1, 2, 3].map(lane => {
+          // BIT-LEVEL OPTIMIZATION: Sliding Window Rendering
+          // Only process tiles that are within a visible time window
+          const visibleTiles = tiles.filter(t => 
+            t.lane === lane && 
+            !t.hit && 
+            !t.missed &&
+            t.time + START_DELAY >= currentNow - 0.5 && 
+            t.time + START_DELAY <= currentNow + 2.5
+          )
+
+          return (
+            <div 
+              key={lane} 
+              className="flex-1 relative h-full flex flex-col justify-end"
+              onPointerDown={() => handleHit(lane)}
+            >
+              <AnimatePresence mode="popLayout">
+                  {laneFlashes?.lane === lane && (
+                      <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: laneFlashes.type === 'miss' ? 0.3 : 0.15 }}
+                          exit={{ opacity: 0 }}
+                          className={cn(
+                             "absolute inset-0",
+                             laneFlashes.type === 'miss' ? "bg-red-500" : "bg-white"
+                          )}
+                      />
+                  )}
+              </AnimatePresence>
+              <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-white/[0.03]" />
+              {visibleTiles.map(t => {
+                  const top = getTilePos(t.time, currentNow)
+                  return (
+                      <div 
+                          key={t.id}
+                          className={cn(
+                              "absolute left-[5%] sm:left-[8%] right-[5%] sm:right-[8%] h-32 sm:h-40 rounded-2xl sm:rounded-[32px] shadow-2xl",
+                              "bg-gradient-to-br from-white via-[#f0f0f0] to-[#ddd] border-2 border-white/20",
+                              "after:absolute after:inset-2 sm:after:inset-4 after:border after:border-black/5 after:rounded-xl sm:after:rounded-[24px]"
+                          )}
+                          style={{ top: `calc(${top}% - 128px)` }}
+                      />
+                  )
+              })}
+              <div className="h-[15%] w-full flex items-center justify-center border-t border-white/[0.05] relative bg-white/[0.01]">
+                  <span className="text-white/10 font-black text-2xl sm:text-5xl font-mono">{KEYS[lane]}</span>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
         <div className="absolute top-[85%] left-0 right-0 h-[2px] bg-spotify-green shadow-[0_0_25px_#1ed760] z-20 pointer-events-none opacity-80" />
       </div>
 

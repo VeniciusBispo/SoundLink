@@ -130,17 +130,20 @@ model Feedback {
 }
 
 model AccessLog {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  path      String
-  method    String   @default("GET")
-  userId    String?
-  username  String?
-  ip        String?
-  userAgent String?
-  createdAt DateTime @default(now())
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  path         String
+  method       String   @default("GET")
+  status       Int?     // HTTP Status Code
+  responseTime Int?     // in ms
+  userId       String?
+  username     String?
+  ip           String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
 
   @@index([createdAt])
   @@index([path])
+  @@index([status])
 }
 
 model GameScore {
