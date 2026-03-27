@@ -249,8 +249,10 @@ export default function HomeClient({
         </section>
       )}
 
-      {/* ── Mini jogos ── */}
-      <MiniGamesSection />
+      {/* ── Mini jogos - Hidden on Mobile ── */}
+      <div className="hidden md:block">
+        <MiniGamesSection />
+      </div>
     </div>
   )
 }

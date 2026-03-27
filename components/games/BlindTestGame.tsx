@@ -202,30 +202,30 @@ export default function BlindTestGame() {
   if (!currentQuestion) return null
 
   return (
-    <div className="max-w-4xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
+    <div className="max-w-4xl mx-auto py-2 sm:py-8 px-2 sm:px-4 flex flex-col h-full overflow-y-auto">
       {/* Top Ad */}
       <div className="hidden sm:block">
         <AdZone slotId="" format="468x60" className="opacity-40 hover:opacity-100 transition-opacity mb-8" />
       </div>
       {/* HUD */}
-      <div className="flex justify-between items-center mb-6 sm:mb-10 px-2">
-        <div className="bg-white/5 rounded-full px-4 sm:px-6 py-1.5 sm:py-2 border border-white/10 flex items-center gap-3 sm:gap-4 font-mono">
+      <div className="flex justify-between items-center mb-4 sm:mb-10 px-2">
+        <div className="bg-white/5 rounded-full px-3 sm:px-6 py-1 sm:py-2 border border-white/10 flex items-center gap-2 sm:gap-4 font-mono">
             <div className="flex items-center gap-1.5 sm:gap-2">
-                <HiStar className="h-4 w-4 sm:h-5 sm:h-5 text-yellow-500" />
-                <span className="text-base sm:text-xl font-black text-white">{currentScore.toLocaleString()}</span>
+                <HiStar className="h-3 w-3 sm:h-5 sm:h-5 text-yellow-500" />
+                <span className="text-sm sm:text-xl font-black text-white">{currentScore.toLocaleString()}</span>
             </div>
             <div className="h-3 w-px bg-white/10" />
-            <span className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest whitespace-nowrap">
+            <span className="text-[9px] sm:text-xs font-bold text-white/50 uppercase tracking-widest whitespace-nowrap">
                 {round}/{totalRounds}
             </span>
         </div>
 
         <div className={cn(
-            "flex items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl border transition-all duration-300",
+            "flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-1.5 sm:py-3 rounded-lg sm:rounded-2xl border transition-all duration-300",
             timer <= 3 ? "border-red-500 bg-red-500/10 animate-pulse" : "border-white/10 bg-white/5"
         )}>
-            <HiClock className={cn("h-5 w-5 sm:h-6 sm:h-6", timer <= 3 ? "text-red-500" : "text-spotify-green")} />
-            <span className={cn("text-lg sm:text-2xl font-black min-w-[1.2rem] sm:min-w-[1.5rem]", timer <= 3 ? "text-red-500" : "text-white")}>
+            <HiClock className={cn("h-4 w-4 sm:h-6 sm:h-6", timer <= 3 ? "text-red-500" : "text-spotify-green")} />
+            <span className={cn("text-base sm:text-2xl font-black min-w-[1rem] sm:min-w-[1.5rem]", timer <= 3 ? "text-red-500" : "text-white")}>
                 {timer}s
             </span>
         </div>
@@ -239,16 +239,16 @@ export default function BlindTestGame() {
         isPlaying={!isAnswered && !gameOver}
       />
 
-      <div className="relative mb-8 sm:mb-12">
+      <div className="relative mb-6 sm:mb-12">
         <div className="flex flex-col items-center text-center">
-            <div className="w-32 h-32 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-spotify-green/20 to-purple-600/10 flex items-center justify-center border-4 border-white/5 shadow-2xl relative mb-4 sm:mb-8">
+            <div className="w-24 h-24 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-spotify-green/20 to-purple-600/10 flex items-center justify-center border-4 border-white/5 shadow-2xl relative mb-4 sm:mb-8">
                 <div className={cn(
                     "absolute inset-0 rounded-full border-4 border-spotify-green animate-ping opacity-20",
                     isAnswered && "hidden"
                 )} />
-                <HiMusicNote className="h-12 w-12 sm:h-20 sm:h-20 text-spotify-green drop-shadow-[0_0_20px_#1ed760]" />
+                <HiMusicNote className="h-10 w-10 sm:h-20 sm:h-20 text-spotify-green drop-shadow-[0_0_20px_#1ed760]" />
             </div>
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-white italic tracking-tighter max-w-xl line-clamp-2 px-4 uppercase">
+            <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-white italic tracking-tighter max-w-xl line-clamp-2 px-4 uppercase">
                 QUAL É A MÚSICA?
             </h2>
         </div>
@@ -281,8 +281,8 @@ export default function BlindTestGame() {
             >
               <div className="flex justify-between items-start w-full">
                 <div className="flex-1 min-w-0 pr-2">
-                   <h3 className="text-base sm:text-lg font-black text-white truncate">{option.title}</h3>
-                   <p className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mt-0.5 sm:mt-1 truncate">{option.channel}</p>
+                   <h3 className="text-sm sm:text-lg font-black text-white truncate">{option.title}</h3>
+                   <p className="text-[9px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mt-0.5 sm:mt-1 truncate">{option.channel}</p>
                 </div>
                 {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-spotify-green flex-shrink-0" />}
                 {isAnswered && isSelected && !isCorrectOption && <HiX className="h-5 w-5 sm:h-6 sm:h-6 text-red-500 flex-shrink-0" />}

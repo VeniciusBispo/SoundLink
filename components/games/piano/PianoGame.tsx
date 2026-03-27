@@ -107,13 +107,16 @@ export default function PianoGame() {
   ]
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-4 sm:p-8 relative overflow-hidden select-none min-h-[400px]">
-      <div className="text-center mb-6 sm:mb-10">
-        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 tracking-tight">Piano Mágico 🎹</h2>
-        <p className="text-xs sm:text-sm text-spotify-text px-4">Use o mouse, toque na tela ou as teclas <span className="text-spotify-green font-mono">A S D F G H J K</span></p>
+    <div className="flex-1 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-spotify-card to-[#121212] border border-white/5 p-3 sm:p-8 relative overflow-hidden select-none min-h-[350px]">
+      <div className="text-center mb-4 sm:mb-10">
+        <h2 className="text-lg sm:text-3xl font-bold text-white mb-1 tracking-tight">Piano Mágico 🎹</h2>
+        <p className="text-[10px] sm:text-sm text-spotify-text px-4">
+          <span className="md:hidden">Toque na tela para tocar</span>
+          <span className="hidden md:inline">Use o mouse, toque na tela ou as teclas <span className="text-spotify-green font-mono">A S D F G H J K</span></span>
+        </p>
       </div>
       
-      <div className="relative flex h-48 sm:h-72 w-full max-w-4xl rounded-xl bg-[#080808] p-2 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-4 sm:border-t-8 border-[#333]">
+      <div className="relative flex h-56 sm:h-72 w-full max-w-4xl rounded-xl bg-[#080808] p-2 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-t-4 sm:border-t-8 border-[#333]">
         <div className="flex w-full gap-[1px] sm:gap-[2px] h-full relative">
           
           {/* White Keys */}
@@ -156,18 +159,18 @@ export default function PianoGame() {
         </div>
       </div>
       
-      <div className="mt-8 sm:mt-12 flex flex-wrap justify-center gap-4 sm:gap-8 text-[10px] sm:text-xs text-spotify-text bg-black/20 px-4 sm:px-6 py-2 sm:py-3 rounded-full border border-white/5 mx-4 text-center">
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-spotify-green animate-pulse" />
+      <div className="mt-8 sm:mt-12 flex flex-wrap justify-center gap-4 sm:gap-8 text-[9px] sm:text-xs text-spotify-text bg-black/20 px-3 sm:px-6 py-2 sm:py-3 rounded-full border border-white/5 mx-2 text-center">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="h-1 w-1 sm:h-2 sm:w-2 rounded-full bg-spotify-green animate-pulse" />
           <span>Áudio Estéreo</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-blue-500" />
+        <div className="hidden xs:flex items-center gap-1.5 sm:gap-2">
+          <div className="h-1 w-1 sm:h-2 sm:w-2 rounded-full bg-blue-500" />
           <span className="hidden sm:inline">Suporte a Teclado</span>
           <span className="sm:hidden">Teclado</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-yellow-500" />
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="h-1 w-1 sm:h-2 sm:w-2 rounded-full bg-yellow-500" />
           <span>Polifonia</span>
         </div>
       </div>

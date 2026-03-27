@@ -12,7 +12,7 @@ import {
 } from '@react-three/drei'
 import * as THREE from 'three'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HiPlay, HiPause, HiRefresh, HiStar, HiClock, HiMusicNote, HiVolumeUp, HiUser, HiFire, HiTrash, HiUserGroup } from 'react-icons/hi'
+import { HiPlay, HiPause, HiRefresh, HiStar, HiClock, HiMusicNote, HiVolumeUp, HiUser, HiFire, HiTrash, HiUserGroup, HiChevronRight } from 'react-icons/hi'
 // Removed HiTrophy
 import { useGameStore } from '@/store/gameStore'
 // Button import removed
@@ -275,12 +275,12 @@ export default function SnakeGame() {
   }
 
   return (
-    <div className="w-full h-screen relative bg-black overflow-hidden flex flex-col">
+    <div className="w-full h-full relative bg-black overflow-hidden flex flex-col">
       {/* HUD OVERLAY PREMIUM */}
-      <div className="absolute top-0 left-0 w-full p-4 sm:p-12 z-10 flex justify-between items-start pointer-events-none">
-        <div className="bg-black/40 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 flex items-center gap-4 sm:gap-8 pointer-events-auto shadow-2xl">
+      <div className="absolute top-0 left-0 w-full p-3 sm:p-12 z-20 flex justify-between items-start pointer-events-none">
+        <div className="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-xl sm:rounded-3xl p-3 sm:p-8 flex items-center gap-3 sm:gap-8 pointer-events-auto shadow-2xl">
           <div className="relative">
-            <HiStar className="h-6 w-6 sm:h-10 sm:h-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
+            <HiStar className="h-5 w-5 sm:h-10 sm:h-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
             <motion.div
               animate={{ scale: [1, 2], opacity: [0.6, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
@@ -288,17 +288,18 @@ export default function SnakeGame() {
             />
           </div>
           <div>
-            <div className="text-[10px] sm:text-[12px] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase text-white/30 mb-1 sm:mb-2">Pontos Musicais</div>
-            <div className="text-2xl sm:text-5xl font-black text-white leading-none tracking-tighter italic">
+            <div className="text-[8px] sm:text-[12px] font-black tracking-[0.2em] sm:tracking-[0.4em] uppercase text-white/30">Pontos</div>
+            <div className="text-xl sm:text-5xl font-black text-white leading-none tracking-tighter italic">
               {currentScore.toLocaleString()}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col items-end gap-3 sm:gap-6 pointer-events-auto">
-          <div className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-3 sm:py-5 flex items-center gap-4 sm:gap-6 shadow-xl">
-            <HiVolumeUp className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green animate-pulse" />
-            <div className="h-2 w-24 sm:h-2.5 sm:w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
+        <div className="flex flex-col items-end gap-2 sm:gap-6 pointer-events-auto">
+          {/* Volume Indicator - Hidden on very small mobile if needed, but keeping for now */}
+          <div className="hidden xs:flex bg-black/40 backdrop-blur-2xl border border-white/10 rounded-lg sm:rounded-2xl px-3 sm:px-8 py-2 sm:py-5 items-center gap-3 sm:gap-6 shadow-xl">
+            <HiVolumeUp className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green animate-pulse" />
+            <div className="h-1.5 w-16 sm:h-2.5 sm:w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
               <motion.div
                 className="h-full bg-gradient-to-r from-spotify-green to-emerald-400 shadow-[0_0_20px_#00FF88]"
                 animate={{ width: `${Math.min(100, (score / 30) * 100)}%` }}
@@ -311,49 +312,56 @@ export default function SnakeGame() {
               setIsPaused(p => !p)
               setStatus(prev => (prev === 'playing' ? 'paused' : 'playing'))
             }}
-            className="bg-black/40 backdrop-blur-2xl border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-3 sm:py-5 flex items-center gap-4 sm:gap-6 shadow-xl transition-colors hover:bg-white/10"
+            className="bg-black/60 backdrop-blur-2xl border border-white/10 rounded-lg sm:rounded-2xl px-3 sm:px-8 py-2 sm:py-5 flex items-center gap-2 sm:gap-6 shadow-xl transition-colors hover:bg-white/10"
           >
             {isPaused ? (
-              <HiPlay className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green" />
+              <HiPlay className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green" />
             ) : (
-              <HiPause className="h-6 w-6 sm:h-8 sm:h-8 text-spotify-green" />
+              <HiPause className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green" />
             )}
-            <span className="text-white text-sm sm:text-lg font-bold tracking-wider uppercase">
-              {isPaused ? 'Continuar' : 'Pausar'}
+            <span className="text-white text-[10px] sm:text-lg font-bold tracking-wider uppercase">
+              {isPaused ? 'Resumir' : 'Pausar'}
             </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile Controls */}
-      <div className="absolute bottom-6 right-6 z-20 flex flex-col gap-2 md:hidden pointer-events-auto">
-        <div className="flex justify-center">
+      {/* Mobile Controls D-PAD */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 md:hidden pointer-events-none select-none">
+        <div className="grid grid-cols-3 grid-rows-3 gap-2 pointer-events-auto">
+          <div />
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.y !== 1) setNextDirection({ x: 0, y: -1 }) }}
-            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
           >
-            <HiStar className="h-8 w-8 -rotate-90" />
+            <HiChevronRight className="h-8 w-8 -rotate-90" />
           </button>
-        </div>
-        <div className="flex gap-2">
+          <div />
+          
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.x !== 1) setNextDirection({ x: -1, y: 0 }) }}
-            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
           >
-            <HiStar className="h-8 w-8 rotate-180" />
+            <HiChevronRight className="h-8 w-8 rotate-180" />
           </button>
-          <button 
-            onPointerDown={(e) => { e.preventDefault(); if (direction.y !== -1) setNextDirection({ x: 0, y: 1 }) }}
-            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
-          >
-            <HiStar className="h-8 w-8 rotate-90" />
-          </button>
+          <div className="w-14 h-14 flex items-center justify-center">
+            <div className="w-2 h-2 bg-white/20 rounded-full" />
+          </div>
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.x !== -1) setNextDirection({ x: 1, y: 0 }) }}
-            className="w-16 h-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-colors"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
           >
-            <HiStar className="h-8 w-8" />
+            <HiChevronRight className="h-8 w-8" />
           </button>
+
+          <div />
+          <button 
+            onPointerDown={(e) => { e.preventDefault(); if (direction.y !== -1) setNextDirection({ x: 0, y: 1 }) }}
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
+          >
+            <HiChevronRight className="h-8 w-8 rotate-90" />
+          </button>
+          <div />
         </div>
       </div>
 

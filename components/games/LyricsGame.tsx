@@ -178,47 +178,47 @@ export default function LyricsGame() {
   const parts = currentQuestion.text.split('___')
 
   return (
-    <div className="max-w-4xl mx-auto py-4 sm:py-8 px-2 sm:px-4">
+    <div className="max-w-4xl mx-auto py-2 sm:py-8 px-2 sm:px-4 flex flex-col h-full overflow-y-auto">
       {/* Top Ad */}
       <div className="hidden sm:block">
         <AdZone slotId="" format="468x60" className="opacity-40 hover:opacity-100 transition-opacity mb-8" />
       </div>
       {/* HUD */}
-      <div className="flex justify-between items-center mb-6 sm:mb-12 px-2">
-        <div className="bg-white/5 rounded-full px-4 sm:px-6 py-1.5 sm:py-2 border border-white/10 flex items-center gap-3 sm:gap-4 font-mono">
+      <div className="flex justify-between items-center mb-4 sm:mb-12 px-2">
+        <div className="bg-white/5 rounded-full px-3 sm:px-6 py-1 sm:py-2 border border-white/10 flex items-center gap-2 sm:gap-4 font-mono">
             <div className="flex items-center gap-1.5 sm:gap-2">
-                <HiStar className="h-4 w-4 sm:h-5 sm:h-5 text-yellow-500" />
-                <span className="text-base sm:text-xl font-black text-white">{currentScore.toLocaleString()}</span>
+                <HiStar className="h-3 w-3 sm:h-5 sm:h-5 text-yellow-500" />
+                <span className="text-sm sm:text-xl font-black text-white">{currentScore.toLocaleString()}</span>
             </div>
             <div className="h-3 w-px bg-white/10" />
-            <span className="text-[10px] sm:text-xs font-bold text-white/50 uppercase tracking-widest whitespace-nowrap">
+            <span className="text-[9px] sm:text-xs font-bold text-white/50 uppercase tracking-widest whitespace-nowrap">
                 {round}/{totalRounds}
             </span>
         </div>
         
-        <div className="flex items-center gap-2 text-spotify-green max-w-[150px] sm:max-w-none">
-            <HiMusicNote className="h-4 w-4 sm:h-5 sm:h-5 flex-shrink-0" />
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest truncate">
+        <div className="flex items-center gap-1.5 text-spotify-green max-w-[120px] sm:max-w-none">
+            <HiMusicNote className="h-3 w-3 sm:h-5 sm:h-5 flex-shrink-0" />
+            <span className="text-[9px] sm:text-xs font-black uppercase tracking-widest truncate">
                 {currentQuestion.song}
             </span>
         </div>
       </div>
 
-      <div className="relative mb-12 sm:mb-20">
-        <div className="p-8 sm:p-16 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[32px] sm:rounded-[48px] border border-white/10 shadow-3xl text-center">
-            <h2 className="text-xl sm:text-4xl md:text-5xl font-medium text-white italic leading-relaxed tracking-tight">
+      <div className="relative mb-6 sm:mb-20">
+        <div className="p-6 sm:p-16 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[24px] sm:rounded-[48px] border border-white/10 shadow-3xl text-center">
+            <h2 className="text-lg sm:text-4xl md:text-5xl font-medium text-white italic leading-relaxed tracking-tight">
                 "{parts[0]}
                 <span className={cn(
                     "relative inline-block mx-1 sm:mx-2 px-2 sm:px-4 py-0 sm:py-1 rounded-lg sm:rounded-xl transition-all duration-300",
                     isAnswered 
                         ? (isCorrect ? "bg-spotify-green text-black" : "bg-red-500 text-white")
-                        : "bg-white/10 text-white/20 border-b-2 sm:border-b-4 border-white/5 min-w-[60px] sm:min-w-[120px]"
+                        : "bg-white/10 text-white/20 border-b-2 sm:border-b-4 border-white/5 min-w-[50px] sm:min-w-[120px]"
                 )}>
                     {isAnswered ? selectedOption : "____"}
                 </span>
                 {parts[1]}"
             </h2>
-            <p className="mt-4 sm:mt-8 text-spotify-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[8px] sm:text-[10px] opacity-40">
+            <p className="mt-2 sm:mt-8 text-spotify-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[7px] sm:text-[10px] opacity-40">
                 {currentQuestion.artist}
             </p>
         </div>
@@ -245,7 +245,7 @@ export default function LyricsGame() {
                disabled={isAnswered}
                onClick={() => handleAnswer(option)}
                className={cn(
-                 "flex items-center justify-between p-5 sm:p-7 rounded-2xl sm:rounded-[32px] border-2 text-left transition-all duration-300",
+                 "flex items-center justify-between p-4 sm:p-7 rounded-2xl sm:rounded-[32px] border-2 text-left transition-all duration-300",
                  stateClass
                )}
             >

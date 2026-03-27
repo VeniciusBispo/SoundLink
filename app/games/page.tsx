@@ -52,7 +52,19 @@ export default function GamesIndexPage() {
         <p className="text-spotify-text">Divirta-se enquanto ouve suas músicas favoritas.</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Mobile-only message */}
+      <div className="md:hidden flex flex-col items-center justify-center py-20 px-8 text-center bg-spotify-card rounded-3xl border border-white/5">
+        <div className="h-20 w-20 bg-spotify-green/10 rounded-full flex items-center justify-center mb-6">
+          <HiPuzzle className="h-10 w-10 text-spotify-green" />
+        </div>
+        <h2 className="text-2xl font-black text-white mb-4 italic uppercase">Experiência Desktop</h2>
+        <p className="text-spotify-text font-medium leading-relaxed">
+          Nossos mini jogos foram otimizados para uma experiência imersiva em telas maiores. 
+          Acesse pelo seu computador para começar a jogar!
+        </p>
+      </div>
+
+      <div className="hidden md:grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {ALL_GAMES.map((game) => (
           <Link
             key={game.id}
