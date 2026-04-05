@@ -207,7 +207,7 @@ export default function LyricsGame() {
       <div className="relative mb-6 sm:mb-20">
         <div className="p-6 sm:p-16 bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[24px] sm:rounded-[48px] border border-white/10 shadow-3xl text-center">
             <h2 className="text-lg sm:text-4xl md:text-5xl font-medium text-white italic leading-relaxed tracking-tight">
-                "{parts[0]}
+                &quot;{parts[0]}
                 <span className={cn(
                     "relative inline-block mx-1 sm:mx-2 px-2 sm:px-4 py-0 sm:py-1 rounded-lg sm:rounded-xl transition-all duration-300",
                     isAnswered 
@@ -216,7 +216,7 @@ export default function LyricsGame() {
                 )}>
                     {isAnswered ? selectedOption : "____"}
                 </span>
-                {parts[1]}"
+                {parts[1]}&quot;
             </h2>
             <p className="mt-2 sm:mt-8 text-brand-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[7px] sm:text-[10px] opacity-40">
                 {currentQuestion.artist}

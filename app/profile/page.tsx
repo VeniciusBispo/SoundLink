@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import MainLayout from '@/components/layout/MainLayout'
 import PlaylistGrid from '@/components/playlist/PlaylistGrid'
 import Button from '@/components/ui/Button'
+import Image from 'next/image'
 import { useMyPlaylists } from '@/hooks/usePlaylist'
 import { useUIStore } from '@/store/uiStore'
 import { getProfile, updateProfile } from '@/services/authService'
@@ -141,7 +142,7 @@ export default function ProfilePage() {
       {/* Banner estilo Discord */}
       <div className="relative w-full bg-gradient-to-br from-indigo-900 to-purple-800">
         {banner && (
-          <img src={banner} alt="Banner" className="absolute inset-0 h-full w-full object-cover" />
+          <Image src={banner} alt="Banner" fill className="object-cover" priority />
         )}
         <div className="relative px-4 pb-6 pt-16 sm:px-6 md:pt-20">
           <div className="mx-auto max-w-5xl">
@@ -149,7 +150,7 @@ export default function ProfilePage() {
               <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-black bg-brand-card shadow-2xl sm:h-32 sm:w-32 md:h-40 md:w-40">
                 {avatar ? (
                   avatar.startsWith('data:image') ? (
-                    <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
+                    <Image src={avatar} alt={profile?.username || 'Avatar'} fill className="object-cover" />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
                       <span className="text-5xl sm:text-6xl">{avatar}</span>
@@ -257,7 +258,11 @@ export default function ProfilePage() {
                 }}
                 className="block w-full text-sm text-brand-text file:mr-3 file:rounded-lg file:border-0 file:bg-brand-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-card"
               />
-              {banner && <img src={banner} alt="Banner preview" className="mt-2 h-24 w-full rounded-xl object-cover ring-1 ring-white/10" />}
+              {banner && (
+                <div className="relative mt-2 h-24 w-full overflow-hidden rounded-xl ring-1 ring-white/10">
+                  <Image src={banner} alt="Banner preview" fill className="object-cover" />
+                </div>
+              )}
             </div>
             <div className="flex justify-end gap-3 pt-2">
               <Button type="submit" isLoading={savingProfile} className="w-full sm:w-auto">Salvar</Button>

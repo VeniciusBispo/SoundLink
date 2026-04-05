@@ -23,8 +23,16 @@ jest.mock('react-icons/hi', () => ({
 }))
 
 // Mock sub-components
-jest.mock('@/components/games/GameLeaderboard', () => () => <div data-testid="leaderboard" />)
-jest.mock('@/components/ads/AdZone', () => () => <div data-testid="ad-zone" />)
+jest.mock('@/components/games/GameLeaderboard', () => {
+  const MockLeaderboard = () => <div data-testid="leaderboard" />
+  MockLeaderboard.displayName = 'MockLeaderboard'
+  return MockLeaderboard
+})
+jest.mock('@/components/ads/AdZone', () => {
+  const MockAdZone = () => <div data-testid="ad-zone" />
+  MockAdZone.displayName = 'MockAdZone'
+  return MockAdZone
+})
 
 describe('PianoTiles Component', () => {
   it('renders the piano game title', () => {

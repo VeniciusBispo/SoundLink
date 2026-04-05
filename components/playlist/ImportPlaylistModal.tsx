@@ -193,7 +193,7 @@ export default function ImportPlaylistModal({
               <p className="text-xs text-red-400 font-medium">{fetchError}</p>
               <ul className="mt-2 text-[10px] text-red-400/70 list-disc list-inside space-y-1">
                 <li>Certifique-se que a playlist é <strong>Pública</strong> ou <strong>Não Listada</strong>.</li>
-                <li>Links de "Mix" ou "Rádio" não são suportados.</li>
+                <li>Links de &quot;Mix&quot; ou &quot;Rádio&quot; não são suportados.</li>
                 <li>Tente copiar o link diretamente da página da playlist.</li>
               </ul>
             </div>

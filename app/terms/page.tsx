@@ -64,7 +64,7 @@ export default function TermsPage() {
         <section className="mb-8">
           <h2 className="mb-3 text-xl font-semibold text-white">6. Isenção de Garantias</h2>
           <p className="leading-relaxed">
-            O SoundLink é fornecido "como está" e "conforme disponível". Não garantimos que o serviço será ininterrupto, livre de erros ou que o conteúdo específico do YouTube estará sempre disponível para reprodução em sua região.
+            O SoundLink é fornecido &quot;como está&quot; e &quot;conforme disponível&quot;. Não garantimos que o serviço será ininterrupto, livre de erros ou que o conteúdo específico do YouTube estará sempre disponível para reprodução em sua região.
           </p>
         </section>
 

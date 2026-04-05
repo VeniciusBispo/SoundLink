@@ -1,4 +1,5 @@
 import React, { useMemo, useState, ChangeEvent, useRef } from 'react';
+import Image from 'next/image';
 import { compressImage } from '@/lib/image-utils';
 
 // Lista expandida de emojis populares e expressivos
@@ -84,7 +85,9 @@ function AvatarPicker({ value, onChange }: AvatarPickerProps) {
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-sm font-semibold text-white">Selecionado:</span>
           {value.startsWith('data:image') ? (
-            <img src={value} alt="avatar" className="h-12 w-12 rounded-full object-cover" />
+            <div className="relative h-12 w-12 overflow-hidden rounded-full">
+              <Image src={value} alt="avatar" fill className="object-cover" />
+            </div>
           ) : (
             <span className="text-3xl">{value}</span>
           )}
@@ -145,6 +148,7 @@ function AvatarPicker({ value, onChange }: AvatarPickerProps) {
         />
         {imageUrl && (
           <div className="mt-2 flex flex-col items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               ref={imgRef}
               src={imageUrl}

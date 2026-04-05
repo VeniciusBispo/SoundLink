@@ -48,7 +48,7 @@ export default function SobrePage() {
           </section>
 
           <div className="my-10 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-card p-8 border border-white/5">
-            <h3 className="mb-2 text-xl font-bold text-white italic">"A música não tem fronteiras, e agora o seu player também não."</h3>
+            <h3 className="mb-2 text-xl font-bold text-white italic">&quot;A música não tem fronteiras, e agora o seu player também não.&quot;</h3>
             <p className="text-sm opacity-80">— Equipe SoundLink</p>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { HiUser, HiLogout } from 'react-icons/hi'
 import SearchBar from '@/components/ui/SearchBar'
 import Logo from '@/components/ui/Logo'
@@ -26,7 +27,9 @@ export default function Header() {
               >
                 {session.user.avatar ? (
                   session.user.avatar.startsWith('data:image') ? (
-                    <img src={session.user.avatar} alt={session.user.username} className="h-6 w-6 rounded-full object-cover" />
+                    <div className="relative h-6 w-6 overflow-hidden rounded-full">
+                      <Image src={session.user.avatar} alt={session.user.username || 'Avatar'} fill className="object-cover" />
+                    </div>
                   ) : (
                     <span className="text-2xl">{session.user.avatar}</span>
                   )
@@ -69,7 +72,9 @@ export default function Header() {
             >
               {session.user.avatar ? (
                 session.user.avatar.startsWith('data:image') ? (
-                  <img src={session.user.avatar} alt={session.user.username} className="h-7 w-7 rounded-full object-cover" />
+                  <div className="relative h-7 w-7 overflow-hidden rounded-full font-sans">
+                    <Image src={session.user.avatar} alt={session.user.username || 'Avatar'} fill className="object-cover" />
+                  </div>
                 ) : (
                   <span className="text-2xl">{session.user.avatar}</span>
                 )

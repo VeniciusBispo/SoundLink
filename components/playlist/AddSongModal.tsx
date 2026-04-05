@@ -240,7 +240,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
         {/* Empty State for Search */}
         {!isLinkMode && inputVal.trim() && !isSearching && searchResults.length === 0 && !searchError && (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-brand-text">Nenhum resultado encontrado para "{inputVal}"</p>
+            <p className="text-sm font-medium text-brand-text">Nenhum resultado encontrado para &quot;{inputVal}&quot;</p>
           </div>
         )}
 

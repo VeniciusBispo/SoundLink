@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { HiInformationCircle, HiChevronDown, HiChevronUp } from 'react-icons/hi'
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 interface YouTubeLinkHelperProps {
   mode: 'song' | 'playlist'
@@ -59,13 +60,15 @@ export default function YouTubeLinkHelper({ mode }: YouTubeLinkHelperProps) {
                 </div>
 
                 {/* GIF Container */}
-                <div className="relative w-full overflow-hidden rounded-lg border border-white/5 bg-black/40">
-                  <img
+                <div className="relative w-full overflow-hidden rounded-lg border border-white/5 bg-black/40 aspect-video">
+                  <Image
                     src={isSong
                       ? "/images/tutorial-song.gif"
                       : "/images/tutorial-playlist.gif"}
                     alt={`Tutorial de como copiar link de ${isSong ? 'música' : 'playlist'}`}
-                    className="w-full h-auto object-contain opacity-90"
+                    fill
+                    className="object-contain opacity-90"
+                    unoptimized // Needed for GIFs to animate in some Next.js versions/configs
                   />
 
                   {/* Overlay text for development context */}

@@ -204,7 +204,7 @@ export default function PianoTiles() {
     if (!gameOver && !isVictory) {
       requestRef.current = requestAnimationFrame(update)
     }
-  }, [isPlaying, gameOver, isVictory, stopGame, selectedSong, currentPhase])
+  }, [isPlaying, gameOver, isVictory, stopGame, selectedSong, currentPhase, saveScore])
 
   useEffect(() => {
     if (isPlaying && !gameOver && !isVictory) {
