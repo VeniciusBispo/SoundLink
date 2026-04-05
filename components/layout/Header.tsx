@@ -22,7 +22,7 @@ export default function Header() {
             <>
               <Link
                 href="/profile"
-                className="flex items-center gap-1.5 rounded-full bg-spotify-card px-2.5 py-1.5 text-xs font-semibold text-white"
+                className="flex items-center gap-1.5 rounded-full bg-brand-card px-2.5 py-1.5 text-xs font-semibold text-white"
               >
                 {session.user.avatar ? (
                   session.user.avatar.startsWith('data:image') ? (
@@ -37,7 +37,7 @@ export default function Header() {
               </Link>
               <button
                 onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/login` })}
-                className="rounded-full p-2 text-spotify-text hover:text-white"
+                className="rounded-full p-2 text-brand-text hover:text-white"
                 title="Sair"
               >
                 <HiLogout className="h-4 w-4" />
@@ -46,7 +46,7 @@ export default function Header() {
           ) : (
             <Link
               href="/login"
-              className="rounded-full bg-spotify-green px-4 py-1.5 text-xs font-bold text-black"
+              className="rounded-full bg-brand-primary px-4 py-1.5 text-xs font-bold text-black"
             >
               Entrar
             </Link>
@@ -65,7 +65,7 @@ export default function Header() {
           <>
             <Link
               href="/profile"
-              className="flex items-center gap-2 rounded-full bg-spotify-card px-3 py-1.5 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
+              className="flex items-center gap-2 rounded-full bg-brand-card px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-hover transition-colors"
             >
               {session.user.avatar ? (
                 session.user.avatar.startsWith('data:image') ? (
@@ -80,7 +80,7 @@ export default function Header() {
             </Link>
             <button
               onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/login` })}
-              className="rounded-full p-2 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
+              className="rounded-full p-2 text-brand-text hover:bg-brand-hover hover:text-white transition-colors"
               title="Sair"
             >
               <HiLogout className="h-5 w-5" />
@@ -90,7 +90,7 @@ export default function Header() {
           <>
             <Link
               href="/login"
-              className="text-sm font-semibold text-spotify-text hover:text-white transition-colors"
+              className="text-sm font-semibold text-brand-text hover:text-white transition-colors"
             >
               Entrar
             </Link>

@@ -24,7 +24,7 @@ export default function DeleteConfirmModal({
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 md:items-center"
       onClick={(e) => e.target === e.currentTarget && !isDeleting && onClose()}
     >
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card p-5 shadow-2xl">
+      <div className="w-full max-w-sm rounded-2xl bg-brand-card p-5 shadow-2xl">
         {/* Header */}
         <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -36,7 +36,7 @@ export default function DeleteConfirmModal({
           {!isDeleting && (
             <button
               onClick={onClose}
-              className="rounded-full p-1 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
+              className="rounded-full p-1 text-brand-text hover:bg-brand-hover hover:text-white transition-colors"
             >
               <HiX className="h-5 w-5" />
             </button>
@@ -44,13 +44,13 @@ export default function DeleteConfirmModal({
         </div>
 
         {/* Body */}
-        <p className="mb-1 text-sm text-spotify-text">
+        <p className="mb-1 text-sm text-brand-text">
           Tem certeza que deseja excluir a playlist
         </p>
         <p className="mb-5 truncate text-sm font-semibold text-white">
           &ldquo;{playlistName}&rdquo;?
         </p>
-        <p className="mb-5 text-xs text-spotify-text">
+        <p className="mb-5 text-xs text-brand-text">
           Esta ação não pode ser desfeita. Todas as músicas serão removidas da playlist.
         </p>
 
@@ -59,7 +59,7 @@ export default function DeleteConfirmModal({
           <button
             onClick={onClose}
             disabled={isDeleting}
-            className="flex-1 rounded-xl border border-spotify-hover bg-transparent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-spotify-hover disabled:opacity-50"
+            className="flex-1 rounded-xl border border-brand-hover bg-transparent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
           >
             Cancelar
           </button>

@@ -29,7 +29,7 @@ function Carousel({ children }: { children: React.ReactNode }) {
     <div className="relative group/carousel">
       <button
         onClick={() => scroll('left')}
-        className="absolute -left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-spotify-card p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover/carousel:opacity-100 hover:bg-spotify-hover"
+        className="absolute -left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-brand-card p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover/carousel:opacity-100 hover:bg-brand-hover"
       >
         <HiChevronLeft className="h-5 w-5" />
       </button>
@@ -44,7 +44,7 @@ function Carousel({ children }: { children: React.ReactNode }) {
 
       <button
         onClick={() => scroll('right')}
-        className="absolute -right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-spotify-card p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover/carousel:opacity-100 hover:bg-spotify-hover"
+        className="absolute -right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-brand-card p-1.5 text-white opacity-0 shadow-lg transition-opacity group-hover/carousel:opacity-100 hover:bg-brand-hover"
       >
         <HiChevronRight className="h-5 w-5" />
       </button>
@@ -62,25 +62,25 @@ function RecentCard({ item }: { item: ReturnType<typeof useRecentPlaylists>['rec
   return (
     <Link
       href={`/playlist/${item.id}`}
-      className="flex flex-shrink-0 items-center gap-3 rounded-xl bg-spotify-card px-3 py-2.5 transition-colors hover:bg-spotify-hover"
+      className="flex flex-shrink-0 items-center gap-3 rounded-xl bg-brand-card px-3 py-2.5 transition-colors hover:bg-brand-hover"
       style={{ width: 220, scrollSnapAlign: 'start' }}
     >
       <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
         {item.coverImage && isLikelyImageSrc(item.coverImage) ? (
           <Image src={item.coverImage} alt={item.name} fill className="object-cover" sizes="48px" />
         ) : item.coverImage ? (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-primary/20 to-brand-card">
             <span className="text-2xl">{item.coverImage}</span>
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
-            <HiMusicNote className="h-5 w-5 text-spotify-green/60" />
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-primary/20 to-brand-card">
+            <HiMusicNote className="h-5 w-5 text-brand-primary/60" />
           </div>
         )}
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-white">{item.name}</p>
-        <p className="truncate text-xs text-spotify-text">{item.songCount} músicas</p>
+        <p className="truncate text-xs text-brand-text">{item.songCount} músicas</p>
       </div>
     </Link>
   )
@@ -92,21 +92,21 @@ function EmptyStateCTA({ onCreateOpen }: { onCreateOpen: () => void }) {
   const { data: session } = useSession()
 
   return (
-    <div className="my-6 flex flex-col items-center justify-center gap-6 rounded-2xl bg-gradient-to-br from-purple-900/30 to-spotify-card p-8 text-center sm:flex-row sm:text-left">
-      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-spotify-green/10 text-spotify-green">
+    <div className="my-6 flex flex-col items-center justify-center gap-6 rounded-2xl bg-gradient-to-br from-brand-primary/20 to-brand-card p-8 text-center sm:flex-row sm:text-left">
+      <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-brand-primary/10 text-brand-primary">
         <HiMusicNote className="h-8 w-8" />
       </div>
       <div className="min-w-0 flex-1">
         {session ? (
           <>
             <h3 className="text-lg font-bold text-white">Sua biblioteca está vazia</h3>
-            <p className="mt-1 text-sm text-spotify-text">
+            <p className="mt-1 text-sm text-brand-text">
               Crie sua primeira playlist ou explore as playlists públicas da comunidade.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
               <button
                 onClick={onCreateOpen}
-                className="rounded-full bg-spotify-green px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                className="rounded-full bg-brand-primary px-5 py-2 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95"
               >
                 Criar playlist
               </button>
@@ -121,13 +121,13 @@ function EmptyStateCTA({ onCreateOpen }: { onCreateOpen: () => void }) {
         ) : (
           <>
             <h3 className="text-lg font-bold text-white">Descubra o SoundLink</h3>
-            <p className="mt-1 text-sm text-spotify-text">
+            <p className="mt-1 text-sm text-brand-text">
               Crie uma conta para salvar playlists ou explore as playlists públicas da comunidade.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-3 sm:justify-start">
               <Link
                 href="/register"
-                className="rounded-full bg-spotify-green px-5 py-2 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                className="rounded-full bg-brand-primary px-5 py-2 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95"
               >
                 Criar conta
               </Link>
@@ -152,7 +152,7 @@ function SectionHeader({ title, href }: { title: string; href?: string }) {
     <div className="mb-4 flex items-center justify-between">
       <h2 className="text-xl font-bold text-white">{title}</h2>
       {href && (
-        <Link href={href} className="text-sm font-medium text-spotify-text hover:text-white transition-colors">
+        <Link href={href} className="text-sm font-medium text-brand-text hover:text-white transition-colors">
           Ver tudo
         </Link>
       )}
@@ -253,6 +253,74 @@ export default function HomeClient({
       <div className="hidden md:block">
         <MiniGamesSection />
       </div>
+
+      {/* ── Seção de Conteúdo Estratégico para SEO e AdSense ── */}
+      <section className="mt-16 border-t border-white/5 pt-16">
+        <div className="mx-auto max-w-4xl space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">SoundLink: O Seu Hub Musical Completo</h2>
+            <p className="text-lg text-brand-text leading-relaxed">
+              Descubra uma nova forma de interagir com suas músicas favoritas do YouTube. O SoundLink não é apenas um player; 
+              é uma ferramenta poderosa de organização e descoberta musical projetada para entusiastas que buscam 
+              liberdade e personalização.
+            </p>
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2">
+            <div className="space-y-3">
+              <h3 className="text-xl font-bold text-white uppercase tracking-wider text-brand-primary">Playlists Sem Limites</h3>
+              <p className="text-sm text-brand-text leading-relaxed">
+                Nossa plataforma permite que você crie bibliotecas musicais infinitas utilizando a API oficial do YouTube. 
+                Seja para estudos, treinos ou festas, você pode catalogar suas faixas favoritas e acessá-las com um clique, 
+                sem a necessidade de alternar entre abas ou aplicativos complexos.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-xl font-bold text-white uppercase tracking-wider text-brand-secondary">Experiência PWA Premium</h3>
+              <p className="text-sm text-brand-text leading-relaxed">
+                Graças à tecnologia de Progressive Web App, o SoundLink se comporta como um aplicativo nativo em seu desktop 
+                ou dispositivo móvel. Desfrute de carregamentos instantâneos, notificações inteligentes e uma interface 
+                lisa e responsiva que se adapta perfeitamente a qualquer tamanho de tela.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-xl font-bold text-white uppercase tracking-wider text-brand-primary">Comunidade e Descoberta</h3>
+              <p className="text-sm text-brand-text leading-relaxed">
+                Explore o que outros usuários estão ouvindo. Nossa aba de exploração destaca as playlists mais populares 
+                e as novas adições da comunidade, permitindo que você encontre novas sonoridades e inspirações para 
+                suas próprias coleções.
+              </p>
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-xl font-bold text-white uppercase tracking-wider text-brand-primary">Segurança e Privacidade</h3>
+              <p className="text-sm text-brand-text leading-relaxed">
+                Seus dados estão protegidos conosco. Oferecemos opções granulares de privacidade para suas playlists, 
+                garantindo que suas coleções pessoais permaneçam exatamente assim: pessoais. Além disso, utilizamos 
+                os mais altos padrões de criptografia para proteger sua conta.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 p-8 text-center border border-white/10 shadow-2xl">
+            <h3 className="text-2xl font-bold text-white mb-4">Pronto para transformar sua rotina musical?</h3>
+            <p className="mb-8 text-brand-text">
+              Junte-se a milhares de usuários que já organizaram mais de 50.000 músicas em nossa plataforma. 
+              É grátis, rápido e foi feito pensando em você.
+            </p>
+            <div className="flex flex-wrap justify-center gap-6">
+              <Link href="/sobre" className="text-sm font-bold text-brand-primary hover:underline">
+                Saiba mais sobre nós
+              </Link>
+              <Link href="/como-funciona" className="text-sm font-bold text-brand-primary hover:underline">
+                Veja como funciona 
+              </Link>
+              <Link href="/feedback" className="text-sm font-bold text-brand-secondary hover:underline">
+                Deixe seu feedback
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
@@ -299,7 +367,7 @@ function MiniGamesSection() {
     <section>
       <div className="mb-4 flex items-center gap-2">
         <h2 className="text-xl font-bold text-white">Mini Jogos 🎮</h2>
-        <span className="rounded-full bg-spotify-green/20 px-2 py-0.5 text-xs font-bold text-spotify-green">
+        <span className="rounded-full bg-brand-primary/20 px-2 py-0.5 text-xs font-bold text-brand-primary">
           Novidade
         </span>
       </div>
@@ -319,7 +387,7 @@ function MiniGamesSection() {
                   {game.badge}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-spotify-text leading-relaxed">{game.description}</p>
+              <p className="mt-1 text-xs text-brand-text leading-relaxed">{game.description}</p>
             </div>
             {/* Decorative blur circle */}
             <div className="absolute -bottom-6 -right-6 h-20 w-20 rounded-full bg-white/5 blur-xl" />

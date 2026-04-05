@@ -9,7 +9,7 @@ interface PlaylistGridProps {
 export default function PlaylistGrid({ playlists, title }: PlaylistGridProps) {
   if (!playlists.length) {
     return (
-      <div className="py-8 text-center text-spotify-text">
+      <div className="py-8 text-center text-brand-text">
         <p>Nenhuma playlist encontrada.</p>
       </div>
     )

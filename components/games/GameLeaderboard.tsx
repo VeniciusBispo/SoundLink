@@ -66,9 +66,9 @@ export default function GameLeaderboard({ gameId, songId, onReset }: Leaderboard
 
   return (
     <div className="w-full max-w-2xl mx-auto bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[40px] overflow-hidden shadow-2xl">
-      <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-spotify-green/10 to-transparent">
+      <div className="p-8 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-brand-primary/10 to-transparent">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-spotify-green/20 rounded-2xl text-spotify-green">
+          <div className="p-3 bg-brand-primary/20 rounded-2xl text-brand-primary">
             <HiUserGroup className="h-8 w-8" />
           </div>
           <div>
@@ -91,7 +91,7 @@ export default function GameLeaderboard({ gameId, songId, onReset }: Leaderboard
       <div className="p-6">
         {loading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-4">
-            <div className="h-8 w-8 animate-spin rounded-full border-2 border-spotify-green border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-brand-primary border-t-transparent" />
             <p className="text-[10px] font-black text-white/20 tracking-[0.3em] uppercase">Sincronizando placar...</p>
           </div>
         ) : (
@@ -105,8 +105,8 @@ export default function GameLeaderboard({ gameId, songId, onReset }: Leaderboard
                   key={i}
                   className={cn(
                     "flex items-center justify-between p-4 rounded-2xl border transition-all",
-                    i === 0 ? "bg-white/10 border-spotify-green/30" : "bg-white/[0.02] border-white/5",
-                    score.username === session?.user?.name && "ring-1 ring-spotify-green"
+                    i === 0 ? "bg-white/10 border-brand-primary/30" : "bg-white/[0.02] border-white/5",
+                    score.username === session?.user?.name && "ring-1 ring-brand-primary"
                   )}
                 >
                   <div className="flex items-center gap-4">
@@ -127,7 +127,7 @@ export default function GameLeaderboard({ gameId, songId, onReset }: Leaderboard
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-2xl font-black text-spotify-green tracking-tighter">{score.score.toLocaleString()}</p>
+                    <p className="text-2xl font-black text-brand-primary tracking-tighter">{score.score.toLocaleString()}</p>
                     <div className="flex items-center justify-end gap-1">
                       <HiFire className="h-3 w-3 text-orange-500" />
                       <span className="text-[9px] font-black text-white/20 uppercase">Recorde</span>
@@ -147,12 +147,12 @@ export default function GameLeaderboard({ gameId, songId, onReset }: Leaderboard
 
       {session && (
         <div className="p-6 bg-white/[0.02] border-t border-white/5">
-          <div className="flex items-center justify-between px-6 py-4 bg-spotify-green/10 rounded-2xl border border-spotify-green/20">
+          <div className="flex items-center justify-between px-6 py-4 bg-brand-primary/10 rounded-2xl border border-brand-primary/20">
             <div className="flex items-center gap-3">
-              <HiStar className="h-6 w-6 text-spotify-green" />
+              <HiStar className="h-6 w-6 text-brand-primary" />
               <span className="text-sm font-black text-white/60 uppercase tracking-widest italic">Seu Melhor Ritmo</span>
             </div>
-            <span className="text-3xl font-black text-spotify-green tracking-tighter">{personalBest.toLocaleString()}</span>
+            <span className="text-3xl font-black text-brand-primary tracking-tighter">{personalBest.toLocaleString()}</span>
           </div>
         </div>
       )}

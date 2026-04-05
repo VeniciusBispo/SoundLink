@@ -47,27 +47,27 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-black px-4 py-10">
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10">
+      <div className="w-full max-w-sm rounded-2xl bg-brand-card px-8 py-10">
         {success ? (
           <div className="text-center">
             <div className="mb-4 flex justify-center">
-              <div className="rounded-full bg-spotify-green/20 p-3">
-                <HiCheckCircle className="h-8 w-8 text-spotify-green" />
+              <div className="rounded-full bg-brand-primary/20 p-3">
+                <HiCheckCircle className="h-8 w-8 text-brand-primary" />
               </div>
             </div>
             <h2 className="text-xl font-bold text-white">E-mail enviado!</h2>
-            <p className="mt-2 text-sm text-spotify-text">
+            <p className="mt-2 text-sm text-brand-text">
               Enviamos um link de recuperação para o seu e-mail. Por favor, verifique sua caixa de entrada e spam.
             </p>
             <Link
               href="/login"
-              className="mt-6 block font-bold text-spotify-green hover:underline"
+              className="mt-6 block font-bold text-brand-primary hover:underline"
             >
               Voltar para Login
             </Link>
@@ -75,7 +75,7 @@ export default function ForgotPasswordPage() {
         ) : (
           <>
             <h1 className="mb-2 text-center text-2xl font-bold text-white">Recuperar Senha</h1>
-            <p className="mb-6 text-center text-sm text-spotify-text">
+            <p className="mb-6 text-center text-sm text-brand-text">
               Digite seu e-mail e enviaremos um link para redefinir sua senha.
             </p>
 
@@ -91,13 +91,13 @@ export default function ForgotPasswordPage() {
                   Nome de Usuário
                 </label>
                 <div className="relative">
-                  <HiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-spotify-text" size={18} />
+                  <HiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-text" size={18} />
                   <input
                     type="text"
                     required
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full rounded-xl bg-spotify-hover py-2.5 pl-10 pr-3 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                    className="w-full rounded-xl bg-brand-hover py-2.5 pl-10 pr-3 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
                     placeholder="Seu nome de usuário"
                   />
                 </div>
@@ -108,13 +108,13 @@ export default function ForgotPasswordPage() {
                   E-mail
                 </label>
                 <div className="relative">
-                  <HiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-spotify-text" size={18} />
+                  <HiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-text" size={18} />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full rounded-xl bg-spotify-hover py-2.5 pl-10 pr-3 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                    className="w-full rounded-xl bg-brand-hover py-2.5 pl-10 pr-3 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
                     placeholder="seu@email.com"
                   />
                 </div>
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
                 Enviar Link de Recuperação
               </Button>
 
-              <p className="text-center text-sm text-spotify-text">
+              <p className="text-center text-sm text-brand-text">
                 Lembrou a senha?{' '}
                 <Link href="/login" className="font-bold text-white hover:underline">
                   Fazer login

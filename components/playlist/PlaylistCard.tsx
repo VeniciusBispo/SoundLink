@@ -30,7 +30,7 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
     <Link
       href={`/playlist/${playlist.id}`}
       className={cn(
-        'group relative flex flex-col gap-3 rounded-xl bg-spotify-card p-3 transition-all duration-200 hover:bg-spotify-hover hover:shadow-xl',
+        'group relative flex flex-col gap-3 rounded-xl bg-brand-card p-3 transition-all duration-200 hover:bg-brand-hover hover:shadow-xl',
         className
       )}
     >
@@ -45,12 +45,12 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
             sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 15vw"
           />
         ) : playlist.coverImage ? (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-primary/20 to-brand-card">
             <span className="text-5xl">{playlist.coverImage}</span>
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/20 to-spotify-card">
-            <HiMusicNote className="h-10 w-10 text-spotify-green/60" />
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-primary/20 to-brand-card">
+            <HiMusicNote className="h-10 w-10 text-brand-primary/60" />
           </div>
         )}
 
@@ -58,7 +58,7 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
         {songs.length > 0 && (
           <button
             onClick={handlePlay}
-            className="absolute bottom-2 right-2 flex h-10 w-10 translate-y-1 items-center justify-center rounded-full bg-spotify-green text-black opacity-0 shadow-xl transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            className="absolute bottom-2 right-2 flex h-10 w-10 translate-y-1 items-center justify-center rounded-full bg-brand-primary text-black opacity-0 shadow-xl transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
           >
             <HiPlay className="ml-0.5 h-5 w-5" />
           </button>
@@ -70,10 +70,10 @@ export default function PlaylistCard({ playlist, className }: PlaylistCardProps)
         <div className="flex items-start justify-between gap-1">
           <p className="truncate text-sm font-bold text-white leading-tight">{playlist.name}</p>
           {!playlist.isPublic && (
-            <HiLockClosed className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-spotify-text" />
+            <HiLockClosed className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-brand-text" />
           )}
         </div>
-        <p className="mt-0.5 truncate text-xs text-spotify-text">
+        <p className="mt-0.5 truncate text-xs text-brand-text">
           {playlist.description ||
             (playlist.owner ? playlist.owner.username : 'Playlist')}
         </p>

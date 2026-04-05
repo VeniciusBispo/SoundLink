@@ -42,7 +42,7 @@ export default function PlayerControls() {
         onClick={toggleShuffle}
         className={cn(
           'rounded-full p-2 transition-all hover:scale-110 active:scale-90',
-          isShuffle ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
+          isShuffle ? 'text-brand-primary' : 'text-brand-text hover:text-white'
         )}
         title={isShuffle ? 'Aleatório ativado' : 'Aleatório desativado'}
       >
@@ -54,7 +54,7 @@ export default function PlayerControls() {
         onClick={toggleRepeat}
         className={cn(
           'relative rounded-full p-2 transition-all hover:scale-110 active:scale-90',
-          repeatMode !== 'none' ? 'text-spotify-green' : 'text-spotify-text hover:text-white'
+          repeatMode !== 'none' ? 'text-brand-primary' : 'text-brand-text hover:text-white'
         )}
         title={
           repeatMode === 'all'
@@ -66,7 +66,7 @@ export default function PlayerControls() {
       >
         <HiRefresh className="h-5 w-5" />
         {repeatMode === 'one' && (
-          <span className="absolute bottom-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-spotify-green text-[8px] font-bold text-black ring-1 ring-black">
+          <span className="absolute bottom-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-brand-primary text-[8px] font-bold text-black ring-1 ring-black">
             1
           </span>
         )}
@@ -75,7 +75,7 @@ export default function PlayerControls() {
       {/* Playback Speed */}
       <button
         onClick={nextSpeed}
-        className="text-[11px] font-extrabold text-spotify-text hover:text-white transition-all hover:scale-110 active:scale-90 w-10 text-center bg-white/5 rounded-md py-1"
+        className="text-[11px] font-extrabold text-brand-text hover:text-white transition-all hover:scale-110 active:scale-90 w-10 text-center bg-white/5 rounded-md py-1"
         title="Velocidade de reprodução"
       >
         {playbackSpeed}x
@@ -84,7 +84,7 @@ export default function PlayerControls() {
       {/* Seek -10s */}
       <button
         onClick={() => seekBackward(10)}
-        className="text-spotify-text hover:text-white transition-colors text-xs font-bold leading-none"
+        className="text-brand-text hover:text-white transition-colors text-xs font-bold leading-none"
         title="Voltar 10 segundos"
       >
         <span className="flex flex-col items-center gap-0">
@@ -96,7 +96,7 @@ export default function PlayerControls() {
       {/* Previous */}
       <button
         onClick={previous}
-        className="text-spotify-text hover:text-white transition-colors"
+        className="text-brand-text hover:text-white transition-colors"
         title="Música anterior"
       >
         <HiRewind className="h-5 w-5" />
@@ -122,7 +122,7 @@ export default function PlayerControls() {
       {/* Next */}
       <button
         onClick={next}
-        className="text-spotify-text hover:text-white transition-colors"
+        className="text-brand-text hover:text-white transition-colors"
         title="Próxima música"
       >
         <HiFastForward className="h-5 w-5" />
@@ -131,7 +131,7 @@ export default function PlayerControls() {
       {/* Seek +10s */}
       <button
         onClick={() => seekForward(10)}
-        className="text-spotify-text hover:text-white transition-colors"
+        className="text-brand-text hover:text-white transition-colors"
         title="Avançar 10 segundos"
       >
         <span className="flex flex-col items-center gap-0">

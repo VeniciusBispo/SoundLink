@@ -68,19 +68,19 @@ export default function AccessPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-black px-4 py-10">
       <div className="w-full max-w-sm">
         {/* Icon */}
         <div className="mb-6 flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-spotify-green/10">
-            <HiLockOpen className="h-8 w-8 text-spotify-green" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-primary/10">
+            <HiLockOpen className="h-8 w-8 text-brand-primary" />
           </div>
         </div>
 
         <h1 className="mb-1 text-center text-2xl font-bold text-white">
           Acessar playlist privada
         </h1>
-        <p className="mb-8 text-center text-sm text-spotify-text">
+        <p className="mb-8 text-center text-sm text-brand-text">
           Cole o link compartilhado ou insira o código de 8 dígitos.
         </p>
 
@@ -95,7 +95,7 @@ export default function AccessPage() {
             placeholder="Ex: A3F2B891 ou https://soundlink-app..."
             autoFocus
             spellCheck={false}
-            className="w-full rounded-xl bg-spotify-card px-4 py-3 text-center font-mono text-lg font-bold tracking-widest text-white placeholder:text-spotify-text/40 focus:outline-none focus:ring-2 focus:ring-spotify-green uppercase"
+            className="w-full rounded-xl bg-brand-card px-4 py-3 text-center font-mono text-lg font-bold tracking-widest text-white placeholder:text-brand-text/40 focus:outline-none focus:ring-2 focus:ring-brand-primary uppercase"
           />
 
           {error && (
@@ -107,7 +107,7 @@ export default function AccessPage() {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="flex items-center justify-center gap-2 rounded-full bg-spotify-green px-6 py-3 font-bold text-black transition-all hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex items-center justify-center gap-2 rounded-full bg-brand-primary px-6 py-3 font-bold text-black transition-all hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? (
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-black border-t-transparent" />
@@ -120,7 +120,7 @@ export default function AccessPage() {
           </button>
         </form>
 
-        <div className="mt-8 text-center text-sm text-spotify-text">
+        <div className="mt-8 text-center text-sm text-brand-text">
           <Link href="/" className="hover:text-white transition-colors">
             ← Voltar ao início
           </Link>

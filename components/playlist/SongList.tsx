@@ -43,7 +43,7 @@ export default function SongList({ songs, canEdit, onRemove }: SongListProps) {
   if (!songs.length) {
     return (
       <div className="py-10 text-center">
-        <p className="text-spotify-text">Nenhuma música nesta playlist ainda.</p>
+        <p className="text-brand-text">Nenhuma música nesta playlist ainda.</p>
       </div>
     )
   }

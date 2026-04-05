@@ -38,7 +38,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? 'modal-title' : undefined}
-        className={`relative w-full max-w-${maxWidth} rounded-xl bg-spotify-card p-6 shadow-2xl`}
+        className={`relative w-full max-w-${maxWidth} rounded-xl bg-brand-card p-6 shadow-2xl`}
       >
         {/* Header */}
         <div className="mb-5 flex items-start justify-between">
@@ -49,7 +49,7 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
           )}
           <button
             onClick={onClose}
-            className="ml-auto rounded-full p-1 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
+            className="ml-auto rounded-full p-1 text-brand-text hover:bg-brand-hover hover:text-white transition-colors"
             aria-label="Fechar"
           >
             <HiX className="h-5 w-5" />

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
@@ -5,6 +6,11 @@ import { prisma } from '@/lib/prisma'
 import MainLayout from '@/components/layout/MainLayout'
 import HomeClient from '@/components/home/HomeClient'
 import type { Playlist } from '@/types'
+
+export const metadata: Metadata = {
+  title: 'SoundLink – Sua Música, Do Seu Jeito',
+  description: 'Organize suas músicas favoritas do YouTube em uma interface premium. Crie playlists, jogue games musicais e ouça música sem limites.',
+}
 
 async function fetchHomeData(userId?: string) {
   const [myPlaylists, recentPublic, topByCount] = await Promise.all([

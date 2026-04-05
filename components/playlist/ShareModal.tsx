@@ -89,13 +89,13 @@ export default function ShareModal({
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 p-4 md:items-center"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="w-full max-w-md rounded-2xl bg-spotify-card p-5 shadow-2xl">
+      <div className="w-full max-w-md rounded-2xl bg-brand-card p-5 shadow-2xl">
         {/* Header */}
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-lg font-bold text-white">Compartilhar playlist</h2>
           <button
             onClick={onClose}
-            className="rounded-full p-1 text-spotify-text hover:bg-spotify-hover hover:text-white transition-colors"
+            className="rounded-full p-1 text-brand-text hover:bg-brand-hover hover:text-white transition-colors"
           >
             <HiX className="h-5 w-5" />
           </button>
@@ -103,19 +103,19 @@ export default function ShareModal({
 
         {/* ── PUBLIC playlist: just show the direct link ── */}
         {isPublic ? (
-          <div className="rounded-xl bg-spotify-dark p-3">
-            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-spotify-text">
+          <div className="rounded-xl bg-brand-dark p-3">
+            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-text">
               Link da playlist
             </p>
             <div className="flex items-center gap-2">
               <p className="flex-1 truncate text-sm text-white">{publicUrl}</p>
               <button
                 onClick={() => copyToClipboard(publicUrl, 'public')}
-                className="flex-shrink-0 rounded-lg bg-spotify-hover p-1.5 text-white hover:bg-white/20 transition-colors"
+                className="flex-shrink-0 rounded-lg bg-brand-hover p-1.5 text-white hover:bg-white/20 transition-colors"
                 title="Copiar link"
               >
                 {copiedField === 'public' ? (
-                  <HiCheck className="h-4 w-4 text-spotify-green" />
+                  <HiCheck className="h-4 w-4 text-brand-primary" />
                 ) : (
                   <HiClipboard className="h-4 w-4" />
                 )}
@@ -126,10 +126,10 @@ export default function ShareModal({
           /* ── PRIVATE playlist: toggle + code ── */
           <>
             {/* Toggle row */}
-            <div className="mb-4 flex items-center justify-between gap-4 rounded-xl bg-spotify-dark p-4">
+            <div className="mb-4 flex items-center justify-between gap-4 rounded-xl bg-brand-dark p-4">
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-white">Compartilhamento por código</p>
-                <p className="mt-0.5 text-xs text-spotify-text">
+                <p className="mt-0.5 text-xs text-brand-text">
                   Gera um link e código para dar acesso a esta playlist privada
                 </p>
               </div>
@@ -139,8 +139,8 @@ export default function ShareModal({
                 role="switch"
                 aria-checked={shareEnabled}
                 aria-label={shareEnabled ? 'Desativar compartilhamento' : 'Ativar compartilhamento'}
-                className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer items-center rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-spotify-green focus-visible:ring-offset-2 focus-visible:ring-offset-spotify-card disabled:cursor-not-allowed disabled:opacity-50 ${
-                  shareEnabled ? 'border-spotify-green bg-spotify-green' : 'border-white/10 bg-white/10'
+                className={`relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer items-center rounded-full border-2 transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary focus-visible:ring-offset-2 focus-visible:ring-offset-brand-card disabled:cursor-not-allowed disabled:opacity-50 ${
+                  shareEnabled ? 'border-brand-primary bg-brand-primary' : 'border-white/10 bg-white/10'
                 }`}
               >
                 <span
@@ -149,7 +149,7 @@ export default function ShareModal({
                   }`}
                 >
                   {isLoading && (
-                    <span className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-spotify-green border-t-transparent" />
+                    <span className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-brand-primary border-t-transparent" />
                   )}
                 </span>
               </button>
@@ -159,19 +159,19 @@ export default function ShareModal({
             {shareEnabled && shareCode && (
               <div className="space-y-3">
                 {/* Link row */}
-                <div className="rounded-xl bg-spotify-dark p-3">
-                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-spotify-text">
+                <div className="rounded-xl bg-brand-dark p-3">
+                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-text">
                     Link de acesso
                   </p>
                   <div className="flex items-center gap-2">
                     <p className="flex-1 truncate text-sm text-white">{privateUrl}</p>
                     <button
                       onClick={() => copyToClipboard(privateUrl, 'link')}
-                      className="flex-shrink-0 rounded-lg bg-spotify-hover p-1.5 text-white hover:bg-white/20 transition-colors"
+                      className="flex-shrink-0 rounded-lg bg-brand-hover p-1.5 text-white hover:bg-white/20 transition-colors"
                       title="Copiar link"
                     >
                       {copiedField === 'link' ? (
-                        <HiCheck className="h-4 w-4 text-spotify-green" />
+                        <HiCheck className="h-4 w-4 text-brand-primary" />
                       ) : (
                         <HiClipboard className="h-4 w-4" />
                       )}
@@ -180,21 +180,21 @@ export default function ShareModal({
                 </div>
 
                 {/* Code row */}
-                <div className="rounded-xl bg-spotify-dark p-3">
-                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-spotify-text">
+                <div className="rounded-xl bg-brand-dark p-3">
+                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-text">
                     Código de acesso
                   </p>
                   <div className="flex items-center gap-2">
-                    <p className="flex-1 font-mono text-2xl font-bold tracking-widest text-spotify-green">
+                    <p className="flex-1 font-mono text-2xl font-bold tracking-widest text-brand-primary">
                       {shareCode}
                     </p>
                     <button
                       onClick={() => copyToClipboard(shareCode, 'code')}
-                      className="flex-shrink-0 rounded-lg bg-spotify-hover p-1.5 text-white hover:bg-white/20 transition-colors"
+                      className="flex-shrink-0 rounded-lg bg-brand-hover p-1.5 text-white hover:bg-white/20 transition-colors"
                       title="Copiar código"
                     >
                       {copiedField === 'code' ? (
-                        <HiCheck className="h-4 w-4 text-spotify-green" />
+                        <HiCheck className="h-4 w-4 text-brand-primary" />
                       ) : (
                         <HiClipboard className="h-4 w-4" />
                       )}
@@ -202,14 +202,14 @@ export default function ShareModal({
                   </div>
                 </div>
 
-                <p className="text-center text-xs text-spotify-text">
+                <p className="text-center text-xs text-brand-text">
                   Envie o link e o código para quem você quer dar acesso
                 </p>
               </div>
             )}
 
             {!shareEnabled && (
-              <p className="text-center text-sm text-spotify-text">
+              <p className="text-center text-sm text-brand-text">
                 Ative o compartilhamento para gerar um link e código de acesso.
               </p>
             )}

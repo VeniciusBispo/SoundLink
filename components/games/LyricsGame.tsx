@@ -99,7 +99,7 @@ export default function LyricsGame() {
   if (loading) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-spotify-green border-t-transparent" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
         <p className="font-bold text-white/50 animate-pulse">CARREGANDO LETRAS...</p>
       </div>
     )
@@ -111,7 +111,7 @@ export default function LyricsGame() {
         <HiX className="h-16 w-16 text-red-500 opacity-20" />
         <div>
             <h2 className="text-2xl font-black text-white mb-2 uppercase">OPS! ALGO DEU ERRADO</h2>
-            <p className="text-spotify-text font-bold opacity-60 uppercase tracking-widest text-sm">{error}</p>
+            <p className="text-brand-text font-bold opacity-60 uppercase tracking-widest text-sm">{error}</p>
         </div>
         <button 
             onClick={() => window.location.reload()}
@@ -132,15 +132,15 @@ export default function LyricsGame() {
       >
         <HiStar className="h-20 w-20 text-blue-400 mb-6 drop-shadow-[0_0_30px_rgba(96,165,250,0.4)]" />
         <h2 className="text-4xl font-black text-white mb-2 italic uppercase">POETA MUSICAL!</h2>
-        <p className="text-spotify-text text-lg mb-8 uppercase tracking-widest font-bold opacity-40">Sua performance em Complete a Letra</p>
-        <div className="text-7xl font-black text-spotify-green mb-10 tracking-tighter italic">
+        <p className="text-brand-text text-lg mb-8 uppercase tracking-widest font-bold opacity-40">Sua performance em Complete a Letra</p>
+        <div className="text-7xl font-black text-brand-primary mb-10 tracking-tighter italic">
           {currentScore.toLocaleString()}
         </div>
         
         <div className="flex flex-wrap justify-center gap-4 mb-12">
             <button
                 onClick={() => window.location.reload()}
-                className="flex items-center gap-2 rounded-full bg-spotify-green px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                className="flex items-center gap-2 rounded-full bg-brand-primary px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
             >
                 <HiRefresh className="h-6 w-6" /> JOGAR NOVAMENTE
             </button>
@@ -196,7 +196,7 @@ export default function LyricsGame() {
             </span>
         </div>
         
-        <div className="flex items-center gap-1.5 text-spotify-green max-w-[120px] sm:max-w-none">
+        <div className="flex items-center gap-1.5 text-brand-primary max-w-[120px] sm:max-w-none">
             <HiMusicNote className="h-3 w-3 sm:h-5 sm:h-5 flex-shrink-0" />
             <span className="text-[9px] sm:text-xs font-black uppercase tracking-widest truncate">
                 {currentQuestion.song}
@@ -211,14 +211,14 @@ export default function LyricsGame() {
                 <span className={cn(
                     "relative inline-block mx-1 sm:mx-2 px-2 sm:px-4 py-0 sm:py-1 rounded-lg sm:rounded-xl transition-all duration-300",
                     isAnswered 
-                        ? (isCorrect ? "bg-spotify-green text-black" : "bg-red-500 text-white")
+                        ? (isCorrect ? "bg-brand-primary text-black" : "bg-red-500 text-white")
                         : "bg-white/10 text-white/20 border-b-2 sm:border-b-4 border-white/5 min-w-[50px] sm:min-w-[120px]"
                 )}>
                     {isAnswered ? selectedOption : "____"}
                 </span>
                 {parts[1]}"
             </h2>
-            <p className="mt-2 sm:mt-8 text-spotify-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[7px] sm:text-[10px] opacity-40">
+            <p className="mt-2 sm:mt-8 text-brand-text font-bold uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[7px] sm:text-[10px] opacity-40">
                 {currentQuestion.artist}
             </p>
         </div>
@@ -231,7 +231,7 @@ export default function LyricsGame() {
           
           let stateClass = "bg-white/5 border-white/5 hover:bg-white/10"
           if (isAnswered) {
-             if (isCorrectOption) stateClass = "bg-spotify-green/20 border-spotify-green text-spotify-green"
+             if (isCorrectOption) stateClass = "bg-brand-primary/20 border-brand-primary text-brand-primary"
              else if (isSelected) stateClass = "bg-red-500/20 border-red-500 text-red-500"
              else stateClass = "opacity-40 grayscale"
           }
@@ -250,7 +250,7 @@ export default function LyricsGame() {
                )}
             >
               <span className="text-base sm:text-xl font-bold">{option}</span>
-              {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-spotify-green" />}
+              {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-brand-primary" />}
               {isAnswered && isSelected && !isCorrectOption && <HiX className="h-5 w-5 sm:h-6 sm:h-6 text-red-500" />}
             </motion.button>
           )
@@ -267,7 +267,7 @@ export default function LyricsGame() {
             >
                 <div className={cn(
                     "px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase flex items-center gap-3 shadow-xl",
-                    isCorrect ? "bg-spotify-green text-black" : "bg-red-500 text-white"
+                    isCorrect ? "bg-brand-primary text-black" : "bg-red-500 text-white"
                 )}>
                     {isCorrect ? "✨ VOCÊ É UM POETA!" : "💔 QUASE LÁ!"}
                 </div>

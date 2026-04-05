@@ -47,10 +47,10 @@ export async function sendResetEmail(email: string, token: string): Promise<Send
         subject: 'Redefinição de senha - SoundLink',
         htmlContent: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background-color: #121212; color: #fff; padding: 24px; border-radius: 12px;">
-            <h2 style="color: #1DB954; margin-top: 0;">Redefinição de Senha</h2>
+            <h2 style="color: #EF4444; margin-top: 0;">Redefinição de Senha</h2>
             <p style="color: #b3b3b3;">Você solicitou a redefinição de senha para sua conta no SoundLink.</p>
             <p style="color: #b3b3b3;">Clique no botão abaixo para criar uma nova senha:</p>
-            <a href="${resetLink}" style="display: inline-block; background-color: #1DB954; color: #000; font-weight: bold; padding: 14px 28px; text-decoration: none; border-radius: 50px; margin: 24px 0;">Redefinir Senha</a>
+            <a href="${resetLink}" style="display: inline-block; background-color: #EF4444; color: #000; font-weight: bold; padding: 14px 28px; text-decoration: none; border-radius: 50px; margin: 24px 0;">Redefinir Senha</a>
             <p style="color: #b3b3b3; font-size: 14px;">Ou copie e cole este link no seu navegador:</p>
             <p style="color: #b3b3b3; font-size: 12px; word-break: break-all; background: #2a2a2a; padding: 8px; border-radius: 4px;">${resetLink}</p>
             <p style="color: #666; font-size: 12px; margin-top: 32px;">Este link expira em 1 hora. Se você não solicitou, ignore este e-mail.</p>

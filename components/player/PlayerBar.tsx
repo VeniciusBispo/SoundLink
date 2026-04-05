@@ -88,7 +88,7 @@ export default function PlayerBar() {
                 </div>
                 <div className="min-w-0 pr-2 pb-0.5">
                   <p className="truncate text-sm font-semibold text-white leading-tight mb-0.5">{currentSong.title}</p>
-                  <p className="truncate text-[12px] text-spotify-text leading-none">{currentSong.channel}</p>
+                  <p className="truncate text-[12px] text-brand-text leading-none">{currentSong.channel}</p>
                 </div>
               </div>
               <button
@@ -103,7 +103,7 @@ export default function PlayerBar() {
               </button>
             </>
           ) : (
-            <p className="text-sm font-medium text-spotify-text px-2">Nenhuma música tocando</p>
+            <p className="text-sm font-medium text-brand-text px-2">Nenhuma música tocando</p>
           )}
         </div>
 
@@ -118,11 +118,11 @@ export default function PlayerBar() {
                 </div>
                 <div className="min-w-0 flex flex-col justify-center">
                   <p className="truncate text-[14px] hover:underline cursor-pointer font-bold text-white mb-0.5">{currentSong.title}</p>
-                  <p className="truncate text-[12px] hover:underline cursor-pointer text-spotify-text">{currentSong.channel}</p>
+                  <p className="truncate text-[12px] hover:underline cursor-pointer text-brand-text">{currentSong.channel}</p>
                 </div>
               </>
             ) : (
-              <p className="text-sm text-spotify-text font-medium">Nenhuma música tocando</p>
+              <p className="text-sm text-brand-text font-medium">Nenhuma música tocando</p>
             )}
           </div>
 
@@ -133,19 +133,19 @@ export default function PlayerBar() {
 
           {/* Right: volume & duration */}
           <div className="flex w-[30%] items-center justify-end gap-3 pr-2">
-             <div className="text-[12px] text-spotify-text/80 font-medium tabular-nums mr-2 tracking-wide">
+             <div className="text-[12px] text-brand-text/80 font-medium tabular-nums mr-2 tracking-wide">
                 {formatDuration(Math.floor(currentTime))} / {formatDuration(Math.floor(displayDuration))}
              </div>
             <button
               onClick={() => setVolume(volume === 0 ? 80 : 0)}
-              className="text-spotify-text hover:text-white transition-colors p-1"
+              className="text-brand-text hover:text-white transition-colors p-1"
             >
               {volume === 0 ? <HiVolumeOff className="h-[20px] w-[20px]" /> : <HiVolumeUp className="h-[20px] w-[20px]" />}
             </button>
             <input
               type="range" min={0} max={100} value={volume}
               onChange={(e) => setVolume(Number(e.target.value))}
-              className="h-1 w-24 cursor-pointer accent-white hover:accent-spotify-green transition-colors bg-white/20 rounded-full"
+              className="h-1 w-24 cursor-pointer accent-white hover:accent-brand-primary transition-colors bg-white/20 rounded-full"
               aria-label="Volume"
             />
           </div>

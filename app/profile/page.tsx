@@ -31,7 +31,7 @@ type Tab = 'perfil' | 'seguranca' | 'playlists'
 
 function Alert({ type, msg }: { type: 'success' | 'error'; msg: string }) {
   return (
-    <div className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm ${type === 'success' ? 'bg-spotify-green/10 text-spotify-green' : 'bg-red-500/10 text-red-400'}`}>
+    <div className={`flex items-center gap-2 rounded-xl px-4 py-3 text-sm ${type === 'success' ? 'bg-brand-primary/10 text-brand-primary' : 'bg-red-500/10 text-red-400'}`}>
       {type === 'success' ? <HiCheckCircle className="h-4 w-4 flex-shrink-0" /> : <HiExclamationCircle className="h-4 w-4 flex-shrink-0" />}
       {msg}
     </div>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
         <div className="relative px-4 pb-6 pt-16 sm:px-6 md:pt-20">
           <div className="mx-auto max-w-5xl">
             <div className="flex flex-col items-center gap-4 text-center md:flex-row md:items-end md:gap-6 md:text-left">
-              <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-black bg-spotify-card shadow-2xl sm:h-32 sm:w-32 md:h-40 md:w-40">
+              <div className="h-28 w-28 overflow-hidden rounded-full border-4 border-black bg-brand-card shadow-2xl sm:h-32 sm:w-32 md:h-40 md:w-40">
                 {avatar ? (
                   avatar.startsWith('data:image') ? (
                     <img src={avatar} alt={profile?.username} className="h-full w-full object-cover" />
@@ -183,7 +183,7 @@ export default function ProfilePage() {
         </div>
         <button
           onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/` })}
-          className="absolute right-3 top-3 flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-sm text-spotify-text transition hover:border-white/30 hover:text-white sm:right-4 sm:top-4"
+          className="absolute right-3 top-3 flex min-h-[44px] items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-4 py-2 text-sm text-brand-text transition hover:border-white/30 hover:text-white sm:right-4 sm:top-4"
         >
           <HiLogout className="h-4 w-4" />
           Sair
@@ -199,8 +199,8 @@ export default function ProfilePage() {
             onClick={() => setTab(t.id)}
             className={`flex min-h-[44px] flex-shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
               tab === t.id
-                ? 'border-spotify-green text-white'
-                : 'border-transparent text-spotify-text hover:text-white'
+                ? 'border-brand-primary text-white'
+                : 'border-transparent text-brand-text hover:text-white'
             }`}
           >
             {t.icon}
@@ -217,22 +217,22 @@ export default function ProfilePage() {
           <form className="flex flex-col gap-5" onSubmit={async (e) => { e.preventDefault(); await handleSaveProfile() }}>
             <h2 className="text-lg font-bold text-white">Informações do perfil</h2>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm text-spotify-text">Nome de usuário</label>
+              <label className="text-sm text-brand-text">Nome de usuário</label>
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="rounded-xl bg-spotify-card px-4 py-3 text-sm text-white placeholder-spotify-text/50 outline-none ring-1 ring-white/10 focus:ring-spotify-green transition"
+                className="rounded-xl bg-brand-card px-4 py-3 text-sm text-white placeholder-brand-text/50 outline-none ring-1 ring-white/10 focus:ring-brand-primary transition"
                 placeholder="seunome"
                 maxLength={30}
                 required
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm text-spotify-text">Avatar (emoji ou imagem)</label>
+              <label className="text-sm text-brand-text">Avatar (emoji ou imagem)</label>
               <AvatarPicker value={avatar} onChange={setAvatar} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm text-spotify-text">Banner do perfil (opcional)</label>
+              <label className="text-sm text-brand-text">Banner do perfil (opcional)</label>
               <input
                 type="file"
                 accept="image/*"
@@ -255,7 +255,7 @@ export default function ProfilePage() {
                     reader.readAsDataURL(file);
                   }
                 }}
-                className="block w-full text-sm text-spotify-text file:mr-3 file:rounded-lg file:border-0 file:bg-spotify-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-spotify-card"
+                className="block w-full text-sm text-brand-text file:mr-3 file:rounded-lg file:border-0 file:bg-brand-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-card"
               />
               {banner && <img src={banner} alt="Banner preview" className="mt-2 h-24 w-full rounded-xl object-cover ring-1 ring-white/10" />}
             </div>
@@ -280,7 +280,7 @@ export default function ProfilePage() {
                   setShowNew(true)
                   setShowConfirm(true)
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-brand-primary hover:underline"
               >
                 <HiLightningBolt size={12} />
                 Gerar senha forte
@@ -292,32 +292,32 @@ export default function ProfilePage() {
               label: 'Confirmar nova senha', value: confirmPassword, set: setConfirmPassword, show: showConfirm, toggle: () => setShowConfirm((v) => !v)
             }].map(({ label, value, set, show, toggle }) => (
               <div key={label} className="flex flex-col gap-1.5">
-                <label className="text-sm text-spotify-text">{label}</label>
+                <label className="text-sm text-brand-text">{label}</label>
                 <div className="relative">
                   <input
                     type={show ? 'text' : 'password'}
                     value={value}
                     onChange={(e) => set(e.target.value)}
                     required
-                    className="w-full rounded-xl bg-spotify-card px-4 py-3 pr-12 text-sm text-white placeholder-spotify-text/50 outline-none ring-1 ring-white/10 focus:ring-spotify-green transition"
+                    className="w-full rounded-xl bg-brand-card px-4 py-3 pr-12 text-sm text-white placeholder-brand-text/50 outline-none ring-1 ring-white/10 focus:ring-brand-primary transition"
                     placeholder="••••••••"
                   />
-                  <button type="button" onClick={toggle} className="absolute right-3 top-1/2 -translate-y-1/2 text-spotify-text hover:text-white">
+                  <button type="button" onClick={toggle} className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-white">
                     {show ? <HiEyeOff className="h-5 w-5" /> : <HiEye className="h-5 w-5" />}
                   </button>
                 </div>
               </div>
             ))}
-            <div className="rounded-xl bg-spotify-card/50 px-4 py-3 text-xs text-spotify-text space-y-1">
+            <div className="rounded-xl bg-brand-card/50 px-4 py-3 text-xs text-brand-text space-y-1">
               <p className="font-medium text-white/60 mb-1">Requisitos da senha:</p>
-              <p className={newPassword.length >= 8 ? 'text-spotify-green' : ''}>• Mínimo 8 caracteres</p>
-              <p className={newPassword === confirmPassword && confirmPassword ? 'text-spotify-green' : ''}>• As senhas devem coincidir</p>
+              <p className={newPassword.length >= 8 ? 'text-brand-primary' : ''}>• Mínimo 8 caracteres</p>
+              <p className={newPassword === confirmPassword && confirmPassword ? 'text-brand-primary' : ''}>• As senhas devem coincidir</p>
             </div>
             {passwordMsg && <Alert type={passwordMsg.type} msg={passwordMsg.msg} />}
             <button
               type="submit"
               disabled={savingPassword}
-              className="flex items-center justify-center gap-2 rounded-xl bg-spotify-green px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
+              className="flex items-center justify-center gap-2 rounded-xl bg-brand-primary px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-50"
             >
               <HiLockClosed className="h-4 w-4" />
               {savingPassword ? 'Salvando...' : 'Alterar senha'}

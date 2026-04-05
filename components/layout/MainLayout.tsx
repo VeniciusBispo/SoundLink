@@ -13,7 +13,7 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className="flex h-[100dvh] flex-col bg-spotify-black overflow-hidden">
+    <div className="flex h-[100dvh] flex-col bg-brand-black overflow-hidden">
       {/* Main area: sidebar (desktop) + content */}
       <div className="flex flex-1 gap-2 overflow-hidden md:p-2 md:pb-0">
         {/* Sidebar — hidden on mobile */}
@@ -22,7 +22,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
         </div>
 
         {/* Content area */}
-        <main className="flex flex-1 flex-col overflow-hidden md:rounded-lg md:bg-spotify-dark bg-spotify-black">
+        <main className="flex flex-1 flex-col overflow-hidden md:rounded-lg md:bg-brand-dark bg-brand-black">
           <Header />
           <div className="flex-1 overflow-y-auto px-4 pb-6 md:px-6">
             {children}

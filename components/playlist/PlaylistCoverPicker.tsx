@@ -59,20 +59,20 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
     <div className="flex flex-col gap-3">
       {onNameChange && (
         <div className="flex flex-col gap-2">
-          <label className="text-xs text-spotify-text">Nome da playlist</label>
+          <label className="text-xs text-brand-text">Nome da playlist</label>
           <input
             type="text"
             value={name || ''}
             onChange={(e) => onNameChange(e.target.value)}
             placeholder="Minha playlist"
-            className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+            className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
           />
         </div>
       )}
 
       {preview && (
         <div className="flex items-center gap-3">
-          <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-spotify-hover">
+          <div className="relative h-16 w-16 overflow-hidden rounded-lg bg-brand-hover">
             {preview.kind === 'image' ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={preview.src} alt="Capa da playlist" className="h-full w-full object-cover" />
@@ -93,32 +93,32 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
       )}
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs text-spotify-text">Enviar imagem</label>
+        <label className="text-xs text-brand-text">Enviar imagem</label>
         <input
           type="file"
           accept="image/*"
           onChange={(e) => handleFile(e.target.files?.[0])}
-          className="block w-full text-sm text-spotify-text file:mr-3 file:rounded-lg file:border-0 file:bg-spotify-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-spotify-card"
+          className="block w-full text-sm text-brand-text file:mr-3 file:rounded-lg file:border-0 file:bg-brand-hover file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-brand-card"
         />
-        <p className="text-[11px] leading-relaxed text-spotify-text/80">
+        <p className="text-[11px] leading-relaxed text-brand-text/80">
           Dica: imagens muito grandes podem deixar a playlist pesada. Preferível usar um link (URL) quando possível.
         </p>
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-xs text-spotify-text">Ou cole uma URL de imagem</label>
+        <label className="text-xs text-brand-text">Ou cole uma URL de imagem</label>
         <div className="flex gap-2">
           <input
             type="url"
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             placeholder="https://…"
-            className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+            className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
           />
           <button
             type="button"
             onClick={applyUrl}
-            className="flex-shrink-0 rounded-xl bg-spotify-green px-4 py-2.5 text-sm font-bold text-black active:scale-[0.99]"
+            className="flex-shrink-0 rounded-xl bg-brand-primary px-4 py-2.5 text-sm font-bold text-black active:scale-[0.99]"
           >
             Usar
           </button>
@@ -129,7 +129,7 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
         <button
           type="button"
           onClick={() => setShowEmojis((prev) => !prev)}
-          className="flex items-center gap-1.5 text-xs text-spotify-text hover:text-white transition-colors w-fit"
+          className="flex items-center gap-1.5 text-xs text-brand-text hover:text-white transition-colors w-fit"
         >
           <span className={`transition-transform duration-200 ${showEmojis ? 'rotate-90' : ''}`}>▶</span>
           Ou use um emoji
@@ -143,7 +143,7 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
               value={!isLikelyImageSrc(value) ? value : ''}
               onChange={(e) => onChange(e.target.value)}
               placeholder="Ex: 🎵"
-              className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+              className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
             />
             <div className="mt-1 flex flex-wrap gap-2">
               {SUGGESTED_EMOJIS.map((emoji) => (
@@ -153,8 +153,8 @@ export default function PlaylistCoverPicker({ value, onChange, name, onNameChang
                   onClick={() => onChange(emoji)}
                   className={`flex h-9 w-9 items-center justify-center rounded-md text-xl transition-all hover:scale-110 ${
                     value === emoji
-                      ? 'bg-spotify-green text-black scale-110 shadow-lg'
-                      : 'bg-spotify-hover text-white hover:bg-spotify-card'
+                      ? 'bg-brand-primary text-black scale-110 shadow-lg'
+                      : 'bg-brand-hover text-white hover:bg-brand-card'
                   }`}
                 >
                   {emoji}

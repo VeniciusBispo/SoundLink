@@ -38,7 +38,7 @@ export default function RegisterPage() {
 
   const passwordStrength = passwordRules.filter((r) => r.pass(password)).length
   const strengthLabel = ['Fraca', 'Média', 'Forte'][passwordStrength - 1] ?? ''
-  const strengthColor = ['bg-red-500', 'bg-yellow-400', 'bg-spotify-green'][passwordStrength - 1] ?? 'bg-spotify-hover'
+  const strengthColor = ['bg-red-500', 'bg-yellow-400', 'bg-brand-primary'][passwordStrength - 1] ?? 'bg-brand-hover'
 
   const validate = () => {
     const errs: Record<string, string> = {}
@@ -72,13 +72,13 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-black px-4 py-10">
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10">
+      <div className="w-full max-w-sm rounded-2xl bg-brand-card px-8 py-10">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">
           Criar conta gratuitamente
         </h1>
@@ -103,7 +103,7 @@ export default function RegisterPage() {
               autoComplete="username"
               placeholder="seunome"
               maxLength={30}
-              className={`w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 ${fieldErrors.username ? 'ring-2 ring-red-500' : 'focus:ring-spotify-green'}`}
+              className={`w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 ${fieldErrors.username ? 'ring-2 ring-red-500' : 'focus:ring-brand-primary'}`}
             />
             {fieldErrors.username && (
               <p className="mt-1 text-xs text-red-400">{fieldErrors.username}</p>
@@ -122,7 +122,7 @@ export default function RegisterPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               placeholder="seu@email.com"
-              className={`w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 ${fieldErrors.email ? 'ring-2 ring-red-500' : 'focus:ring-spotify-green'}`}
+              className={`w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 ${fieldErrors.email ? 'ring-2 ring-red-500' : 'focus:ring-brand-primary'}`}
             />
             {fieldErrors.email && (
               <p className="mt-1 text-xs text-red-400">{fieldErrors.email}</p>
@@ -144,7 +144,7 @@ export default function RegisterPage() {
                   setShowPassword(true)
                   setShowConfirm(true)
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-brand-primary hover:underline"
               >
                 <HiLightningBolt size={12} />
                 Gerar senha forte
@@ -158,12 +158,12 @@ export default function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="new-password"
                 placeholder="••••••••"
-                className={`w-full rounded-xl bg-spotify-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 ${fieldErrors.password ? 'ring-2 ring-red-500' : 'focus:ring-spotify-green'}`}
+                className={`w-full rounded-xl bg-brand-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 ${fieldErrors.password ? 'ring-2 ring-red-500' : 'focus:ring-brand-primary'}`}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-spotify-text hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-white transition-colors"
                 aria-label={showPassword ? 'Ocultar senha' : 'Ver senha'}
               >
                 {showPassword ? <HiEyeOff className="h-4 w-4" /> : <HiEye className="h-4 w-4" />}
@@ -177,16 +177,16 @@ export default function RegisterPage() {
                   {[0, 1, 2].map((i) => (
                     <div
                       key={i}
-                      className={`h-1 flex-1 rounded-full transition-colors duration-300 ${i < passwordStrength ? strengthColor : 'bg-spotify-hover'}`}
+                      className={`h-1 flex-1 rounded-full transition-colors duration-300 ${i < passwordStrength ? strengthColor : 'bg-brand-hover'}`}
                     />
                   ))}
                 </div>
                 {strengthLabel && (
-                  <p className="text-xs text-spotify-text">Força: <span className="font-semibold text-white">{strengthLabel}</span></p>
+                  <p className="text-xs text-brand-text">Força: <span className="font-semibold text-white">{strengthLabel}</span></p>
                 )}
                 <ul className="space-y-0.5">
                   {passwordRules.map((rule) => (
-                    <li key={rule.label} className={`flex items-center gap-1.5 text-xs ${rule.pass(password) ? 'text-spotify-green' : 'text-spotify-text'}`}>
+                    <li key={rule.label} className={`flex items-center gap-1.5 text-xs ${rule.pass(password) ? 'text-brand-primary' : 'text-brand-text'}`}>
                       {rule.pass(password) ? <HiCheck className="h-3 w-3" /> : <HiX className="h-3 w-3" />}
                       {rule.label}
                     </li>
@@ -212,12 +212,12 @@ export default function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 autoComplete="new-password"
                 placeholder="••••••••"
-                className={`w-full rounded-xl bg-spotify-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 ${fieldErrors.confirm ? 'ring-2 ring-red-500' : 'focus:ring-spotify-green'}`}
+                className={`w-full rounded-xl bg-brand-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 ${fieldErrors.confirm ? 'ring-2 ring-red-500' : 'focus:ring-brand-primary'}`}
               />
               <button
                 type="button"
                 onClick={() => setShowConfirm((p) => !p)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-spotify-text hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-white transition-colors"
                 aria-label={showConfirm ? 'Ocultar senha' : 'Ver senha'}
               >
                 {showConfirm ? <HiEyeOff className="h-4 w-4" /> : <HiEye className="h-4 w-4" />}
@@ -233,9 +233,9 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-spotify-text">
+        <div className="mt-6 text-center text-sm text-brand-text">
           Já tem uma conta?{' '}
-          <Link href="/login" className="font-semibold text-white hover:text-spotify-green transition-colors">
+          <Link href="/login" className="font-semibold text-white hover:text-brand-primary transition-colors">
             Entrar
           </Link>
         </div>

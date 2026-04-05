@@ -33,7 +33,7 @@ export default function MobileNav() {
               href={item.href}
               className={cn(
                 'flex flex-col items-center justify-center gap-1 w-16 transition-colors',
-                isActive ? 'text-white' : 'text-spotify-text hover:text-white'
+                isActive ? 'text-white' : 'text-brand-text hover:text-white'
               )}
             >
               <div className="relative flex items-center justify-center h-8 w-8">
@@ -57,7 +57,7 @@ export default function MobileNav() {
         {session && (
           <button
             onClick={openCreatePlaylistModal}
-            className="flex flex-col items-center justify-center gap-1 w-16 text-spotify-text hover:text-white transition-colors"
+            className="flex flex-col items-center justify-center gap-1 w-16 text-brand-text hover:text-white transition-colors"
           >
             <div className="relative flex items-center justify-center h-8 w-8">
               <HiPlus className="h-6 w-6 relative z-10" />
@@ -71,7 +71,7 @@ export default function MobileNav() {
           href={session ? '/profile' : '/login'}
           className={cn(
             'flex flex-col items-center justify-center gap-1 w-16 transition-colors',
-            (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-spotify-text hover:text-white'
+            (pathname === '/profile' || pathname === '/login') ? 'text-white' : 'text-brand-text hover:text-white'
           )}
         >
           <div className="relative flex items-center justify-center h-8 w-8">

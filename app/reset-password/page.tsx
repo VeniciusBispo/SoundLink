@@ -67,9 +67,9 @@ function ResetPasswordForm() {
 
   if (!token) {
     return (
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10 text-center">
-        <p className="mb-4 text-spotify-text">Link de redefinição inválido ou ausente.</p>
-        <Link href="/forgot-password" className="font-bold text-spotify-green hover:underline">
+      <div className="w-full max-w-sm rounded-2xl bg-brand-card px-8 py-10 text-center">
+        <p className="mb-4 text-brand-text">Link de redefinição inválido ou ausente.</p>
+        <Link href="/forgot-password" className="font-bold text-brand-primary hover:underline">
           Solicitar novo link
         </Link>
       </div>
@@ -77,18 +77,18 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10">
+    <div className="w-full max-w-sm rounded-2xl bg-brand-card px-8 py-10">
       <h1 className="mb-6 text-center text-2xl font-bold text-white">Redefinir Senha</h1>
 
       {success ? (
         <div className="text-center">
           <div className="mb-4 flex justify-center">
-            <div className="rounded-full bg-spotify-green/20 p-3">
-              <HiCheck className="h-8 w-8 text-spotify-green" />
+            <div className="rounded-full bg-brand-primary/20 p-3">
+              <HiCheck className="h-8 w-8 text-brand-primary" />
             </div>
           </div>
           <h3 className="text-xl font-bold text-white">Senha alterada!</h3>
-          <p className="mt-2 text-spotify-text">
+          <p className="mt-2 text-brand-text">
             Você será redirecionado para o login em instantes...
           </p>
         </div>
@@ -111,7 +111,7 @@ function ResetPasswordForm() {
                   setConfirmPassword(strong)
                   setShowPassword(true)
                 }}
-                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-spotify-green hover:underline"
+                className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-brand-primary hover:underline"
               >
                 <HiLightningBolt size={12} />
                 Gerar senha forte
@@ -123,13 +123,13 @@ function ResetPasswordForm() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
                 placeholder="Mínimo 8 caracteres"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-spotify-text hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-white"
               >
                 {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
               </button>
@@ -143,7 +143,7 @@ function ResetPasswordForm() {
               required
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+              className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
               placeholder="Repita a nova senha"
             />
           </div>
@@ -159,7 +159,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-black px-4 py-10">
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>

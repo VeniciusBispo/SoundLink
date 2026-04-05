@@ -57,7 +57,7 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
           animate={{ y: 0 }}
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed inset-0 z-50 flex flex-col bg-spotify-black overflow-hidden"
+          className="fixed inset-0 z-50 flex flex-col bg-brand-black overflow-hidden"
         >
           {/* Dynamic blurry background based on thumbnail */}
           <div className="absolute inset-0 pointer-events-none opacity-40">
@@ -125,7 +125,7 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
               <div className="flex flex-col gap-2">
                 <div className="relative h-2 bg-white/20 rounded-full cursor-pointer group">
                   <div 
-                    className="absolute top-0 left-0 h-full bg-white group-hover:bg-spotify-green rounded-full transition-colors"
+                    className="absolute top-0 left-0 h-full bg-white group-hover:bg-brand-primary rounded-full transition-colors"
                     style={{ width: `${progressPercent}%` }}
                   />
                   <div 
@@ -155,7 +155,7 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
                     onClick={toggleShuffle}
                     className={cn(
                       "transition-all active:scale-90",
-                      isShuffle ? "text-spotify-green" : "text-white/60 hover:text-white"
+                      isShuffle ? "text-brand-primary" : "text-white/60 hover:text-white"
                     )}
                   >
                     <HiSwitchHorizontal className="h-6 w-6" />
@@ -193,12 +193,12 @@ export default function FullScreenPlayer({ isOpen, onClose }: FullScreenPlayerPr
                     onClick={toggleRepeat}
                     className={cn(
                       "relative transition-all active:scale-90",
-                      repeatMode !== 'none' ? "text-spotify-green" : "text-white/60 hover:text-white"
+                      repeatMode !== 'none' ? "text-brand-primary" : "text-white/60 hover:text-white"
                     )}
                   >
                     <HiRefresh className="h-6 w-6" />
                     {repeatMode === 'one' && (
-                      <span className="absolute -bottom-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-spotify-green text-[8px] font-bold text-black ring-1 ring-black">
+                      <span className="absolute -bottom-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-brand-primary text-[8px] font-bold text-black ring-1 ring-black">
                         1
                       </span>
                     )}

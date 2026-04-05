@@ -21,7 +21,7 @@ function MetricCard({
   label, 
   value, 
   sub, 
-  color = "text-spotify-green",
+  color = "text-brand-primary",
   trend = "up"
 }: { 
   icon: any, 
@@ -41,7 +41,7 @@ function MetricCard({
           {trend === 'up' ? '↑' : '↓'} 12%
         </div>
       </div>
-      <p className="text-spotify-text text-sm font-medium mb-1">{label}</p>
+      <p className="text-brand-text text-sm font-medium mb-1">{label}</p>
       <h3 className="text-3xl font-black text-white mb-2">{value}</h3>
       <p className="text-xs text-white/40 font-mono uppercase tracking-widest">{sub}</p>
     </div>
@@ -68,7 +68,7 @@ export default function AdminDashboardV2() {
   }, [])
 
   if (!mounted) return null
-  if (loading) return <div className="p-12 text-spotify-green animate-pulse font-mono">INITIALIZING SRE DASHBOARD...</div>
+  if (loading) return <div className="p-12 text-brand-primary animate-pulse font-mono">INITIALIZING SRE DASHBOARD...</div>
 
   const score = metrics?.summary?.soundlinkScore ?? 0
 
@@ -78,21 +78,21 @@ export default function AdminDashboardV2() {
         <div className="flex justify-between items-end">
           <div>
             <h1 className="text-4xl font-black text-white tracking-tighter">SRE Command Center</h1>
-            <p className="text-spotify-text font-mono text-sm">Real-time system observability • Node: Edge-South-1</p>
+            <p className="text-brand-text font-mono text-sm">Real-time system observability • Node: Edge-South-1</p>
           </div>
           <div className="text-right">
             <div className="inline-block p-1 bg-white/5 rounded-2xl border border-white/10">
               <div className="flex items-center gap-4 px-6 py-3">
                 <div className="text-left">
                   <p className="text-[10px] text-white/40 font-black uppercase tracking-widest">SoundLink Score</p>
-                  <p className="text-2xl font-black text-spotify-green">{score}/100</p>
+                  <p className="text-2xl font-black text-brand-primary">{score}/100</p>
                 </div>
                 <div className="w-12 h-12 rounded-full border-4 border-white/5 flex items-center justify-center relative">
                   <div 
-                    className="absolute inset-0 rounded-full border-4 border-spotify-green transition-all duration-1000"
+                    className="absolute inset-0 rounded-full border-4 border-brand-primary transition-all duration-1000"
                     style={{ clipPath: `inset(${100 - score}% 0 0 0)` }}
                   />
-                  <HiChartBar className="w-6 h-6 text-spotify-green" />
+                  <HiChartBar className="w-6 h-6 text-brand-primary" />
                 </div>
               </div>
             </div>
@@ -128,22 +128,22 @@ export default function AdminDashboardV2() {
             label="Segurança" 
             value="Hacker-Safe" 
             sub="CSP Strict Mode" 
-            color="text-spotify-green"
+            color="text-brand-primary"
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 bg-[#121212] border border-white/5 rounded-3xl p-8">
             <h3 className="text-lg font-bold text-white mb-8 flex items-center gap-2">
-              <HiChartBar className="text-spotify-green" /> Performance Histórica (Real-time)
+              <HiChartBar className="text-brand-primary" /> Performance Histórica (Real-time)
             </h3>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={metrics?.latencyHistory}>
                   <defs>
                     <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#1DB954" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#1DB954" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#EF4444" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#EF4444" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -151,9 +151,9 @@ export default function AdminDashboardV2() {
                   <YAxis stroke="#666" fontSize={10} />
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#121212', border: '1px solid #333', borderRadius: '8px' }}
-                    itemStyle={{ color: '#1DB954' }}
+                    itemStyle={{ color: '#EF4444' }}
                   />
-                  <Area type="monotone" dataKey="value" stroke="#1DB954" fillOpacity={1} fill="url(#colorValue)" strokeWidth={3} />
+                  <Area type="monotone" dataKey="value" stroke="#EF4444" fillOpacity={1} fill="url(#colorValue)" strokeWidth={3} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -169,13 +169,13 @@ export default function AdminDashboardV2() {
                 { label: 'Sanitização de Bits', val: '100%', color: 'text-blue-400' },
               ].map(item => (
                 <div key={item.label} className="flex justify-between items-center pb-4 border-b border-white/5">
-                  <span className="text-sm text-spotify-text">{item.label}</span>
+                  <span className="text-sm text-brand-text">{item.label}</span>
                   <span className={`text-xs font-mono font-bold ${item.color}`}>{item.val}</span>
                 </div>
               ))}
               <div className="mt-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
                 <p className="text-[10px] text-red-500 font-black uppercase tracking-widest mb-1">Alertas Críticos</p>
-                <p className="text-xs text-spotify-text">Nenhuma vulnerabilidade detectada na última varredura.</p>
+                <p className="text-xs text-brand-text">Nenhuma vulnerabilidade detectada na última varredura.</p>
               </div>
             </div>
           </div>

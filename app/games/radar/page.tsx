@@ -100,7 +100,7 @@ export default function RadarPage() {
                         delay: circle * 1.3,
                         ease: "linear"
                     }}
-                    className="absolute inset-0 border border-spotify-green rounded-full shadow-[0_0_20px_#1ed760]"
+                    className="absolute inset-0 border border-brand-primary rounded-full shadow-[0_0_20px_#1ed760]"
                 />
             ))}
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
@@ -113,15 +113,15 @@ export default function RadarPage() {
                 <motion.div 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="flex items-center gap-2 text-spotify-green mb-3"
+                    className="flex items-center gap-2 text-brand-primary mb-3"
                 >
                     <HiLightningBolt className="h-5 w-5 animate-pulse" />
                     <span className="text-xs font-black uppercase tracking-[0.4em]">Sintonizando...</span>
                 </motion.div>
                 <h1 className="text-5xl md:text-7xl font-black text-white italic tracking-tighter mb-4 leading-none">
-                    Radar <span className="text-spotify-green underline decoration-white/10 underline-offset-8">Musical</span>
+                    Radar <span className="text-brand-primary underline decoration-white/10 underline-offset-8">Musical</span>
                 </h1>
-                <p className="text-spotify-text text-lg max-w-xl font-medium leading-relaxed">
+                <p className="text-brand-text text-lg max-w-xl font-medium leading-relaxed">
                     Analisamos suas playlists para descobrir músicas inéditas que combinam com você.
                 </p>
             </div>
@@ -141,10 +141,10 @@ export default function RadarPage() {
                  <motion.div 
                     animate={{ rotate: 360 }}
                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border-4 border-spotify-green/20 border-t-spotify-green rounded-full"
+                    className="absolute inset-0 border-4 border-brand-primary/20 border-t-brand-primary rounded-full"
                  />
                  <div className="absolute inset-0 flex items-center justify-center">
-                    <HiMusicNote className="h-10 w-10 text-spotify-green animate-bounce" />
+                    <HiMusicNote className="h-10 w-10 text-brand-primary animate-bounce" />
                  </div>
               </div>
               <p className="text-white/40 font-black uppercase tracking-[0.3em] animate-pulse">Escanenando biblioteca...</p>
@@ -152,7 +152,7 @@ export default function RadarPage() {
         ) : error ? (
             <div className="p-20 text-center bg-white/5 rounded-[40px] border border-white/5 backdrop-blur-3xl">
                 <p className="text-white/60 font-bold">{error}</p>
-                <button onClick={fetchRadar} className="mt-4 text-spotify-green underline font-black">Tentar Novamente</button>
+                <button onClick={fetchRadar} className="mt-4 text-brand-primary underline font-black">Tentar Novamente</button>
             </div>
         ) : (
             <motion.div 
@@ -179,7 +179,7 @@ export default function RadarPage() {
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handlePlay(rec); }}
-                                    className="p-4 bg-spotify-green text-black rounded-full scale-50 group-hover:scale-100 transition-transform shadow-[0_0_30px_#1ed760]"
+                                    className="p-4 bg-brand-primary text-black rounded-full scale-50 group-hover:scale-100 transition-transform shadow-[0_0_30px_#1ed760]"
                                 >
                                     <HiPlay className="h-8 w-8" />
                                 </button>
@@ -190,13 +190,13 @@ export default function RadarPage() {
                         </div>
 
                         <div className="mb-4">
-                            <p className="text-[10px] font-black text-spotify-green uppercase tracking-widest mb-1.5 flex items-center gap-1.5 bg-spotify-green/10 w-fit px-2 py-0.5 rounded-full">
+                            <p className="text-[10px] font-black text-brand-primary uppercase tracking-widest mb-1.5 flex items-center gap-1.5 bg-brand-primary/10 w-fit px-2 py-0.5 rounded-full">
                                 <HiEmojiHappy className="h-3 w-3" /> {rec.reason}
                             </p>
-                            <h3 className="text-sm font-black text-white line-clamp-2 leading-tight group-hover:text-spotify-green transition-colors">
+                            <h3 className="text-sm font-black text-white line-clamp-2 leading-tight group-hover:text-brand-primary transition-colors">
                                 {rec.title}
                             </h3>
-                            <p className="text-[11px] text-spotify-text mt-1 font-bold">{rec.channel}</p>
+                            <p className="text-[11px] text-brand-text mt-1 font-bold">{rec.channel}</p>
                         </div>
 
                         <div className="absolute bottom-4 left-4 right-4 z-20">
@@ -208,7 +208,7 @@ export default function RadarPage() {
                                     }}
                                     className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all group/btn"
                                 >
-                                    <HiPlus className="h-4 w-4 text-spotify-green" />
+                                    <HiPlus className="h-4 w-4 text-brand-primary" />
                                     <span className="text-[10px] font-black uppercase tracking-widest">Salvar</span>
                                     <HiChevronDown className={cn("h-3 w-3 transition-transform", activeSaveId === rec.videoId && "rotate-180")} />
                                 </button>
@@ -219,7 +219,7 @@ export default function RadarPage() {
                                             initial={{ opacity: 0, y: 10, scale: 0.95 }}
                                             animate={{ opacity: 1, y: -4, scale: 1 }}
                                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute bottom-full left-0 right-0 mb-2 bg-spotify-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto z-50 p-2 scrollbar-hide"
+                                            className="absolute bottom-full left-0 right-0 mb-2 bg-brand-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-48 overflow-y-auto z-50 p-2 scrollbar-hide"
                                         >
                                             {myPlaylists.length === 0 ? (
                                                 <p className="text-[10px] text-white/40 p-3 italic">Crie uma playlist primeiro</p>
@@ -229,7 +229,7 @@ export default function RadarPage() {
                                                         key={pl.id}
                                                         onClick={(e) => { e.stopPropagation(); handleSaveToPlaylist(rec, pl.id); }}
                                                         disabled={!!isSaving}
-                                                        className="flex items-center justify-between w-full px-4 py-2 text-[11px] font-bold text-white hover:bg-spotify-green hover:text-black rounded-xl transition-colors mb-1 last:mb-0"
+                                                        className="flex items-center justify-between w-full px-4 py-2 text-[11px] font-bold text-white hover:bg-brand-primary hover:text-black rounded-xl transition-colors mb-1 last:mb-0"
                                                     >
                                                         <span className="truncate mr-2">{pl.name}</span>
                                                         {isSaving === `${rec.videoId}-${pl.id}` ? (
@@ -247,7 +247,7 @@ export default function RadarPage() {
                         </div>
 
                         {/* Decoration */}
-                        <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-spotify-green/5 blur-3xl group-hover:bg-spotify-green/20 transition-all rounded-full" />
+                        <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-brand-primary/5 blur-3xl group-hover:bg-brand-primary/20 transition-all rounded-full" />
                     </motion.div>
                 ))}
             </motion.div>

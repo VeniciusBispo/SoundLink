@@ -81,15 +81,15 @@ export default function AdminUsersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold text-white">Usuários</h2>
-            <p className="text-sm text-spotify-text">{total} cadastrados</p>
+            <p className="text-sm text-brand-text">{total} cadastrados</p>
           </div>
           <div className="relative">
-            <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-spotify-text" />
+            <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text" />
             <input
               value={q}
               onChange={(e) => { setQ(e.target.value); setPage(1) }}
               placeholder="Buscar usuário..."
-              className="rounded-xl bg-[#1a1a1a] pl-9 pr-4 py-2 text-sm text-white placeholder-spotify-text outline-none ring-1 ring-white/10 focus:ring-spotify-green w-56"
+              className="rounded-xl bg-[#1a1a1a] pl-9 pr-4 py-2 text-sm text-white placeholder-brand-text outline-none ring-1 ring-white/10 focus:ring-brand-primary w-56"
             />
           </div>
         </div>
@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
         <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-xs text-spotify-text">
+              <tr className="border-b border-white/5 text-left text-xs text-brand-text">
                 <th className="px-4 py-3 font-medium">Usuário</th>
                 <th className="px-4 py-3 font-medium">E-mail</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Cadastro</th>
@@ -118,7 +118,7 @@ export default function AdminUsersPage() {
                 ))
               ) : users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-spotify-text">
+                  <td colSpan={6} className="px-4 py-10 text-center text-brand-text">
                     Nenhum usuário encontrado.
                   </td>
                 </tr>
@@ -126,17 +126,17 @@ export default function AdminUsersPage() {
                 <tr key={user.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-spotify-green/20 text-xs font-bold text-spotify-green">
+                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary/20 text-xs font-bold text-brand-primary">
                         {user.username[0].toUpperCase()}
                       </div>
                       <span className="font-medium text-white">{user.username}</span>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-spotify-text">{user.email}</td>
-                  <td className="px-4 py-3 text-spotify-text hidden md:table-cell">{formatDate(user.createdAt)}</td>
-                  <td className="px-4 py-3 text-spotify-text hidden md:table-cell">{user._count.playlists}</td>
+                  <td className="px-4 py-3 text-brand-text">{user.email}</td>
+                  <td className="px-4 py-3 text-brand-text hidden md:table-cell">{formatDate(user.createdAt)}</td>
+                  <td className="px-4 py-3 text-brand-text hidden md:table-cell">{user._count.playlists}</td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${user.role === 'ADMIN' ? 'bg-spotify-green/20 text-spotify-green' : 'bg-white/10 text-spotify-text'}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${user.role === 'ADMIN' ? 'bg-brand-primary/20 text-brand-primary' : 'bg-white/10 text-brand-text'}`}>
                       {user.role}
                     </span>
                   </td>
@@ -147,13 +147,13 @@ export default function AdminUsersPage() {
                           <button
                             onClick={() => toggleRole(user)}
                             title={user.role === 'ADMIN' ? 'Rebaixar para USER' : 'Promover a ADMIN'}
-                            className="rounded-lg p-1.5 text-spotify-text hover:bg-spotify-green/10 hover:text-spotify-green transition-colors"
+                            className="rounded-lg p-1.5 text-brand-text hover:bg-brand-primary/10 hover:text-brand-primary transition-colors"
                           >
                             {user.role === 'ADMIN' ? <HiUser className="h-4 w-4" /> : <HiShieldCheck className="h-4 w-4" />}
                           </button>
                           <button
                             onClick={() => setConfirmDelete(user.id)}
-                            className="rounded-lg p-1.5 text-spotify-text hover:bg-red-500/10 hover:text-red-400 transition-colors"
+                            className="rounded-lg p-1.5 text-brand-text hover:bg-red-500/10 hover:text-red-400 transition-colors"
                           >
                             <HiTrash className="h-4 w-4" />
                           </button>
@@ -170,11 +170,11 @@ export default function AdminUsersPage() {
         {/* Pagination */}
         {pages > 1 && (
           <div className="flex items-center justify-center gap-4">
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronLeft className="h-5 w-5" />
             </button>
-            <span className="text-sm text-spotify-text">{page} / {pages}</span>
-            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <span className="text-sm text-brand-text">{page} / {pages}</span>
+            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronRight className="h-5 w-5" />
             </button>
           </div>
@@ -186,7 +186,7 @@ export default function AdminUsersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
           <div className="rounded-2xl bg-[#1a1a1a] p-6 w-full max-w-sm">
             <h3 className="text-lg font-bold text-white mb-2">Excluir usuário?</h3>
-            <p className="text-sm text-spotify-text mb-6">Essa ação é permanente e removerá o usuário e todas as suas playlists.</p>
+            <p className="text-sm text-brand-text mb-6">Essa ação é permanente e removerá o usuário e todas as suas playlists.</p>
             <div className="flex gap-3">
               <button onClick={() => setConfirmDelete(null)} className="flex-1 rounded-full border border-white/10 py-2 text-sm font-semibold text-white hover:bg-white/5">
                 Cancelar

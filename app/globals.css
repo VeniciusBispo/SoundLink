@@ -5,6 +5,34 @@
 @layer base {
   :root {
     color-scheme: dark;
+    --brand-primary: 239 68 68;    /* Red 500 */
+    --brand-secondary: 249 115 22; /* Orange 500 */
+    --brand-accent: 236 72 153;    /* Pink 500 */
+    --brand-black: 2 6 23;        /* Slate 950 */
+    --brand-dark: 15 23 42;       /* Slate 900 */
+    --brand-card: 30 41 59;       /* Slate 800 */
+    --brand-hover: 51 65 85;      /* Slate 700 */
+    --brand-text: 148 163 184;    /* Slate 400 */
+  }
+
+  [data-theme='purple'] {
+    --brand-primary: 139 92 246;   /* Purple 500 */
+    --brand-secondary: 59 130 246; /* Blue 500 */
+  }
+
+  [data-theme='indigo'] {
+    --brand-primary: 99 102 241;   /* Indigo 500 */
+    --brand-secondary: 168 85 247; /* Purple 500 */
+  }
+
+  [data-theme='sunset'] {
+    --brand-primary: 244 63 94;    /* Rose 500 */
+    --brand-secondary: 245 158 11; /* Amber 500 */
+  }
+
+  [data-theme='emerald'] {
+    --brand-primary: 16 185 129;   /* Emerald 500 */
+    --brand-secondary: 14 165 233; /* Sky 500 */
   }
 
   * {
@@ -12,7 +40,7 @@
   }
 
   body {
-    @apply bg-spotify-black text-white;
+    @apply bg-brand-black text-white;
   }
 
   /* Scrollbar styling */
@@ -25,11 +53,11 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-spotify-hover;
+    @apply rounded-full bg-brand-hover;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-spotify-text;
+    @apply bg-brand-text;
   }
 }
 

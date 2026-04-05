@@ -53,7 +53,7 @@ export default function AdminFeedbackPage() {
       <div className="flex flex-col gap-4">
         <div>
           <h2 className="text-xl font-bold text-white">Feedbacks</h2>
-          <p className="text-sm text-spotify-text">{total} mensagens recebidas</p>
+          <p className="text-sm text-brand-text">{total} mensagens recebidas</p>
         </div>
 
         {loading ? (
@@ -65,7 +65,7 @@ export default function AdminFeedbackPage() {
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center gap-3 py-16 text-center">
             <HiChatAlt2 className="h-14 w-14 text-white/10" />
-            <p className="text-spotify-text">Nenhum feedback recebido ainda.</p>
+            <p className="text-brand-text">Nenhum feedback recebido ainda.</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -75,11 +75,11 @@ export default function AdminFeedbackPage() {
                   <p className="text-sm text-white leading-relaxed whitespace-pre-wrap">{item.message}</p>
                   <div className="flex flex-wrap items-center gap-4">
                     {item.email && (
-                      <span className="flex items-center gap-1.5 text-xs text-spotify-green">
+                      <span className="flex items-center gap-1.5 text-xs text-brand-primary">
                         <HiMail className="h-3.5 w-3.5" />{item.email}
                       </span>
                     )}
-                    <span className="flex items-center gap-1.5 text-xs text-spotify-text">
+                    <span className="flex items-center gap-1.5 text-xs text-brand-text">
                       <HiCalendar className="h-3.5 w-3.5" />{formatDate(item.createdAt)}
                     </span>
                   </div>
@@ -87,7 +87,7 @@ export default function AdminFeedbackPage() {
                 <button
                   onClick={() => handleDelete(item.id)}
                   disabled={deleting === item.id}
-                  className="flex-shrink-0 rounded-lg p-2 text-spotify-text opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all disabled:opacity-50"
+                  className="flex-shrink-0 rounded-lg p-2 text-brand-text opacity-0 group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all disabled:opacity-50"
                 >
                   <HiTrash className="h-4 w-4" />
                 </button>
@@ -98,11 +98,11 @@ export default function AdminFeedbackPage() {
 
         {pages > 1 && (
           <div className="flex items-center justify-center gap-4 py-2">
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronLeft className="h-5 w-5" />
             </button>
-            <span className="text-sm text-spotify-text">{page} / {pages}</span>
-            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <span className="text-sm text-brand-text">{page} / {pages}</span>
+            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronRight className="h-5 w-5" />
             </button>
           </div>

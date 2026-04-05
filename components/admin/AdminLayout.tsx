@@ -48,12 +48,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <aside className="flex w-56 flex-shrink-0 flex-col border-r border-white/5 bg-[#111111]">
         {/* Brand */}
         <div className="flex items-center gap-2.5 border-b border-white/5 px-5 py-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-spotify-green">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-primary">
             <HiShieldCheck className="h-5 w-5 text-black" />
           </div>
           <div>
             <p className="text-sm font-extrabold text-white">SoundLink</p>
-            <p className="text-[10px] font-medium text-spotify-green uppercase tracking-widest">Administração</p>
+            <p className="text-[10px] font-medium text-brand-primary uppercase tracking-widest">Administração</p>
           </div>
         </div>
 
@@ -68,11 +68,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 className={cn(
                   'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all',
                   active
-                    ? 'bg-spotify-green/10 text-spotify-green'
-                    : 'text-spotify-text hover:bg-white/5 hover:text-white'
+                    ? 'bg-brand-primary/10 text-brand-primary'
+                    : 'text-brand-text hover:bg-white/5 hover:text-white'
                 )}
               >
-                <Icon className={cn('h-5 w-5 flex-shrink-0', active && 'text-spotify-green')} />
+                <Icon className={cn('h-5 w-5 flex-shrink-0', active && 'text-brand-primary')} />
                 {label}
               </Link>
             )
@@ -83,14 +83,14 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="border-t border-white/5 p-3 flex flex-col gap-1">
           <Link
             href="/"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-spotify-text hover:bg-white/5 hover:text-white transition-colors"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-brand-text hover:bg-white/5 hover:text-white transition-colors"
           >
             <HiMusicNote className="h-5 w-5" />
             Voltar ao site
           </Link>
           <button
             onClick={() => signOut({ callbackUrl: `${window.location.origin.replace(/\.$/, '')}/login` })}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-spotify-text hover:bg-white/5 hover:text-white transition-colors text-left"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-brand-text hover:bg-white/5 hover:text-white transition-colors text-left"
           >
             <HiLogout className="h-5 w-5" />
             Sair
@@ -106,7 +106,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             {navItems.find((n) => (n.exact ? pathname === n.href : pathname.startsWith(n.href)))?.label ?? 'Admin'}
           </h1>
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-spotify-green text-xs font-bold text-black">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary text-xs font-bold text-black">
               {session.user.username[0].toUpperCase()}
             </div>
             <span className="text-sm text-white">{session.user.username}</span>

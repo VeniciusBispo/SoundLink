@@ -17,11 +17,11 @@ export default function YouTubeLinkHelper({ mode }: YouTubeLinkHelperProps) {
     <div className="mt-4 rounded-xl border border-white/10 bg-white/5 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex w-full items-center justify-between px-4 py-3 text-sm text-spotify-text transition-colors hover:bg-white/5 hover:text-white"
+        className="flex w-full items-center justify-between px-4 py-3 text-sm text-brand-text transition-colors hover:bg-white/5 hover:text-white"
         aria-expanded={isExpanded}
       >
         <div className="flex items-center gap-2 font-medium">
-          <HiInformationCircle className="h-5 w-5 text-spotify-green" />
+          <HiInformationCircle className="h-5 w-5 text-brand-primary" />
           <span>Como copiar o link {isSong ? 'da música' : 'da playlist'}?</span>
         </div>
         {isExpanded ? (
@@ -41,7 +41,7 @@ export default function YouTubeLinkHelper({ mode }: YouTubeLinkHelperProps) {
           >
             <div className="border-t border-white/5 px-4 pb-4 pt-3">
               <div className="flex flex-col gap-4">
-                <div className="text-xs text-spotify-text space-y-2">
+                <div className="text-xs text-brand-text space-y-2">
                   <p>
                     <strong>Passo 1:</strong> Abra {isSong ? 'o vídeo da música no YouTube' : 'a playlist no YouTube Music'}.
                   </p>

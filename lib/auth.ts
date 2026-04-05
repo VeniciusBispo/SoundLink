@@ -11,6 +11,62 @@ if (process.env.NEXTAUTH_URL) {
   process.env.NEXTAUTH_URL = process.env.NEXTAUTH_URL.replace(/\.(?=\/|$)/, '')
 }
 
+export async function authorizeUser(credentials: Record<string, string> | undefined) {
+  if (!credentials?.identifier || !credentials?.password) {
+    // Retornar null indica falha genérica de credenciais
+    return null
+  }
+
+  const isEmail = credentials.identifier.includes('@')
+
+  const user = await prisma.user.findFirst({
+    where: isEmail
+      ? { email: credentials.identifier.toLowerCase() }
+      : { username: credentials.identifier },
+  })
+
+  if (!user || !user.password) {
+    return null
+  }
+
+  const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+
+  if (!isPasswordValid) return null
+
+  const emailProviderConfigured = !!(
+    process.env.BREVO_API_KEY ||
+    process.env.SMTP_PASS ||
+    process.env.SMTP_HOST ||
+    process.env.RESEND_API_KEY
+  )
+
+  // Ao lançar erro aqui SEM o try/catch, o NextAuth redireciona para:
+  // /api/auth/signin?error=EMAIL_NOT_VERIFIED
+  if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
+    throw new Error("EMAIL_NOT_VERIFIED")
+  }
+
+  if (!emailProviderConfigured && !user.emailVerified) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: new Date(),
+        verificationToken: null,
+        verificationExpires: null
+      },
+    })
+  }
+
+  return {
+    id: user.id,
+    email: user.email!, // Email é obrigatório no seu schema
+    username: user.username,
+    role: user.role,
+    avatar: user.avatar,
+    banner: user.banner
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   // adapter: PrismaAdapter(prisma) as NextAuthOptions['adapter'],
   providers: [
@@ -22,59 +78,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Senha', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.identifier || !credentials?.password) {
-          // Retornar null indica falha genérica de credenciais
-          return null
-        }
-
-        const isEmail = credentials.identifier.includes('@')
-
-        const user = await prisma.user.findFirst({
-          where: isEmail
-            ? { email: credentials.identifier.toLowerCase() }
-            : { username: credentials.identifier },
-        })
-
-        if (!user || !user.password) {
-          return null
-        }
-
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
-        if (!isPasswordValid) return null
-
-        const emailProviderConfigured = !!(
-          process.env.BREVO_API_KEY ||
-          process.env.SMTP_PASS ||
-          process.env.SMTP_HOST ||
-          process.env.RESEND_API_KEY
-        )
-
-        // Ao lançar erro aqui SEM o try/catch, o NextAuth redireciona para:
-        // /api/auth/signin?error=EMAIL_NOT_VERIFIED
-        if (emailProviderConfigured && user.verificationToken && !user.emailVerified) {
-          throw new Error("EMAIL_NOT_VERIFIED")
-        }
-
-        if (!emailProviderConfigured && !user.emailVerified) {
-          await prisma.user.update({
-            where: { id: user.id },
-            data: {
-              emailVerified: new Date(),
-              verificationToken: null,
-              verificationExpires: null
-            },
-          })
-        }
-
-        return {
-          id: user.id,
-          email: user.email!, // Email é obrigatório no seu schema
-          username: user.username,
-          role: user.role,
-          avatar: user.avatar,
-          banner: user.banner
-        }
+        return authorizeUser(credentials as Record<string, string>)
       },
     }),
   ],

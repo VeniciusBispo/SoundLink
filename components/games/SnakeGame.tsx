@@ -267,7 +267,7 @@ export default function SnakeGame() {
   if (!mounted) {
     return (
       <div className="w-full h-screen bg-black flex items-center justify-center">
-        <div className="text-spotify-green animate-pulse font-black tracking-widest uppercase text-xs">
+        <div className="text-brand-primary animate-pulse font-black tracking-widest uppercase text-xs">
           Sincronizando 3D...
         </div>
       </div>
@@ -280,11 +280,11 @@ export default function SnakeGame() {
       <div className="absolute top-0 left-0 w-full p-3 sm:p-12 z-20 flex justify-between items-start pointer-events-none">
         <div className="bg-black/60 backdrop-blur-3xl border border-white/10 rounded-xl sm:rounded-3xl p-3 sm:p-8 flex items-center gap-3 sm:gap-8 pointer-events-auto shadow-2xl">
           <div className="relative">
-            <HiStar className="h-5 w-5 sm:h-10 sm:h-10 text-spotify-green relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
+            <HiStar className="h-5 w-5 sm:h-10 sm:h-10 text-brand-primary relative z-10 drop-shadow-[0_0_15px_#00FF88]" />
             <motion.div
               animate={{ scale: [1, 2], opacity: [0.6, 0] }}
               transition={{ repeat: Infinity, duration: 1.5 }}
-              className="absolute inset-0 bg-spotify-green rounded-full blur-2xl"
+              className="absolute inset-0 bg-brand-primary rounded-full blur-2xl"
             />
           </div>
           <div>
@@ -298,10 +298,10 @@ export default function SnakeGame() {
         <div className="flex flex-col items-end gap-2 sm:gap-6 pointer-events-auto">
           {/* Volume Indicator - Hidden on very small mobile if needed, but keeping for now */}
           <div className="hidden xs:flex bg-black/40 backdrop-blur-2xl border border-white/10 rounded-lg sm:rounded-2xl px-3 sm:px-8 py-2 sm:py-5 items-center gap-3 sm:gap-6 shadow-xl">
-            <HiVolumeUp className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green animate-pulse" />
+            <HiVolumeUp className="h-4 w-4 sm:h-8 sm:h-8 text-brand-primary animate-pulse" />
             <div className="h-1.5 w-16 sm:h-2.5 sm:w-48 bg-white/5 rounded-full overflow-hidden border border-white/5">
               <motion.div
-                className="h-full bg-gradient-to-r from-spotify-green to-emerald-400 shadow-[0_0_20px_#00FF88]"
+                className="h-full bg-gradient-to-r from-brand-primary to-emerald-400 shadow-[0_0_20px_#00FF88]"
                 animate={{ width: `${Math.min(100, (score / 30) * 100)}%` }}
               />
             </div>
@@ -315,9 +315,9 @@ export default function SnakeGame() {
             className="bg-black/60 backdrop-blur-2xl border border-white/10 rounded-lg sm:rounded-2xl px-3 sm:px-8 py-2 sm:py-5 flex items-center gap-2 sm:gap-6 shadow-xl transition-colors hover:bg-white/10"
           >
             {isPaused ? (
-              <HiPlay className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green" />
+              <HiPlay className="h-4 w-4 sm:h-8 sm:h-8 text-brand-primary" />
             ) : (
-              <HiPause className="h-4 w-4 sm:h-8 sm:h-8 text-spotify-green" />
+              <HiPause className="h-4 w-4 sm:h-8 sm:h-8 text-brand-primary" />
             )}
             <span className="text-white text-[10px] sm:text-lg font-bold tracking-wider uppercase">
               {isPaused ? 'Resumir' : 'Pausar'}
@@ -332,7 +332,7 @@ export default function SnakeGame() {
           <div />
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.y !== 1) setNextDirection({ x: 0, y: -1 }) }}
-            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-brand-primary active:text-black transition-all shadow-2xl"
           >
             <HiChevronRight className="h-8 w-8 -rotate-90" />
           </button>
@@ -340,7 +340,7 @@ export default function SnakeGame() {
           
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.x !== 1) setNextDirection({ x: -1, y: 0 }) }}
-            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-brand-primary active:text-black transition-all shadow-2xl"
           >
             <HiChevronRight className="h-8 w-8 rotate-180" />
           </button>
@@ -349,7 +349,7 @@ export default function SnakeGame() {
           </div>
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.x !== -1) setNextDirection({ x: 1, y: 0 }) }}
-            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-brand-primary active:text-black transition-all shadow-2xl"
           >
             <HiChevronRight className="h-8 w-8" />
           </button>
@@ -357,7 +357,7 @@ export default function SnakeGame() {
           <div />
           <button 
             onPointerDown={(e) => { e.preventDefault(); if (direction.y !== -1) setNextDirection({ x: 0, y: 1 }) }}
-            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-spotify-green active:text-black transition-all shadow-2xl"
+            className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl flex items-center justify-center active:bg-brand-primary active:text-black transition-all shadow-2xl"
           >
             <HiChevronRight className="h-8 w-8 rotate-90" />
           </button>
@@ -394,19 +394,19 @@ export default function SnakeGame() {
               className="flex flex-col items-center gap-4 sm:gap-6 max-w-4xl w-full py-8 sm:py-12 px-4"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="p-2 sm:p-3 bg-spotify-green/20 rounded-xl sm:rounded-2xl text-spotify-green">
+                <div className="p-2 sm:p-3 bg-brand-primary/20 rounded-xl sm:rounded-2xl text-brand-primary">
                   <HiUserGroup className="h-6 w-6 sm:h-8 sm:h-8" />
                 </div>
                 <h2 className="text-3xl sm:text-5xl font-black text-white italic tracking-tighter uppercase">Ritmo Final</h2>
               </div>
-              <div className="text-5xl sm:text-7xl font-black text-spotify-green mb-4 sm:mb-8 tracking-tighter italic">
+              <div className="text-5xl sm:text-7xl font-black text-brand-primary mb-4 sm:mb-8 tracking-tighter italic">
                 {currentScore.toLocaleString()}
               </div>
 
               <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
                 <button
                   onClick={resetGame}
-                  className="flex items-center gap-2 rounded-full bg-spotify-green px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                  className="flex items-center gap-2 rounded-full bg-brand-primary px-6 sm:px-10 py-3 sm:py-4 text-sm sm:text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
                 >
                   <HiRefresh className="h-5 w-5 sm:h-6 sm:h-6" /> JOGAR NOVAMENTE
                 </button>

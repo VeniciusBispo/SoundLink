@@ -34,7 +34,7 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
             "lg:w-64 flex-shrink-0 flex flex-col gap-4",
             !isGameIndex && "hidden lg:flex"
           )}>
-            <div className="rounded-2xl bg-spotify-dark p-4 border border-white/5">
+            <div className="rounded-2xl bg-brand-dark p-4 border border-white/5">
               <h2 className="text-white font-bold mb-4 px-2">Outros Jogos</h2>
               <div className="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-hide">
                 {games.map((game) => (
@@ -44,8 +44,8 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
                     className={cn(
                       'flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-all whitespace-nowrap lg:whitespace-normal group',
                       pathname === game.href
-                        ? 'bg-spotify-green text-black'
-                        : 'bg-white/5 text-spotify-text hover:bg-white/10 hover:text-white'
+                        ? 'bg-brand-primary text-black'
+                        : 'bg-white/5 text-brand-text hover:bg-white/10 hover:text-white'
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -57,7 +57,7 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
                         "text-[9px] uppercase tracking-tighter px-1.5 py-0.5 rounded-md font-bold",
                         pathname === game.href
                           ? "bg-black/20 text-black"
-                          : (game.badge === 'Novo' ? "bg-spotify-green/20 text-spotify-green" : "bg-white/10 text-white/40")
+                          : (game.badge === 'Novo' ? "bg-brand-primary/20 text-brand-primary" : "bg-white/10 text-white/40")
                       )}>
                         {game.badge}
                       </span>
@@ -73,7 +73,7 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
             <div className="lg:hidden px-4 mb-2">
               <Link 
                 href="/games"
-                className="text-[10px] font-black uppercase tracking-[0.2em] text-spotify-text hover:text-white flex items-center gap-2"
+                className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-text hover:text-white flex items-center gap-2"
               >
                 <span>←</span> Voltar para Jogos
               </Link>
@@ -88,12 +88,12 @@ export default function GamesLayout({ children }: { children: React.ReactNode })
              </div>
 
              {/* Mobile-only Restriction Message */}
-             <div className="md:hidden flex-1 flex flex-col items-center justify-center py-10 px-6 text-center bg-spotify-dark/50 rounded-2xl border border-white/5 mx-2">
-                <div className="h-16 w-16 bg-spotify-green/10 rounded-full flex items-center justify-center mb-6">
-                  <HiPuzzle className="h-8 w-8 text-spotify-green" />
+             <div className="md:hidden flex-1 flex flex-col items-center justify-center py-10 px-6 text-center bg-brand-dark/50 rounded-2xl border border-white/5 mx-2">
+                <div className="h-16 w-16 bg-brand-primary/10 rounded-full flex items-center justify-center mb-6">
+                  <HiPuzzle className="h-8 w-8 text-brand-primary" />
                 </div>
                 <h2 className="text-xl font-black text-white mb-3 italic uppercase text-balance">Jogo não disponível em celular</h2>
-                <p className="text-spotify-text text-sm font-medium leading-relaxed text-balance">
+                <p className="text-brand-text text-sm font-medium leading-relaxed text-balance">
                   Mini jogos exigem controles precisos e tela ampla. 
                   Por favor, use um computador para jogar {pathname.split('/').pop()?.replace('-', ' ')}.
                 </p>

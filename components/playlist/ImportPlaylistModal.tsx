@@ -152,7 +152,7 @@ export default function ImportPlaylistModal({
         role="dialog"
         aria-modal="true"
         aria-label="Importar playlist do YouTube"
-        className="relative flex w-full max-w-2xl flex-col rounded-xl bg-spotify-card shadow-2xl"
+        className="relative flex w-full max-w-2xl flex-col rounded-xl bg-brand-card shadow-2xl"
         style={{ maxHeight: '90vh' }}
       >
         {/* Header */}
@@ -160,7 +160,7 @@ export default function ImportPlaylistModal({
           <h2 className="text-lg font-bold text-white">Importar playlist do YouTube</h2>
           <button
             onClick={handleClose}
-            className="rounded-full p-1 text-spotify-text transition-colors hover:bg-white/10 hover:text-white"
+            className="rounded-full p-1 text-brand-text transition-colors hover:bg-white/10 hover:text-white"
             aria-label="Fechar"
           >
             <HiX className="h-5 w-5" />
@@ -176,7 +176,7 @@ export default function ImportPlaylistModal({
               onChange={(e) => setUrl(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleFetch() }}
               placeholder="https://www.youtube.com/playlist?list=..."
-              className="min-w-0 flex-1 rounded-lg bg-white/10 px-3 py-2 text-sm text-white placeholder:text-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+              className="min-w-0 flex-1 rounded-lg bg-white/10 px-3 py-2 text-sm text-white placeholder:text-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
             />
             <Button
               variant="primary"
@@ -210,7 +210,7 @@ export default function ImportPlaylistModal({
                 {playlistTitle && (
                   <p className="text-sm font-semibold text-white truncate max-w-xs">{playlistTitle}</p>
                 )}
-                <p className="text-xs text-spotify-text">
+                <p className="text-xs text-brand-text">
                   {items.length} vídeos encontrados
                   {duplicatesCount > 0 && (
                     <span className="ml-1 text-yellow-400">· {duplicatesCount} já na playlist</span>
@@ -220,14 +220,14 @@ export default function ImportPlaylistModal({
               <div className="flex gap-2">
                 <button
                   onClick={selectAll}
-                  className="text-xs text-spotify-green hover:underline"
+                  className="text-xs text-brand-primary hover:underline"
                 >
                   Todos
                 </button>
-                <span className="text-xs text-spotify-text">/</span>
+                <span className="text-xs text-brand-text">/</span>
                 <button
                   onClick={deselectAll}
-                  className="text-xs text-spotify-text hover:text-white"
+                  className="text-xs text-brand-text hover:text-white"
                 >
                   Nenhum
                 </button>
@@ -250,7 +250,7 @@ export default function ImportPlaylistModal({
                       type="checkbox"
                       checked={checked}
                       onChange={() => toggleItem(item.videoId)}
-                      className="h-4 w-4 shrink-0 accent-spotify-green"
+                      className="h-4 w-4 shrink-0 accent-brand-primary"
                     />
                     {/* Thumbnail */}
                     <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded">
@@ -264,14 +264,14 @@ export default function ImportPlaylistModal({
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center bg-white/10">
-                          <HiMusicNote className="h-4 w-4 text-spotify-text" />
+                          <HiMusicNote className="h-4 w-4 text-brand-text" />
                         </div>
                       )}
                     </div>
                     {/* Info */}
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium text-white">{item.title}</p>
-                      <p className="truncate text-xs text-spotify-text">{item.channel}</p>
+                      <p className="truncate text-xs text-brand-text">{item.channel}</p>
                     </div>
                     {/* Duplicate badge OR duration */}
                     {isDuplicate ? (
@@ -279,7 +279,7 @@ export default function ImportPlaylistModal({
                         Na playlist
                       </span>
                     ) : item.duration > 0 ? (
-                      <span className="shrink-0 text-xs text-spotify-text">
+                      <span className="shrink-0 text-xs text-brand-text">
                         {formatDuration(item.duration)}
                       </span>
                     ) : null}
@@ -310,12 +310,12 @@ export default function ImportPlaylistModal({
         {/* Success state */}
         {importResult && (
           <div className="flex flex-col items-center gap-4 px-6 py-8 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-spotify-green/20">
-              <HiCheck className="h-8 w-8 text-spotify-green" />
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-primary/20">
+              <HiCheck className="h-8 w-8 text-brand-primary" />
             </div>
             <div>
               <p className="text-lg font-bold text-white">Importação concluída!</p>
-              <p className="mt-1 text-sm text-spotify-text">
+              <p className="mt-1 text-sm text-brand-text">
                 <span className="font-semibold text-white">{importResult.imported}</span>{' '}
                 {importResult.imported === 1 ? 'música adicionada' : 'músicas adicionadas'}
                 {importResult.skipped > 0 && (
@@ -332,7 +332,7 @@ export default function ImportPlaylistModal({
         {/* Empty state after fetch */}
         {!isFetching && items.length === 0 && !fetchError && url && (
           <div className="px-6 pb-6 text-center">
-            <p className="text-sm text-spotify-text">Nenhum vídeo encontrado nesta playlist.</p>
+            <p className="text-sm text-brand-text">Nenhum vídeo encontrado nesta playlist.</p>
           </div>
         )}
       </div>

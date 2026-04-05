@@ -125,7 +125,7 @@ export default function BlindTestGame() {
   if (loading) {
     return (
       <div className="flex h-[60vh] flex-col items-center justify-center gap-4">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-spotify-green border-t-transparent" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-primary border-t-transparent" />
         <p className="font-bold text-white/50 animate-pulse">CARREGANDO DESAFIOS...</p>
       </div>
     )
@@ -137,7 +137,7 @@ export default function BlindTestGame() {
         <HiX className="h-16 w-16 text-red-500 opacity-20" />
         <div>
             <h2 className="text-2xl font-black text-white mb-2 uppercase">OPS! ALGO DEU ERRADO</h2>
-            <p className="text-spotify-text font-bold opacity-60 uppercase tracking-widest text-sm">{error}</p>
+            <p className="text-brand-text font-bold opacity-60 uppercase tracking-widest text-sm">{error}</p>
         </div>
         <button 
             onClick={() => window.location.reload()}
@@ -158,15 +158,15 @@ export default function BlindTestGame() {
       >
         <HiStar className="h-20 w-20 text-yellow-400 mb-6 drop-shadow-[0_0_30px_rgba(250,204,21,0.4)]" />
         <h2 className="text-4xl font-black text-white mb-2 italic uppercase">FIM DE RECITAL!</h2>
-        <p className="text-spotify-text text-lg mb-8 uppercase tracking-widest font-bold opacity-40">Sua performance no Blind Test</p>
-        <div className="text-7xl font-black text-spotify-green mb-10 tracking-tighter italic">
+        <p className="text-brand-text text-lg mb-8 uppercase tracking-widest font-bold opacity-40">Sua performance no Blind Test</p>
+        <div className="text-7xl font-black text-brand-primary mb-10 tracking-tighter italic">
           {currentScore.toLocaleString()}
         </div>
         
         <div className="flex flex-wrap justify-center gap-4 mb-12">
             <button
                 onClick={() => window.location.reload()}
-                className="flex items-center gap-2 rounded-full bg-spotify-green px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
+                className="flex items-center gap-2 rounded-full bg-brand-primary px-10 py-4 text-lg font-bold text-black transition-transform hover:scale-105 active:scale-95"
             >
                 <HiRefresh className="h-6 w-6" /> JOGAR NOVAMENTE
             </button>
@@ -224,7 +224,7 @@ export default function BlindTestGame() {
             "flex items-center gap-2 sm:gap-3 px-3 sm:px-6 py-1.5 sm:py-3 rounded-lg sm:rounded-2xl border transition-all duration-300",
             timer <= 3 ? "border-red-500 bg-red-500/10 animate-pulse" : "border-white/10 bg-white/5"
         )}>
-            <HiClock className={cn("h-4 w-4 sm:h-6 sm:h-6", timer <= 3 ? "text-red-500" : "text-spotify-green")} />
+            <HiClock className={cn("h-4 w-4 sm:h-6 sm:h-6", timer <= 3 ? "text-red-500" : "text-brand-primary")} />
             <span className={cn("text-base sm:text-2xl font-black min-w-[1rem] sm:min-w-[1.5rem]", timer <= 3 ? "text-red-500" : "text-white")}>
                 {timer}s
             </span>
@@ -241,12 +241,12 @@ export default function BlindTestGame() {
 
       <div className="relative mb-6 sm:mb-12">
         <div className="flex flex-col items-center text-center">
-            <div className="w-24 h-24 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-spotify-green/20 to-purple-600/10 flex items-center justify-center border-4 border-white/5 shadow-2xl relative mb-4 sm:mb-8">
+            <div className="w-24 h-24 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-brand-primary/20 to-purple-600/10 flex items-center justify-center border-4 border-white/5 shadow-2xl relative mb-4 sm:mb-8">
                 <div className={cn(
-                    "absolute inset-0 rounded-full border-4 border-spotify-green animate-ping opacity-20",
+                    "absolute inset-0 rounded-full border-4 border-brand-primary animate-ping opacity-20",
                     isAnswered && "hidden"
                 )} />
-                <HiMusicNote className="h-10 w-10 sm:h-20 sm:h-20 text-spotify-green drop-shadow-[0_0_20px_#1ed760]" />
+                <HiMusicNote className="h-10 w-10 sm:h-20 sm:h-20 text-brand-primary drop-shadow-[0_0_20px_#1ed760]" />
             </div>
             <h2 className="text-xl sm:text-4xl md:text-5xl font-black text-white italic tracking-tighter max-w-xl line-clamp-2 px-4 uppercase">
                 QUAL É A MÚSICA?
@@ -261,7 +261,7 @@ export default function BlindTestGame() {
           
           let stateClass = "bg-white/5 border-white/5 hover:bg-white/10"
           if (isAnswered) {
-             if (isCorrectOption) stateClass = "bg-spotify-green/20 border-spotify-green text-spotify-green"
+             if (isCorrectOption) stateClass = "bg-brand-primary/20 border-brand-primary text-brand-primary"
              else if (isSelected) stateClass = "bg-red-500/20 border-red-500 text-red-500"
              else stateClass = "opacity-40 grayscale"
           }
@@ -284,7 +284,7 @@ export default function BlindTestGame() {
                    <h3 className="text-sm sm:text-lg font-black text-white truncate">{option.title}</h3>
                    <p className="text-[9px] sm:text-xs font-bold text-white/50 uppercase tracking-widest mt-0.5 sm:mt-1 truncate">{option.channel}</p>
                 </div>
-                {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-spotify-green flex-shrink-0" />}
+                {isAnswered && isCorrectOption && <HiCheck className="h-5 w-5 sm:h-6 sm:h-6 text-brand-primary flex-shrink-0" />}
                 {isAnswered && isSelected && !isCorrectOption && <HiX className="h-5 w-5 sm:h-6 sm:h-6 text-red-500 flex-shrink-0" />}
               </div>
             </motion.button>
@@ -300,7 +300,7 @@ export default function BlindTestGame() {
         >
             <div className={cn(
                 "px-8 py-4 rounded-full font-black text-sm tracking-widest uppercase flex items-center gap-3",
-                isCorrect ? "bg-spotify-green text-black" : "bg-red-500 text-white"
+                isCorrect ? "bg-brand-primary text-black" : "bg-red-500 text-white"
             )}>
                 {isCorrect ? (
                     <>🚀 EXCELENTE! VOCE ACERTOU</>

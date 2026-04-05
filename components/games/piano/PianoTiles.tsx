@@ -287,10 +287,10 @@ export default function PianoTiles() {
         
         <div className="flex flex-col lg:flex-row gap-8 items-start justify-center w-full max-w-7xl">
             <div className="w-full lg:w-1/2">
-                <div className="mb-4 sm:mb-8 p-4 sm:p-6 bg-gradient-to-br from-spotify-green/20 to-transparent rounded-2xl sm:rounded-[32px] border border-white/5 relative overflow-hidden group">
-                    <div className="absolute -top-10 -right-10 w-24 sm:w-40 h-24 sm:h-40 bg-spotify-green/10 blur-[40px] sm:blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
-                    <h2 className="text-2xl sm:text-4xl font-black mb-1">Piano <span className="text-spotify-green">Pro</span></h2>
-                    <p className="text-spotify-text text-[10px] sm:text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
+                <div className="mb-4 sm:mb-8 p-4 sm:p-6 bg-gradient-to-br from-brand-primary/20 to-transparent rounded-2xl sm:rounded-[32px] border border-white/5 relative overflow-hidden group">
+                    <div className="absolute -top-10 -right-10 w-24 sm:w-40 h-24 sm:h-40 bg-brand-primary/10 blur-[40px] sm:blur-[60px] rounded-full group-hover:scale-150 transition-transform duration-1000" />
+                    <h2 className="text-2xl sm:text-4xl font-black mb-1">Piano <span className="text-brand-primary">Pro</span></h2>
+                    <p className="text-brand-text text-[10px] sm:text-sm font-medium">Bata o recorde global no ritmo das estrelas.</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
@@ -301,23 +301,23 @@ export default function PianoTiles() {
                         className={cn(
                         "flex items-center justify-between p-4 sm:p-5 rounded-2xl sm:rounded-3xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] group",
                         selectedSong?.id === song.id 
-                            ? "bg-spotify-green/15 border-spotify-green/50 shadow-[0_15px_40px_-15px_rgba(30,215,96,0.3)]" 
+                            ? "bg-brand-primary/15 border-brand-primary/50 shadow-[0_15px_40px_-15px_rgba(30,215,96,0.3)]" 
                             : "bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-white/20"
                         )}
                     >
                         <div className="text-left">
-                        <p className="text-base sm:text-lg font-black group-hover:text-spotify-green transition-colors">{song.title}</p>
+                        <p className="text-base sm:text-lg font-black group-hover:text-brand-primary transition-colors">{song.title}</p>
                         <div className="flex items-center gap-2 sm:gap-3 mt-1 sm:mt-1.5">
-                            <p className="text-[8px] sm:text-[10px] text-spotify-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
+                            <p className="text-[8px] sm:text-[10px] text-brand-text font-black uppercase tracking-[0.2em]">{song.artist}</p>
                             <div className="flex gap-0.5 sm:gap-1 items-center bg-black/40 px-1.5 sm:px-2 py-0.5 rounded-full border border-white/5">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <div key={i} className={cn("h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full", i < song.difficulty ? "bg-spotify-green shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
+                                <div key={i} className={cn("h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full", i < song.difficulty ? "bg-brand-primary shadow-[0_0_5px_#1ed760]" : "bg-white/10")} />
                             ))}
                             <span className="text-[8px] sm:text-[9px] font-black text-white/40 ml-1">{song.difficulty}</span>
                             </div>
                         </div>
                         </div>
-                        <div className="p-2 sm:p-3 bg-white/5 rounded-xl sm:rounded-2xl group-hover:bg-spotify-green group-hover:text-black transition-all">
+                        <div className="p-2 sm:p-3 bg-white/5 rounded-xl sm:rounded-2xl group-hover:bg-brand-primary group-hover:text-black transition-all">
                             <HiPlay className="h-5 w-5 sm:h-6 sm:h-6" />
                         </div>
                     </button>
@@ -332,12 +332,12 @@ export default function PianoTiles() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         className={cn(
                             "p-6 sm:p-10 rounded-3xl sm:rounded-[40px] text-center shadow-2xl relative overflow-hidden border",
-                            isVictory ? "bg-gradient-to-b from-spotify-green/20 to-transparent border-spotify-green/30" : "bg-gradient-to-b from-red-500/20 to-transparent border-red-500/30"
+                            isVictory ? "bg-gradient-to-b from-brand-primary/20 to-transparent border-brand-primary/30" : "bg-gradient-to-b from-red-500/20 to-transparent border-red-500/30"
                         )}
                     >
                         <p className={cn(
                             "font-black text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-2 sm:mb-3",
-                            isVictory ? "text-spotify-green" : "text-red-500"
+                            isVictory ? "text-brand-primary" : "text-red-500"
                         )}>
                             {isVictory ? `Concluído: ${PHASE_NAMES[currentPhase]}` : "Sessão Encerrada"}
                         </p>
@@ -348,7 +348,7 @@ export default function PianoTiles() {
                         </div>
                         <div className="space-y-3">
                             {isVictory && hasNextOption && (
-                                <button onClick={handleNextLevel} className="w-full py-4 sm:py-5 bg-spotify-green text-black rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:translate-y-[-2px] transition-all shadow-lg flex items-center justify-center gap-2">
+                                <button onClick={handleNextLevel} className="w-full py-4 sm:py-5 bg-brand-primary text-black rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm hover:translate-y-[-2px] transition-all shadow-lg flex items-center justify-center gap-2">
                                     PRÓXIMO <HiChevronRight className="h-4 w-4 sm:h-5 sm:h-5" />
                                 </button>
                             )}
@@ -374,7 +374,7 @@ export default function PianoTiles() {
 
   return (
     <div className="relative flex-1 flex flex-col items-center justify-end overflow-hidden bg-[#020202] select-none cursor-crosshair">
-      <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-spotify-green/5 to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-0 right-0 h-40 bg-gradient-to-b from-brand-primary/5 to-transparent pointer-events-none" />
       <div className="flex w-full h-full max-w-xl mx-auto border-x border-white/[0.08] relative">
         {[0, 1, 2, 3].map(lane => {
           // BIT-LEVEL OPTIMIZATION: Sliding Window Rendering
@@ -427,7 +427,7 @@ export default function PianoTiles() {
             </div>
           )
         })}
-        <div className="absolute top-[85%] left-0 right-0 h-[2px] bg-spotify-green shadow-[0_0_25px_#1ed760] z-20 pointer-events-none opacity-80" />
+        <div className="absolute top-[85%] left-0 right-0 h-[2px] bg-brand-primary shadow-[0_0_25px_#1ed760] z-20 pointer-events-none opacity-80" />
       </div>
 
       <div className="absolute bottom-[35%] left-1/2 -translate-x-1/2 flex flex-col items-center pointer-events-none z-30 h-16 sm:h-20">
@@ -466,7 +466,7 @@ export default function PianoTiles() {
                 className="text-center"
             >
               <div className="flex flex-col items-center">
-                <span className="text-[1.5rem] sm:text-[3rem] font-black text-spotify-green uppercase tracking-[0.3em] mb-[-2rem] sm:mb-[-4rem] opacity-50 italic">
+                <span className="text-[1.5rem] sm:text-[3rem] font-black text-brand-primary uppercase tracking-[0.3em] mb-[-2rem] sm:mb-[-4rem] opacity-50 italic">
                     {PHASE_NAMES[currentPhase]}
                 </span>
                 <span className="text-[8rem] sm:text-[15rem] font-black text-white drop-shadow-[0_0_50px_rgba(255,255,255,0.3)] italic tracking-tighter">
@@ -514,7 +514,7 @@ export default function PianoTiles() {
             <p className="text-sm sm:text-2xl font-black text-white truncate max-w-[120px] sm:max-w-[300px]">{songTitle}</p>
             <p className={cn(
               "text-[8px] sm:text-xs font-black uppercase tracking-widest mt-0.5 sm:mt-1 italic",
-              currentPhase === 3 ? "text-red-500 animate-pulse" : "text-spotify-green"
+              currentPhase === 3 ? "text-red-500 animate-pulse" : "text-brand-primary"
             )}>
               {currentPhase === 3 ? "Hardcore" : "Acelerando..."}
             </p>

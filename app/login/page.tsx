@@ -77,19 +77,19 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-spotify-black px-4 py-10">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-black px-4 py-10">
       <Link href="/" className="mb-8 flex items-center gap-2.5">
         <Logo size={40} />
         <span className="text-2xl font-extrabold text-white">SoundLink</span>
       </Link>
 
-      <div className="w-full max-w-sm rounded-2xl bg-spotify-card px-8 py-10">
+      <div className="w-full max-w-sm rounded-2xl bg-brand-card px-8 py-10">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">
           Entrar no SoundLink
         </h1>
 
         {success && (
-          <p className="mb-4 rounded-xl bg-spotify-green/20 px-3 py-2 text-center text-sm text-spotify-green">
+          <p className="mb-4 rounded-xl bg-brand-primary/20 px-3 py-2 text-center text-sm text-brand-primary">
             {success}
           </p>
         )}
@@ -112,7 +112,7 @@ function LoginForm() {
               onChange={(e) => setIdentifier(e.target.value)}
               autoComplete="username"
               placeholder="seunome ou seu@email.com"
-              className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+              className="w-full rounded-xl bg-brand-hover px-3 py-2.5 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
             />
           </div>
 
@@ -123,7 +123,7 @@ function LoginForm() {
               </label>
               <Link
                 href="/forgot-password"
-                className="text-xs text-spotify-text hover:text-white transition-colors"
+                className="text-xs text-brand-text hover:text-white transition-colors"
                 tabIndex={-1}
               >
                 Esqueceu a senha?
@@ -137,12 +137,12 @@ function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
                 placeholder="••••••••"
-                className="w-full rounded-xl bg-spotify-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-spotify-text/50 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                className="w-full rounded-xl bg-brand-hover px-3 py-2.5 pr-10 text-sm text-white placeholder-brand-text/50 focus:outline-none focus:ring-2 focus:ring-brand-primary"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword((p) => !p)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-spotify-text hover:text-white transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-text hover:text-white transition-colors"
                 aria-label={showPassword ? 'Ocultar senha' : 'Ver senha'}
               >
                 {showPassword ? <HiEyeOff className="h-4 w-4" /> : <HiEye className="h-4 w-4" />}
@@ -155,9 +155,9 @@ function LoginForm() {
           </Button>
         </form>
 
-        <div className="mt-6 text-center text-sm text-spotify-text">
+        <div className="mt-6 text-center text-sm text-brand-text">
           Não tem uma conta?{' '}
-          <Link href="/register" className="font-semibold text-white hover:text-spotify-green transition-colors">
+          <Link href="/register" className="font-semibold text-white hover:text-brand-primary transition-colors">
             Cadastre-se
           </Link>
         </div>
@@ -165,7 +165,7 @@ function LoginForm() {
         <div className="mt-6 flex justify-center">
           <a
             href="https://soundlink-app.netlify.app/"
-            className="flex items-center justify-center w-10 h-10 rounded-xl bg-spotify-hover text-spotify-text hover:text-spotify-green hover:bg-spotify-hover/80 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-xl bg-brand-hover text-brand-text hover:text-brand-primary hover:bg-brand-hover/80 transition-colors"
             aria-label="Voltar ao início"
           >
             <HiHome className="h-5 w-5" />

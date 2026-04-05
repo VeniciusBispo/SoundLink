@@ -65,13 +65,13 @@ export default function SongItem({
           <span 
             className={cn(
               'truncate text-[15px] font-semibold tracking-tight', 
-              isActive ? 'text-spotify-green' : 'text-white'
+              isActive ? 'text-brand-primary' : 'text-white'
             )}
           >
             {song.title}
           </span>
-          <span className="truncate text-[13px] text-spotify-text">
-            {isActive && isPlaying && <HiPlay className="inline mr-1 text-spotify-green h-3 w-3" />}
+          <span className="truncate text-[13px] text-brand-text">
+            {isActive && isPlaying && <HiPlay className="inline mr-1 text-brand-primary h-3 w-3" />}
             {song.channel} {addedByUsername && ` • ${addedByUsername}`}
           </span>
         </div>
@@ -79,7 +79,7 @@ export default function SongItem({
 
       {/* Actions */}
       <div className="flex items-center gap-1 flex-shrink-0">
-        <span className="text-[12px] font-medium text-spotify-text hidden sm:inline-block mr-2">
+        <span className="text-[12px] font-medium text-brand-text hidden sm:inline-block mr-2">
           {formatDuration(duration)}
         </span>
         
@@ -89,7 +89,7 @@ export default function SongItem({
               e.stopPropagation()
               onRemove()
             }}
-            className="p-2 text-spotify-text hover:text-red-400 transition-colors"
+            className="p-2 text-brand-text hover:text-red-400 transition-colors"
             aria-label="Remover"
           >
             <HiTrash className="h-5 w-5" />
@@ -100,7 +100,7 @@ export default function SongItem({
               e.stopPropagation()
               onMenu?.()
             }}
-            className="p-2 text-spotify-text hover:text-white transition-colors"
+            className="p-2 text-brand-text hover:text-white transition-colors"
             aria-label="Opções"
           >
             <HiDotsVertical className="h-5 w-5" />

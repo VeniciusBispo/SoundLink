@@ -44,7 +44,7 @@ export default function ContinueWatchingSection() {
         <h2 className="text-xl font-bold text-white">Continuar Assistindo</h2>
       </div>
       
-      <div className="group relative flex items-center justify-between overflow-hidden rounded-xl bg-gradient-to-r from-spotify-card to-white/5 p-4 transition-all hover:bg-white/10 sm:w-full md:w-1/2 lg:w-1/3 border border-white/5">
+      <div className="group relative flex items-center justify-between overflow-hidden rounded-xl bg-gradient-to-r from-brand-card to-white/5 p-4 transition-all hover:bg-white/10 sm:w-full md:w-1/2 lg:w-1/3 border border-white/5">
         <Link href={href} className="absolute inset-0 z-0" aria-label="Acessar" />
         
         <div className="relative z-10 flex items-center gap-4">
@@ -52,21 +52,21 @@ export default function ContinueWatchingSection() {
             {cover && isLikelyImageSrc(cover) ? (
               <Image src={cover} alt={title || 'Cover'} fill className="object-cover" sizes="56px" />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-spotify-green/40 to-spotify-card">
-                <HiMusicNote className="h-6 w-6 text-spotify-green" />
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-brand-primary/40 to-brand-card">
+                <HiMusicNote className="h-6 w-6 text-brand-primary" />
               </div>
             )}
           </div>
           
           <div className="flex flex-col">
             <h3 className="line-clamp-1 text-base font-bold text-white">{title}</h3>
-            <p className="line-clamp-1 text-sm text-spotify-text">{subtitle}</p>
+            <p className="line-clamp-1 text-sm text-brand-text">{subtitle}</p>
           </div>
         </div>
 
         <button
           onClick={handlePlay}
-          className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-spotify-green text-black opacity-0 shadow-xl transition-all hover:scale-105 hover:bg-green-400 group-hover:opacity-100"
+          className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-brand-primary text-black opacity-0 shadow-xl transition-all hover:scale-105 hover:bg-green-400 group-hover:opacity-100"
           aria-label="Continuar ouvindo"
         >
           <HiPlay className="h-6 w-6 ml-1" />
@@ -74,7 +74,7 @@ export default function ContinueWatchingSection() {
 
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-10">
           <div 
-            className="h-full bg-spotify-green rounded-r-full"
+            className="h-full bg-brand-primary rounded-r-full"
             style={{ width: `${percent}%` }}
           />
         </div>

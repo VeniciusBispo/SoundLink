@@ -9,14 +9,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        spotify: {
-          green: '#1DB954',
-          black: '#121212',
-          dark: '#181818',
-          card: '#282828',
-          hover: '#3E3E3E',
-          text: '#B3B3B3',
-          white: '#FFFFFF',
+        brand: {
+          primary: 'rgb(var(--brand-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--brand-secondary) / <alpha-value>)',
+          accent: 'rgb(var(--brand-accent) / <alpha-value>)',
+          black: 'rgb(var(--brand-black) / <alpha-value>)',
+          dark: 'rgb(var(--brand-dark) / <alpha-value>)',
+          card: 'rgb(var(--brand-card) / <alpha-value>)',
+          hover: 'rgb(var(--brand-hover) / <alpha-value>)',
+          text: 'rgb(var(--brand-text) / <alpha-value>)',
+          white: '#F8FAFC',     // Slate 50 (static)
         },
       },
       fontFamily: {

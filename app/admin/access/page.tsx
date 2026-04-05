@@ -65,32 +65,32 @@ export default function AdminAccessPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold text-white">Acessos</h2>
-            <p className="text-sm text-spotify-text">{total} registros</p>
+            <p className="text-sm text-brand-text">{total} registros</p>
           </div>
           <div className="flex gap-2">            <button
                 onClick={() => fetchLogs(page, pathFilter, userFilter)}
                 disabled={loading}
-                className="flex items-center gap-1.5 rounded-xl bg-[#1a1a1a] px-3 py-2 text-sm text-spotify-text ring-1 ring-white/10 hover:text-white hover:ring-white/20 transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 rounded-xl bg-[#1a1a1a] px-3 py-2 text-sm text-brand-text ring-1 ring-white/10 hover:text-white hover:ring-white/20 transition-colors disabled:opacity-50"
                 title="Atualizar lista"
               >
                 <HiRefresh className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
                 Atualizar
               </button>            <div className="relative">
-              <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-spotify-text" />
+              <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text" />
               <input
                 value={pathFilter}
                 onChange={(e) => { setPathFilter(e.target.value); setPage(1) }}
                 placeholder="Filtrar por página..."
-                className="rounded-xl bg-[#1a1a1a] pl-9 pr-3 py-2 text-sm text-white placeholder-spotify-text outline-none ring-1 ring-white/10 focus:ring-spotify-green w-44"
+                className="rounded-xl bg-[#1a1a1a] pl-9 pr-3 py-2 text-sm text-white placeholder-brand-text outline-none ring-1 ring-white/10 focus:ring-brand-primary w-44"
               />
             </div>
             <div className="relative">
-              <HiUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-spotify-text" />
+              <HiUser className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text" />
               <input
                 value={userFilter}
                 onChange={(e) => { setUserFilter(e.target.value); setPage(1) }}
                 placeholder="Filtrar por usuário..."
-                className="rounded-xl bg-[#1a1a1a] pl-9 pr-3 py-2 text-sm text-white placeholder-spotify-text outline-none ring-1 ring-white/10 focus:ring-spotify-green w-44"
+                className="rounded-xl bg-[#1a1a1a] pl-9 pr-3 py-2 text-sm text-white placeholder-brand-text outline-none ring-1 ring-white/10 focus:ring-brand-primary w-44"
               />
             </div>
           </div>
@@ -99,7 +99,7 @@ export default function AdminAccessPage() {
         <div className="overflow-hidden rounded-xl bg-[#1a1a1a]">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-xs text-spotify-text">
+              <tr className="border-b border-white/5 text-left text-xs text-brand-text">
                 <th className="px-4 py-3 font-medium">Página</th>
                 <th className="px-4 py-3 font-medium hidden md:table-cell">Usuário</th>
                 <th className="px-4 py-3 font-medium hidden lg:table-cell">IP</th>
@@ -118,22 +118,22 @@ export default function AdminAccessPage() {
                 ))
               ) : logs.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-spotify-text">
+                  <td colSpan={5} className="px-4 py-10 text-center text-brand-text">
                     <HiChartBar className="mx-auto mb-2 h-8 w-8 text-white/10" />
                     Nenhum registro encontrado.
                   </td>
                 </tr>
               ) : logs.map((log) => (
                 <tr key={log.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
-                  <td className="px-4 py-2.5 font-mono text-xs text-spotify-green">{log.path}</td>
-                  <td className="px-4 py-2.5 text-spotify-text hidden md:table-cell">
+                  <td className="px-4 py-2.5 font-mono text-xs text-brand-primary">{log.path}</td>
+                  <td className="px-4 py-2.5 text-brand-text hidden md:table-cell">
                     {log.username ?? <span className="text-white/20">anônimo</span>}
                   </td>
-                  <td className="px-4 py-2.5 text-spotify-text hidden lg:table-cell">{log.ip ?? '—'}</td>
-                  <td className="px-4 py-2.5 text-spotify-text hidden xl:table-cell text-xs">
+                  <td className="px-4 py-2.5 text-brand-text hidden lg:table-cell">{log.ip ?? '—'}</td>
+                  <td className="px-4 py-2.5 text-brand-text hidden xl:table-cell text-xs">
                     {shortUA(log.userAgent)}
                   </td>
-                  <td className="px-4 py-2.5 text-xs text-spotify-text">{formatDate(log.createdAt)}</td>
+                  <td className="px-4 py-2.5 text-xs text-brand-text">{formatDate(log.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
@@ -142,11 +142,11 @@ export default function AdminAccessPage() {
 
         {pages > 1 && (
           <div className="flex items-center justify-center gap-4">
-            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronLeft className="h-5 w-5" />
             </button>
-            <span className="text-sm text-spotify-text">{page} / {pages}</span>
-            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-spotify-text hover:bg-white/10 disabled:opacity-30">
+            <span className="text-sm text-brand-text">{page} / {pages}</span>
+            <button onClick={() => setPage((p) => Math.min(pages, p + 1))} disabled={page === pages} className="rounded-full p-2 text-brand-text hover:bg-white/10 disabled:opacity-30">
               <HiChevronRight className="h-5 w-5" />
             </button>
           </div>

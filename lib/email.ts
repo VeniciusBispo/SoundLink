@@ -5,7 +5,7 @@ import { parseEmailFrom } from '@/lib/email-from'
 function buildEmailHtml(verifyUrl: string) {
   return `
     <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; background: #121212; color: #fff; padding: 32px; border-radius: 16px;">
-      <h1 style="color: #1DB954; margin-bottom: 8px;">SoundLink</h1>
+      <h1 style="color: #EF4444; margin-bottom: 8px;">SoundLink</h1>
       <h2 style="font-size: 20px; margin-bottom: 16px;">Confirme seu e-mail</h2>
       <p style="color: #b3b3b3; margin-bottom: 24px;">
         Clique no botão abaixo para validar seu endereço de e-mail e ativar sua conta.
@@ -13,7 +13,7 @@ function buildEmailHtml(verifyUrl: string) {
       </p>
       <a
         href="${verifyUrl}"
-        style="display: inline-block; background: #1DB954; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 100px; text-decoration: none;"
+        style="display: inline-block; background: #EF4444; color: #000; font-weight: bold; padding: 14px 28px; border-radius: 100px; text-decoration: none;"
       >
         Confirmar e-mail
       </a>

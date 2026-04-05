@@ -86,7 +86,7 @@ export default function CreatePlaylistModal() {
             placeholder="Dê uma descrição para sua playlist"
             maxLength={300}
             rows={3}
-            className="w-full resize-none rounded-md bg-spotify-hover px-3 py-2 text-sm text-white placeholder-spotify-text focus:outline-none focus:ring-2 focus:ring-spotify-green"
+            className="w-full resize-none rounded-md bg-brand-hover px-3 py-2 text-sm text-white placeholder-brand-text focus:outline-none focus:ring-2 focus:ring-brand-primary"
           />
         </div>
 
@@ -98,7 +98,7 @@ export default function CreatePlaylistModal() {
               onChange={(e) => setIsPublic(e.target.checked)}
               className="peer sr-only"
             />
-            <div className="h-6 w-11 rounded-full bg-spotify-hover peer-checked:bg-spotify-green transition-colors" />
+            <div className="h-6 w-11 rounded-full bg-brand-hover peer-checked:bg-brand-primary transition-colors" />
             <div className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform peer-checked:translate-x-5" />
           </div>
           <span className="text-sm text-white">Tornar playlist pública</span>
@@ -108,14 +108,14 @@ export default function CreatePlaylistModal() {
           <button
             type="button"
             onClick={close}
-            className="rounded-full px-5 py-2 text-sm font-semibold text-white hover:bg-spotify-hover transition-colors"
+            className="rounded-full px-5 py-2 text-sm font-semibold text-white hover:bg-brand-hover transition-colors"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="rounded-full bg-spotify-green px-6 py-2 text-sm font-bold text-black hover:scale-105 transition-transform disabled:opacity-60"
+            className="rounded-full bg-brand-primary px-6 py-2 text-sm font-bold text-black hover:scale-105 transition-transform disabled:opacity-60"
           >
             {isLoading ? 'Criando…' : 'Criar'}
           </button>

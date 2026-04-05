@@ -15,7 +15,7 @@ export default function PianoContainer() {
       <div className="flex flex-col h-full">
         <button 
           onClick={() => setMode(null)}
-          className="mb-4 text-xs text-spotify-text hover:text-white flex items-center gap-1"
+          className="mb-4 text-xs text-brand-text hover:text-white flex items-center gap-1"
         >
           ← Voltar ao menu do Piano
         </button>
@@ -29,7 +29,7 @@ export default function PianoContainer() {
       <div className="flex flex-col h-full">
         <button 
           onClick={() => setMode(null)}
-          className="mb-4 text-xs text-spotify-text hover:text-white flex items-center gap-1"
+          className="mb-4 text-xs text-brand-text hover:text-white flex items-center gap-1"
         >
            ← Voltar ao menu do Piano
         </button>
@@ -49,7 +49,7 @@ export default function PianoContainer() {
           y: [-20, 20, -20]
         }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-spotify-green blur-[120px] rounded-full pointer-events-none" 
+        className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-primary blur-[120px] rounded-full pointer-events-none" 
       />
       <motion.div 
         animate={{ 
@@ -71,7 +71,7 @@ export default function PianoContainer() {
           <h2 className="text-3xl sm:text-6xl font-black text-white mb-3 sm:mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/50 leading-tight">
             Piano Mágico 🎹
           </h2>
-          <p className="text-sm sm:text-xl text-spotify-text mb-8 sm:mb-12 font-medium opacity-80 max-w-xl mx-auto leading-relaxed px-4">
+          <p className="text-sm sm:text-xl text-brand-text mb-8 sm:mb-12 font-medium opacity-80 max-w-xl mx-auto leading-relaxed px-4">
             Vivencie a música de uma forma única. Escolha sua jornada sonora.
           </p>
         </motion.div>
@@ -82,19 +82,19 @@ export default function PianoContainer() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             onClick={() => setMode('free')}
-            className="group relative flex flex-col items-center gap-6 rounded-[32px] bg-white/[0.03] backdrop-blur-xl p-8 sm:p-10 border border-white/10 hover:border-spotify-green/40 transition-all duration-500 hover:shadow-[0_0_50px_rgba(30,215,96,0.15)]"
+            className="group relative flex flex-col items-center gap-6 rounded-[32px] bg-white/[0.03] backdrop-blur-xl p-8 sm:p-10 border border-white/10 hover:border-brand-primary/40 transition-all duration-500 hover:shadow-[0_0_50px_rgba(30,215,96,0.15)]"
           >
-            <div className="p-6 bg-spotify-green/10 rounded-3xl group-hover:bg-spotify-green/20 group-hover:scale-110 transition-all duration-500 shadow-inner">
-              <HiMusicNote className="h-10 w-10 sm:h-14 sm:h-14 text-spotify-green drop-shadow-[0_0_10px_rgba(30,215,96,0.5)]" />
+            <div className="p-6 bg-brand-primary/10 rounded-3xl group-hover:bg-brand-primary/20 group-hover:scale-110 transition-all duration-500 shadow-inner">
+              <HiMusicNote className="h-10 w-10 sm:h-14 sm:h-14 text-brand-primary drop-shadow-[0_0_10px_rgba(30,215,96,0.5)]" />
             </div>
             <div className="space-y-3">
-              <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-spotify-green transition-colors leading-none">Tocar Livre</h3>
-              <p className="text-xs sm:text-sm text-spotify-text font-medium leading-relaxed opacity-60">Pratique livremente com feedback sonoro em tempo real.</p>
+              <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-brand-primary transition-colors leading-none">Tocar Livre</h3>
+              <p className="text-xs sm:text-sm text-brand-text font-medium leading-relaxed opacity-60">Pratique livremente com feedback sonoro em tempo real.</p>
             </div>
             
             {/* Visual Polish: Corner Glow */}
             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="w-2 h-2 rounded-full bg-spotify-green animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-brand-primary animate-pulse" />
             </div>
           </motion.button>
 
@@ -110,7 +110,7 @@ export default function PianoContainer() {
             </div>
             <div className="space-y-3">
               <h3 className="text-xl sm:text-2xl font-black text-white group-hover:text-purple-400 transition-colors leading-none">Modo Desafio</h3>
-              <p className="text-xs sm:text-sm text-spotify-text font-medium leading-relaxed opacity-60">Acerte as notas no ritmo da música e bata recordes.</p>
+              <p className="text-xs sm:text-sm text-brand-text font-medium leading-relaxed opacity-60">Acerte as notas no ritmo da música e bata recordes.</p>
             </div>
             
             <div className="absolute top-6 right-6">

@@ -20,13 +20,13 @@ export default function SearchBar() {
 
   return (
     <form onSubmit={handleSubmit} className="relative">
-      <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-spotify-text" />
+      <HiSearch className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-text" />
       <input
         type="search"
         value={localQuery}
         onChange={(e) => setLocalQuery(e.target.value)}
         placeholder="O que você quer ouvir?"
-        className="w-full rounded-full bg-white py-2 pl-9 pr-4 text-sm text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-spotify-green"
+        className="w-full rounded-full bg-white py-2 pl-9 pr-4 text-sm text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-primary"
       />
     </form>
   )

@@ -11,18 +11,21 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 import Script from 'next/script'
 
 export const metadata: Metadata = {
-  title: 'SoundLink – Sua Música, Do Seu Jeito',
+  title: 'SoundLink – Sua Música, Do Seu Jeito | Player de Música Personalizado',
   description:
-    'Crie playlists, adicione músicas do YouTube e ouça em qualquer lugar. Pública, privada e disponível offline.',
+    'A plataforma definitiva para organizar suas músicas do YouTube em playlists personalizadas. Ouça música grátis, crie coleções públicas ou privadas, e jogue mini-games musicais.',
   manifest: '/manifest.json',
+  keywords: ['música', 'player de música', 'playlists youtube', 'ouvir música grátis', 'pwa música', 'soundlink', 'organizador de música'],
+  authors: [{ name: 'SoundLink Team' }],
   icons: {
     icon: '/icons/icon.svg',
     apple: '/icons/icon.svg',
   },
 }
 
+
 export const viewport: Viewport = {
-  themeColor: '#1DB954',
+  themeColor: '#EF4444',
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -40,7 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <link rel="dns-prefetch" href="https://adservice.google.com" />
         <link rel="dns-prefetch" href="https://i.ytimg.com" />
       </head>
-      <body className={`${inter.variable} bg-spotify-black font-sans antialiased`}>
+      <body className={`${inter.variable} bg-brand-black font-sans antialiased`}>
         {/* Google AdSense - Extreme Performance Strategy */}
         <Script
           id="adsense-init"

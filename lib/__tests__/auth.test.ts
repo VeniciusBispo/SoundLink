@@ -11,31 +11,23 @@ jest.mock('@/lib/prisma', () => ({
   },
 }))
 
-jest.mock('bcryptjs', () => ({
-  compare: jest.fn(),
-}))
+
+
+import { authorizeUser } from '../auth'
 
 describe('NextAuth Credentials Provider', () => {
-  let authorize: any
-
-  beforeAll(() => {
-    // Import here to ensure it uses the mocked prisma
-    const { authOptions } = require('../auth')
-    authorize = authOptions.providers.find((p: any) => p.id === 'credentials')?.authorize
-  })
-
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it('should return null if identifier or password are missing', async () => {
-    const result = await authorize({ identifier: '', password: '' }, {})
+    const result = await authorizeUser({ identifier: '', password: '' })
     expect(result).toBeNull()
   })
 
   it('should return null if user is not found', async () => {
     ;(prisma.user.findFirst as jest.Mock).mockResolvedValue(null)
-    const result = await authorize({ identifier: 'test@example.com', password: 'password' }, {})
+    const result = await authorizeUser({ identifier: 'test@example.com', password: 'password' })
     expect(result).toBeNull()
   })
 
@@ -44,16 +36,16 @@ describe('NextAuth Credentials Provider', () => {
       id: '1',
       username: 'testuser',
       email: 'test@example.com',
-      password: 'hashed_password',
+      password: bcrypt.hashSync('correct_password', 10),
       role: 'USER',
       avatar: null,
       banner: null,
       emailVerified: new Date(),
     }
     ;(prisma.user.findFirst as jest.Mock).mockResolvedValue(user)
-    ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
 
-    const result = await authorize({ identifier: 'test@example.com', password: 'correct_password' }, {})
+
+    const result = await authorizeUser({ identifier: 'test@example.com', password: 'correct_password' })
     
     expect(result).toEqual({
       id: user.id,
@@ -71,18 +63,18 @@ describe('NextAuth Credentials Provider', () => {
     const user = {
       id: '1',
       email: 'test@example.com',
-      password: 'hashed_password',
+      password: bcrypt.hashSync('password', 10),
       username: 'test',
       role: 'USER',
       emailVerified: null,
       verificationToken: 'token',
     }
     ;(prisma.user.findFirst as jest.Mock).mockResolvedValue(user)
-    ;(bcrypt.compare as jest.Mock).mockResolvedValue(true)
+
 
     // Note: We might need to re-require auth if emailProviderConfigured is top-level
     // but let's see if this works.
-    await expect(authorize({ identifier: 'test@example.com', password: 'password' }, {}))
+    await expect(authorizeUser({ identifier: 'test@example.com', password: 'password' }))
       .rejects.toThrow('EMAIL_NOT_VERIFIED')
       
     delete process.env.RESEND_API_KEY

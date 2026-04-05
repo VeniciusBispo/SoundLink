@@ -138,21 +138,21 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
     <Modal isOpen={isOpen} onClose={handleClose} title="Adicionar Música" maxWidth="3xl">
       <div className="flex flex-col gap-5">
         {/* Unified Input */}
-        <div className="flex items-center gap-3 rounded-xl bg-spotify-hover p-2 shadow-inner">
+        <div className="flex items-center gap-3 rounded-xl bg-brand-hover p-2 shadow-inner">
           <div className="pl-2">
-            <HiSearch className="h-5 w-5 text-spotify-text" />
+            <HiSearch className="h-5 w-5 text-brand-text" />
           </div>
           <input
             type="text"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             placeholder="Buscar música ou colar link do YouTube..."
-            className="flex-1 bg-transparent px-2 py-2 text-base text-white placeholder-spotify-text focus:outline-none"
+            className="flex-1 bg-transparent px-2 py-2 text-base text-white placeholder-brand-text focus:outline-none"
             autoFocus
           />
           {(isSearching || isLookupLoading) && (
             <div className="pr-3">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-spotify-green border-t-transparent" />
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-brand-primary border-t-transparent" />
             </div>
           )}
         </div>
@@ -166,7 +166,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
 
         {/* Link Result Preview */}
         {isLinkMode && videoInfo && (
-          <div className="flex items-center gap-4 rounded-xl bg-gradient-to-r from-spotify-hover to-transparent p-4 border border-white/5">
+          <div className="flex items-center gap-4 rounded-xl bg-gradient-to-r from-brand-hover to-transparent p-4 border border-white/5">
             <div className="relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-md shadow-lg">
               <Image
                 src={videoInfo.thumbnail}
@@ -178,8 +178,8 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
             </div>
             <div className="min-w-0 flex-1">
               <p className="line-clamp-2 text-sm font-bold text-white">{videoInfo.title}</p>
-              <p className="text-xs text-spotify-text mt-1">{videoInfo.channel}</p>
-              <p className="text-xs font-semibold text-spotify-green mt-1">
+              <p className="text-xs text-brand-text mt-1">{videoInfo.channel}</p>
+              <p className="text-xs font-semibold text-brand-primary mt-1">
                 {formatDuration(videoInfo.duration)}
               </p>
             </div>
@@ -208,18 +208,18 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
-                      <HiMusicNote className="h-5 w-5 text-spotify-text" />
+                      <HiMusicNote className="h-5 w-5 text-brand-text" />
                     </div>
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-white group-hover:text-spotify-green transition-colors">
+                  <p className="truncate text-sm font-semibold text-white group-hover:text-brand-primary transition-colors">
                     {item.title}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <p className="truncate text-xs text-spotify-text">{item.channel}</p>
-                    <span className="text-[10px] text-spotify-text/50">•</span>
-                    <p className="text-xs text-spotify-text">{item.duration > 0 ? formatDuration(item.duration) : '--:--'}</p>
+                    <p className="truncate text-xs text-brand-text">{item.channel}</p>
+                    <span className="text-[10px] text-brand-text/50">•</span>
+                    <p className="text-xs text-brand-text">{item.duration > 0 ? formatDuration(item.duration) : '--:--'}</p>
                   </div>
                 </div>
                 <Button
@@ -228,7 +228,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
                   disabled={isSaving && savingVideoId !== item.videoId}
                   size="sm"
                   variant="ghost"
-                  className="opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white/5 hover:bg-spotify-green hover:text-black hover:border-transparent text-white"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap bg-white/5 hover:bg-brand-primary hover:text-black hover:border-transparent text-white"
                 >
                   Adicionar
                 </Button>
@@ -240,7 +240,7 @@ export default function AddSongModal({ isOpen, onClose, playlistId, accessCode }
         {/* Empty State for Search */}
         {!isLinkMode && inputVal.trim() && !isSearching && searchResults.length === 0 && !searchError && (
           <div className="py-8 text-center">
-            <p className="text-sm font-medium text-spotify-text">Nenhum resultado encontrado para "{inputVal}"</p>
+            <p className="text-sm font-medium text-brand-text">Nenhum resultado encontrado para "{inputVal}"</p>
           </div>
         )}
 

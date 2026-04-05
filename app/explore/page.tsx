@@ -43,7 +43,7 @@ export default function ExplorePage() {
         <h1 className="mb-2 text-3xl font-bold text-white">
           {query ? `Resultados para "${query}"` : 'Explorar'}
         </h1>
-        <p className="mb-6 text-sm text-spotify-text">{total} playlists públicas</p>
+        <p className="mb-6 text-sm text-brand-text">{total} playlists públicas</p>
 
         {/* Publicidade — Topo da exploração */}
         <AdZone 
@@ -56,9 +56,9 @@ export default function ExplorePage() {
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="flex flex-col gap-3">
-                <div className="aspect-square animate-pulse rounded-md bg-spotify-card" />
-                <div className="h-4 w-3/4 animate-pulse rounded bg-spotify-card" />
-                <div className="h-3 w-1/2 animate-pulse rounded bg-spotify-card" />
+                <div className="aspect-square animate-pulse rounded-md bg-brand-card" />
+                <div className="h-4 w-3/4 animate-pulse rounded bg-brand-card" />
+                <div className="h-3 w-1/2 animate-pulse rounded bg-brand-card" />
               </div>
             ))}
           </div>
@@ -83,17 +83,17 @@ export default function ExplorePage() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="rounded-full bg-spotify-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-spotify-hover transition-colors"
+              className="rounded-full bg-brand-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-brand-hover transition-colors"
             >
               Anterior
             </button>
-            <span className="text-sm text-spotify-text">
+            <span className="text-sm text-brand-text">
               Página {page} de {Math.ceil(total / pageSize)}
             </span>
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={page >= Math.ceil(total / pageSize)}
-              className="rounded-full bg-spotify-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-spotify-hover transition-colors"
+              className="rounded-full bg-brand-card px-5 py-2 text-sm font-semibold text-white disabled:opacity-40 hover:bg-brand-hover transition-colors"
             >
               Próxima
             </button>

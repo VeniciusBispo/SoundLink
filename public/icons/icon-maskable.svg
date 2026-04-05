@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <!-- Padded background for maskable safe zone (icons should keep artwork within center 80%) -->
-  <rect width="512" height="512" fill="#1DB954"/>
+  <rect width="512" height="512" fill="#EF4444"/>
   <circle cx="184" cy="340" r="50" fill="white"/>
   <circle cx="360" cy="292" r="50" fill="white"/>
   <rect x="222" y="155" width="44" height="193" rx="22" fill="white"/>
