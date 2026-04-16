@@ -106,13 +106,6 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </footer>
       </article>
-
-      {/* Global Style for Blog Content */}
-      <style jsx global>{`
-        .blog-content h2 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.875rem; font-weight: 700; color: white; }
-        .blog-content h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.5rem; font-weight: 600; color: white; }
-        .blog-content p { margin-bottom: 1.5rem; color: rgba(255, 255, 255, 0.7); }
-      `}</style>
     </MainLayout>
   )
 }
