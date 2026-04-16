@@ -11,7 +11,9 @@ export default function Footer() {
         <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm font-medium">
           <Link href="/sobre" className="hover:text-brand-primary transition-colors text-brand-text">Sobre nós</Link>
           <Link href="/como-funciona" className="hover:text-brand-primary transition-colors text-brand-text">Como funciona</Link>
+          <Link href="/blog" className="hover:text-brand-primary transition-colors text-brand-text">Blog</Link>
           <Link href="/feedback" className="hover:text-brand-secondary transition-colors text-brand-text">Feedback</Link>
+          <Link href="/contato" className="hover:text-brand-primary transition-colors text-brand-text">Contato</Link>
           <Link href="/privacy" className="hover:text-brand-text/80 transition-colors text-brand-text">Privacidade</Link>
           <Link href="/terms" className="hover:text-brand-text/80 transition-colors text-brand-text">Termos</Link>
         </div>
