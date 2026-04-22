@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { BLOG_POSTS } from '@/lib/blog-data'
 import { HiCalendar, HiClock, HiUser, HiChevronLeft } from 'react-icons/hi'
+import Footer from '@/components/layout/Footer'
+import Script from 'next/script'
 
 interface ArticlePageProps {
   params: { slug: string }
@@ -25,8 +27,68 @@ export default function ArticlePage({ params }: ArticlePageProps) {
     notFound()
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    author: {
+      '@type': 'Organization',
+      name: 'SoundLink Team',
+    },
+    datePublished: post.isoDate,
+    image: 'https://soundlink.app/og-image.png',
+    publisher: {
+      '@type': 'Organization',
+      name: 'SoundLink',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://soundlink.app/icons/icon.svg'
+      }
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://soundlink.app/blog/${post.slug}`
+    }
+  }
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://soundlink.app'
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: 'https://soundlink.app/blog'
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: `https://soundlink.app/blog/${post.slug}`
+      }
+    ]
+  }
+
   return (
     <MainLayout>
+      <Script
+        id="article-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Script
+        id="breadcrumb-jsonld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <article className="mx-auto max-w-4xl px-4 py-12">
         <Link 
           href="/blog" 
@@ -53,7 +115,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
             </div>
             <div className="flex items-center gap-2">
               <HiCalendar className="w-4 h-4" />
-              {post.date}
+              <time dateTime={post.isoDate}>{post.date}</time>
             </div>
             <div className="flex items-center gap-2">
               <HiClock className="w-4 h-4" />
@@ -106,6 +168,7 @@ export default function ArticlePage({ params }: ArticlePageProps) {
           </div>
         </footer>
       </article>
+      <Footer />
     </MainLayout>
   )
 }

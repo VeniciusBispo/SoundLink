@@ -21,6 +21,21 @@ export const metadata: Metadata = {
     icon: '/icons/icon.svg',
     apple: '/icons/icon.svg',
   },
+  openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    url: 'https://soundlink.app',
+    siteName: 'SoundLink',
+    title: 'SoundLink – Sua Música, Do Seu Jeito',
+    description: 'A plataforma definitiva para organizar suas músicas do YouTube em playlists personalizadas.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SoundLink Preview' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SoundLink – Player de Música Personalizado',
+    description: 'Organize suas músicas do YouTube em playlists personalizadas com SoundLink.',
+    images: ['/og-image.png'],
+  },
 }
 
 

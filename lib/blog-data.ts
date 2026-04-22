@@ -7,6 +7,7 @@ export interface BlogPost {
   category: string
   author: string
   readTime: string
+  isoDate: string
 }
 
 export const BLOG_POSTS: BlogPost[] = [
@@ -17,6 +18,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Tutoriais",
     author: "Equipe SoundLink",
     readTime: "6 min",
+    isoDate: "2026-04-15",
     excerpt: "Organizar suas músicas favoritas do YouTube pode parecer uma tarefa hercúlea, mas com as ferramentas certas do SoundLink, você pode transformar o caos em harmonia.",
     content: `
       <h2>A Arte da Organização Musical Digital</h2>
@@ -41,6 +43,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Tecnologia",
     author: "Equipe SoundLink",
     readTime: "8 min",
+    isoDate: "2026-04-10",
     excerpt: "Descubra como a tecnologia Web está derrubando as barreiras entre sites e aplicativos nativos, proporcionando experiências musicais mais rápidas e fluidas.",
     content: `
       <h2>O Fim das Lojas de Aplicativos?</h2>
@@ -65,6 +68,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: "Comunidade",
     author: "Equipe SoundLink",
     readTime: "5 min",
+    isoDate: "2026-04-05",
     excerpt: "Música é sobre conexão. Explore como o compartilhamento de playlists no SoundLink está criando novas pontes entre amigos e comunidades ao redor do mundo.",
     content: `
       <h2>Música como Linguagem Universal</h2>

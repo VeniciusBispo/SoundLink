@@ -2,6 +2,7 @@ import MainLayout from '@/components/layout/MainLayout'
 import Link from 'next/link'
 import { BLOG_POSTS } from '@/lib/blog-data'
 import { HiCalendar, HiClock, HiUser, HiArrowNarrowRight } from 'react-icons/hi'
+import Footer from '@/components/layout/Footer'
 
 export const metadata = {
   title: 'Blog SoundLink – Novidades, Tutoriais e Tecnologia Musical',
@@ -38,7 +39,7 @@ export default function BlogPage() {
                     <span className="px-2 py-1 rounded bg-brand-primary/10">{post.category}</span>
                     <div className="flex items-center gap-1.5 text-brand-text/60">
                       <HiCalendar className="w-4 h-4" />
-                      {post.date}
+                      <time dateTime={post.isoDate}>{post.date}</time>
                     </div>
                   </div>
 
@@ -85,6 +86,7 @@ export default function BlogPage() {
           </div>
         </section>
       </div>
+      <Footer />
     </MainLayout>
   )
 }
